@@ -1,0 +1,66 @@
+.chatarea {
+  flex: 0 0 auto;
+  height: 100%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatarea-header {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.chatarea-header-title {
+  font-weight: bold;
+  font-size: xx-large;
+}
+
+.chatarea-header-exit {
+  font-weight: bold;
+  font-size: x-large;
+  position: absolute;
+  right: 10px;
+}
+
+.chatarea-messages {
+  height: 80%;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.chatarea-input {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatarea-input-text {
+  height: 40%;
+  width: 90%;
+  padding: 8px;
+}
+
+.chatarea-input-send {
+  height: 57%;
+  width: 5%;
+  margin-left: 4px;
+  border: 2px solid #c1c5c7;
+  background-color: #e1e8eb;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatarea-input-send img {
+  height: 40px;
+  width: 40px;
+}
