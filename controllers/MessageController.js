@@ -1,0 +1,67 @@
+const { DBLayer } = require("../database/dbLayer.js");
+const { checkPayloadForKeys } = require("./utils.js");
+const { CONTROLLER_NAMES, ERROR_MESSAGES } = require("../constants.js");
+
+class MessageController extends DBLayer {
+  constructor() {
+    super(CONTROLLER_NAMES.MESSAGE);
+  }
+
+  getOneMessage(messageId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const messageDataJSON = await this.readFromDB();
+        const messageData = JSON.parse(messageDataJSON);
+
+        if (!Object.keys(messageData).includes(messageId)) {
+          reject({
+            code: 404,
+            message: ERROR_MESSAGES[404],
+          });
+        }
+
+        resolve(messageData[messageId]);
+      } catch (err) {
+        reject({ ...err });
+      }
+    });
+  }
+
+  createMessage(payload) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (
+          !checkPayloadForKeys(payload, [
+            "messageId",
+            "text",
+            "senderId",
+            "timestamp",
+          ])
+        ) {
+          reject({
+            code: 400,
+            message: ERROR_MESSAGES[400],
+          });
+        }
+
+        const existingMessagesJSON = await this.readFromDB();
+        const existingMessages = JSON.parse(existingMessagesJSON);
+
+        const newMessages = {
+          ...existingMessages,
+          [payload.messageId]: payload,
+        };
+
+        const newMessagesJSON = JSON.stringify(newMessages);
+
+        await this.writeToDB(newMessagesJSON);
+
+        resolve(payload);
+      } catch (err) {
+        reject({ ...err });
+      }
+    });
+  }
+}
+
+module.exports = { MessageController };

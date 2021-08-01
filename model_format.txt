@@ -1,0 +1,19 @@
+-> User
+    -> userId: string
+    -> userName : string
+    -> avatar : image
+    -> personalChats : string[]
+    -> groupChats: string[]
+
+-> Message 
+    -> messageId : string
+    -> senderId : string
+    -> text : string
+    -> timestamp : Date
+
+-> ChatRoom
+    -> chatRoomId : string
+    -> chatRoomName : null | string
+    -> userIds : string[]
+    -> messageIds : string[]
+    -> type : 'Group' || 'Personal'
