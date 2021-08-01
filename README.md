@@ -1,3 +1,3 @@
 # Chat Application
 
-## This is a chat application created using ReactJS and NodeJS(express)
+##$ This is a chat application created using ReactJS and NodeJS.
