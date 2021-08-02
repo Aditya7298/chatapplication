@@ -1,17 +1,22 @@
 import { MessageInfo } from "../../ts/types/Message.interface";
-import { useFetch } from "../hooks/useFetch";
+import { useQuery } from "../hooks/useQuery";
 import "./Message.css";
 
-interface MessageProps {
+type MessageProps = {
   messageId: string;
-}
+};
 
 export const Message = ({ messageId }: MessageProps) => {
-  const { data: messageData } = useFetch<MessageInfo>(`/message/${messageId}`);
+  const { data: messageData, isLoading } = useQuery<MessageInfo>({
+    url: `http://localhost:8080/messages/${messageId}`,
+    method: "GET",
+  });
 
   return (
     <div className="message">
-      <div className="message-text">{messageData.text}</div>
+      {!isLoading && messageData && (
+        <div className="message-text">{messageData && messageData.text}</div>
+      )}
     </div>
   );
 };

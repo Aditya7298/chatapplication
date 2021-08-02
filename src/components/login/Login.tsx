@@ -1,47 +1,50 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import "./Login.css";
+import { useQuery } from "../hooks/useQuery";
 
-interface LoginProps {
+type LoginProps = {
   onLogin: (userId: string) => void;
-}
+};
 
 export const Login = ({ onLogin }: LoginProps) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const [queryData, setQueryData] = useState({
+    skip: true,
+    payload: {},
+  });
+
+  const { data, error, isLoading } = useQuery<{ userId: string }>({
+    url: "http://localhost:8080/login",
+    method: "POST",
+    payload: queryData.payload,
+    skip: queryData.skip,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "username") {
-      setUsername(value);
-    } else {
-      setPassword(value);
-    }
+    setFormData((data) => ({ ...data, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsLoading(true);
-    setErrorMessage("");
+    const { username, password } = formData;
 
-    axios
-      .post("/login", {
-        username,
-        password,
-      })
-      .then((res) => {
-        onLogin(res.data.userId);
-      })
-      .catch((err) => {
-        if (err.response) {
-          setIsLoading(false);
-          setErrorMessage(err.response.data.message);
-        }
-      });
+    setQueryData({
+      payload: { username, password },
+      skip: false,
+    });
   };
+
+  useEffect(() => {
+    if (data) {
+      onLogin(data.userId);
+    }
+  }, [data, onLogin]);
 
   return (
     <div className="login">
@@ -51,11 +54,11 @@ export const Login = ({ onLogin }: LoginProps) => {
           Username
           <input
             className={`login-form-field ${
-              errorMessage.match(/user/i) && "login-form-field-error"
+              error && error.match(/user/i) && "login-form-field-error"
             }`}
             placeholder="Enter Username"
             name="username"
-            value={username}
+            value={formData.username}
             onChange={handleChange}
           />
         </label>
@@ -63,12 +66,12 @@ export const Login = ({ onLogin }: LoginProps) => {
           Password
           <input
             className={`login-form-field ${
-              errorMessage.match(/password/i) && "login-form-field-error"
+              error && error.match(/password/i) && "login-form-field-error"
             }`}
             type="password"
             name="password"
             placeholder="Enter Password"
-            value={password}
+            value={formData.password}
             onChange={handleChange}
           />
         </label>
@@ -76,7 +79,7 @@ export const Login = ({ onLogin }: LoginProps) => {
           {isLoading ? "Please wait..." : "Login"}
         </button>
       </form>
-      <div className="login-error">{errorMessage}</div>
+      <div className="login-error">{error}</div>
     </div>
   );
 };

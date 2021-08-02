@@ -1,4 +1,4 @@
 export const CHAT_ROOM_TYPE = {
-    GROUP: "GROUP",
-    PERSONAL: "PERSONAL"
-}
+  GROUP: "GROUP",
+  PERSONAL: "PERSONAL",
+} as const;

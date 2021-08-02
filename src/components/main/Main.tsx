@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { useFetch } from "../hooks/useFetch";
+import { useQuery } from "../hooks/useQuery";
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatArea } from "../chatArea/ChatArea";
 import { UserInfo } from "../../ts/types/User.interface";
 import "./Main.css";
 
-interface MainProps {
+type MainProps = {
   userId: string;
-}
+};
 
 export const Main = ({ userId }: MainProps) => {
-  const { data: userData, isLoading } = useFetch<UserInfo>(`/user/${userId}`);
+  const { data: userData, isLoading } = useQuery<UserInfo>({
+    url: `http://localhost:8080/users/${userId}`,
+    method: "GET",
+  });
 
-  const [selectedChatRoomId, setSelectedChatRoomId] = useState("");
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState<string | null>(
+    null
+  );
 
   const handleChatRoomPreviewClick = (chatRoomId: string) => {
     setSelectedChatRoomId(chatRoomId);
@@ -20,16 +25,14 @@ export const Main = ({ userId }: MainProps) => {
 
   return (
     <div className="main">
-      {!isLoading && (
+      {!isLoading && userData && (
         <Sidebar
           groupChatIds={userData.groupChats}
           personalChatIds={userData.personalChats}
           onChatRoomPreviewClick={handleChatRoomPreviewClick}
         />
       )}
-      {selectedChatRoomId.length > 0 && (
-        <ChatArea chatRoomId={selectedChatRoomId} />
-      )}
+      {selectedChatRoomId && <ChatArea chatRoomId={selectedChatRoomId} />}
     </div>
   );
 };
