@@ -1,30 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery } from "../hooks/useQuery";
 import { ChatRoomInfo } from "../../ts/types/ChatRoom.interface";
-import sendicon from "../../assets/images/right-arrow.png";
 import exiticon from "../../assets/images/exit.png";
 import { Message } from "../message/Message";
+import { MessageInput } from "./messageInput/MessageInput";
 import "./ChatArea.css";
 
 type ChatAreaProps = {
   chatRoomId: string;
+  userId: string;
 };
 
-export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
-  const { data: chatRoomData, isLoading } = useQuery<ChatRoomInfo>({
-    url: `http://localhost:8080/chatrooms/${chatRoomId}`,
-    method: "GET",
-  });
-  const [newMessage, setNewMessage] = useState("");
+type ChatRoomUpdateQuery = {
+  skip: boolean;
+  payload: { key: string; value: any } | undefined;
+};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewMessage(value);
-  };
+export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
+  const { data: queriedChatRoomData, isLoading: isChatRoomDataQueried } =
+    useQuery<ChatRoomInfo>({
+      url: `/chatrooms/${chatRoomId}`,
+      method: "GET",
+    });
+
+  const [chatRoomData, setChatRoomData] = useState<ChatRoomInfo | undefined>();
+
+  useEffect(() => {
+    setChatRoomData(queriedChatRoomData);
+  }, [queriedChatRoomData]);
+
+  const [chatRoomUpdateQuery, setChatRoomUpdateQuery] =
+    useState<ChatRoomUpdateQuery>({
+      skip: true,
+      payload: undefined,
+    });
+
+  const { data: updatedChatRoomData } = useQuery<ChatRoomInfo>({
+    url: `/chatrooms/${chatRoomId}`,
+    method: "PATCH",
+    skip: chatRoomUpdateQuery.skip,
+    payload: chatRoomUpdateQuery.payload,
+  });
+
+  useEffect(() => {
+    return () => {
+      setChatRoomUpdateQuery({
+        skip: true,
+        payload: undefined,
+      });
+    };
+  }, [chatRoomId]);
+
+  const handleNewMessageCreation = useCallback(
+    (newMessageId: string) => {
+      if (chatRoomData && !chatRoomData.messageIds.includes(newMessageId)) {
+        setChatRoomUpdateQuery({
+          skip: false,
+          payload: {
+            key: "messageIds",
+            value: [...chatRoomData.messageIds, newMessageId],
+          },
+        });
+      }
+    },
+    [chatRoomData]
+  );
+
+  useEffect(() => {
+    if (updatedChatRoomData) {
+      setChatRoomData(updatedChatRoomData);
+    }
+  }, [updatedChatRoomData]);
 
   return (
     <div className="chatarea">
-      {!isLoading && chatRoomData && (
+      {!isChatRoomDataQueried && chatRoomData && (
         <>
           <div className="chatarea-header">
             <span className="chatarea-header-title">
@@ -43,19 +93,10 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
               <Message key={messageId} messageId={messageId} />
             ))}
           </div>
-          <div className="chatarea-input">
-            <input
-              className="chatarea-input-text"
-              type="text"
-              placeholder="Type a message..."
-              name="newmessage"
-              value={newMessage}
-              onChange={handleChange}
-            />
-            <span className="chatarea-input-send">
-              <img alt="send message" src={sendicon} />
-            </span>
-          </div>
+          <MessageInput
+            userId={userId}
+            onNewMessageCreation={handleNewMessageCreation}
+          />
         </>
       )}
     </div>

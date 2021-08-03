@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "../hooks/useQuery";
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatArea } from "../chatArea/ChatArea";
@@ -10,14 +10,20 @@ type MainProps = {
 };
 
 export const Main = ({ userId }: MainProps) => {
-  const { data: userData, isLoading } = useQuery<UserInfo>({
-    url: `http://localhost:8080/users/${userId}`,
+  const { data, isLoading } = useQuery<UserInfo>({
+    url: `/users/${userId}`,
     method: "GET",
   });
 
-  const [selectedChatRoomId, setSelectedChatRoomId] = useState<string | null>(
-    null
-  );
+  const [userData, setUserData] = useState<UserInfo | undefined>();
+
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState<
+    string | undefined
+  >();
+
+  useEffect(() => {
+    setUserData(data);
+  }, [data]);
 
   const handleChatRoomPreviewClick = (chatRoomId: string) => {
     setSelectedChatRoomId(chatRoomId);
@@ -25,14 +31,16 @@ export const Main = ({ userId }: MainProps) => {
 
   return (
     <div className="main">
-      {!isLoading && userData && (
+      {!isLoading && (
         <Sidebar
-          groupChatIds={userData.groupChats}
-          personalChatIds={userData.personalChats}
+          groupChatIds={userData?.groupChats || []}
+          personalChatIds={userData?.personalChats || []}
           onChatRoomPreviewClick={handleChatRoomPreviewClick}
         />
       )}
-      {selectedChatRoomId && <ChatArea chatRoomId={selectedChatRoomId} />}
+      {selectedChatRoomId && (
+        <ChatArea userId={userId} chatRoomId={selectedChatRoomId} />
+      )}
     </div>
   );
 };
