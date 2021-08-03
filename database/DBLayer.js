@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { resolve } = require("path");
 const { FILE_MAPPINGS, ERROR_MESSAGES } = require("../constants.js");
 
 class DBLayer {
@@ -7,32 +6,28 @@ class DBLayer {
     this.fileLocation = FILE_MAPPINGS[controllerName];
   }
 
-  readFromDB() {
-    return new Promise((resolve, reject) => {
-      try {
-        const data = fs.readFileSync(this.fileLocation);
-        resolve(data);
-      } catch (err) {
-        reject({
-          code: 500,
-          message: ERROR_MESSAGES[500],
-        });
-      }
-    });
+  async readFromDB() {
+    try {
+      const data = fs.readFileSync(this.fileLocation);
+      return data;
+    } catch (err) {
+      throw {
+        code: 500,
+        message: ERROR_MESSAGES[500],
+      };
+    }
   }
 
-  writeToDB(jsonText) {
-    return new Promise((resolve, reject) => {
-      try {
-        fs.writeFileSync(this.fileLocation, jsonText);
-        resolve("Write operation successfull !!");
-      } catch (err) {
-        reject({
-          code: 500,
-          message: ERROR_MESSAGES[500],
-        });
-      }
-    });
+  async writeToDB(jsonText) {
+    try {
+      fs.writeFileSync(this.fileLocation, jsonText);
+      return "Write operation successfull !!";
+    } catch (err) {
+      throw {
+        code: 500,
+        message: ERROR_MESSAGES[500],
+      };
+    }
   }
 }
 

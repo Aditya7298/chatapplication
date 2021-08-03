@@ -1,1 +1,16 @@
-{"0":{"userId":"0","userName":"aditya","personalChats":["0"],"groupChats":["1"]},"1":{"userId":"1","userName":"vikram","personalChats":["0"],"groupChats":["1"]},"2":{"userId":"2","userName":"aditya_1","personalChats":[],"groupChats":[]},"3":{"userId":"3","userName":"aditya_2","personalChats":[],"groupChats":[]}}
+{
+  "0": {
+    "userId": "0",
+    "avatar": "https://freesvg.org/img/BadDay.png",
+    "userName": "aditya",
+    "personalChats": ["0"],
+    "groupChats": ["1"]
+  },
+  "1": {
+    "userId": "1",
+    "avatar": "https://freesvg.org/img/comic-boy.png",
+    "userName": "vikram",
+    "personalChats": ["0"],
+    "groupChats": ["1"]
+  }
+}

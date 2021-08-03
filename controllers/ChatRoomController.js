@@ -7,61 +7,114 @@ class ChatRoomController extends DBLayer {
     super(CONTROLLER_NAMES.CHATROOM);
   }
 
-  getOneChatRoom(chatRoomId) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const chatRoomDataJSON = await this.readFromDB();
-        const chatRoomData = JSON.parse(chatRoomDataJSON);
+  async getOneChatRoom(chatRoomId) {
+    try {
+      const chatRoomDataJSON = await this.readFromDB();
+      const chatRoomData = JSON.parse(chatRoomDataJSON);
 
-        if (!Object.keys(chatRoomData).includes(chatRoomId)) {
-          reject({
-            code: 404,
-            message: ERROR_MESSAGES[404],
-          });
-        }
-
-        resolve(chatRoomData[chatRoomId]);
-      } catch (err) {
-        reject({ ...err });
+      if (!Object.keys(chatRoomData).includes(chatRoomId)) {
+        throw {
+          code: 404,
+          message: ERROR_MESSAGES[404],
+        };
       }
-    });
+
+      return chatRoomData[chatRoomId];
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
   }
 
-  createChatRoom(payload) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (
-          !checkPayloadForKeys(payload, [
-            "chatRoomId",
-            "chatRoomName",
-            "userIds",
-            "messageIds",
-            "type",
-          ])
-        ) {
-          reject({
-            code: 400,
-            message: ERROR_MESSAGES[400],
-          });
-        }
-
-        const existingChatRoomsJSON = await this.readFromDB();
-        const existingChatRooms = JSON.parse(existingChatRoomsJSON);
-
-        const newChatRooms = {
-          ...existingChatRooms,
-          [payload.chatRoomId]: payload,
+  async createChatRoom(payload) {
+    try {
+      if (
+        !checkPayloadForKeys(payload, [
+          "chatRoomId",
+          "chatRoomName",
+          "userIds",
+          "messageIds",
+          "type",
+        ])
+      ) {
+        throw {
+          code: 400,
+          message: ERROR_MESSAGES[400],
         };
-
-        const newChatRoomsJSON = JSON.stringify(newChatRooms);
-
-        await this.writeToDB(newChatRoomsJSON);
-
-        resolve(payload);
-      } catch (err) {
-        reject({ ...err });
       }
-    });
+
+      const existingChatRoomsJSON = await this.readFromDB();
+      const existingChatRooms = JSON.parse(existingChatRoomsJSON);
+
+      const newChatRooms = {
+        ...existingChatRooms,
+        [payload.chatRoomId]: payload,
+      };
+
+      const newChatRoomsJSON = JSON.stringify(newChatRooms);
+
+      await this.writeToDB(newChatRoomsJSON);
+
+      return payload;
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
+  }
+
+  async updateChatRoom(chatRoomId, payload) {
+    const { key, value } = payload;
+    const chatRoomProps = [
+      "chatRoomId",
+      "chatRoomName",
+      "userIds",
+      "messageIds",
+      "type",
+    ];
+
+    try {
+      if (!chatRoomProps.includes(key)) {
+        throw {
+          code: 400,
+          message: ERROR_MESSAGES[400],
+        };
+      }
+
+      const existingChatRoomsJSON = await this.readFromDB();
+      const existingChatRooms = JSON.parse(existingChatRoomsJSON);
+
+      const newChatRooms = {
+        ...existingChatRooms,
+        [chatRoomId]: { ...existingChatRooms[chatRoomId], [key]: value },
+      };
+
+      const newChatRoomsJSON = JSON.stringify(newChatRooms);
+
+      await this.writeToDB(newChatRoomsJSON);
+
+      return { ...existingChatRooms[chatRoomId], [key]: value };
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
   }
 }
 

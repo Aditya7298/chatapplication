@@ -7,60 +7,70 @@ class MessageController extends DBLayer {
     super(CONTROLLER_NAMES.MESSAGE);
   }
 
-  getOneMessage(messageId) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const messageDataJSON = await this.readFromDB();
-        const messageData = JSON.parse(messageDataJSON);
+  async getOneMessage(messageId) {
+    try {
+      const messageDataJSON = await this.readFromDB();
+      const messageData = JSON.parse(messageDataJSON);
 
-        if (!Object.keys(messageData).includes(messageId)) {
-          reject({
-            code: 404,
-            message: ERROR_MESSAGES[404],
-          });
-        }
-
-        resolve(messageData[messageId]);
-      } catch (err) {
-        reject({ ...err });
+      if (!Object.keys(messageData).includes(messageId)) {
+        throw {
+          code: 404,
+          message: ERROR_MESSAGES[404],
+        };
       }
-    });
+
+      return messageData[messageId];
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
   }
 
-  createMessage(payload) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (
-          !checkPayloadForKeys(payload, [
-            "messageId",
-            "text",
-            "senderId",
-            "timestamp",
-          ])
-        ) {
-          reject({
-            code: 400,
-            message: ERROR_MESSAGES[400],
-          });
-        }
-
-        const existingMessagesJSON = await this.readFromDB();
-        const existingMessages = JSON.parse(existingMessagesJSON);
-
-        const newMessages = {
-          ...existingMessages,
-          [payload.messageId]: payload,
+  async createMessage(payload) {
+    try {
+      if (
+        !checkPayloadForKeys(payload, [
+          "messageId",
+          "text",
+          "senderId",
+          "timestamp",
+        ])
+      ) {
+        throw {
+          code: 400,
+          message: ERROR_MESSAGES[400],
         };
-
-        const newMessagesJSON = JSON.stringify(newMessages);
-
-        await this.writeToDB(newMessagesJSON);
-
-        resolve(payload);
-      } catch (err) {
-        reject({ ...err });
       }
-    });
+
+      const existingMessagesJSON = await this.readFromDB();
+      const existingMessages = JSON.parse(existingMessagesJSON);
+
+      const newMessages = {
+        ...existingMessages,
+        [payload.messageId]: payload,
+      };
+
+      const newMessagesJSON = JSON.stringify(newMessages);
+
+      await this.writeToDB(newMessagesJSON);
+
+      return payload;
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
   }
 }
 

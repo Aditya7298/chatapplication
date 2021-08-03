@@ -3,9 +3,13 @@ const checkPayloadForKeys = (payload, keys) => {
     return false;
   }
 
-  return keys.reduce((result, key) => {
-    return result && Object.keys(payload).includes(key);
-  }, true);
+  for (key of keys) {
+    if (!Object.keys(payload).includes(key)) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 module.exports = { checkPayloadForKeys };

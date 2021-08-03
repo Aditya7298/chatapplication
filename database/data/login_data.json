@@ -1,3 +1,11 @@
 {
-  "aditya": "123"
+  "aditya": {
+    "password": "123",
+    "userId": "0"
+  },
+
+  "vikram": {
+    "password": "123",
+    "userId": "1"
+  }
 }

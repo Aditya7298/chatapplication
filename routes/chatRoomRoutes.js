@@ -34,6 +34,20 @@ router.post("/", async (req, res) => {
     });
 });
 
+router.patch("/:chatRoomId", async (req, res) => {
+  const { chatRoomId } = req.params;
+  const payload = req.body;
+  chatRoomController
+    .updateChatRoom(chatRoomId, payload)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      const { code, message } = err;
+      res.status(code).json({ message });
+    });
+});
+
 const chatRoomRoutes = router;
 
 module.exports = { chatRoomRoutes };
