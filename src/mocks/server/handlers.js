@@ -3,7 +3,6 @@ import { loginData } from "../data/Login.mockdata";
 import { userData } from "../data/User.mockdata";
 import { chatRooms } from "../data/ChatRooms.mockdata";
 import { messageData } from "../data/Message.mockdata";
-// import { fetchJSONFile } from "./utils";
 
 export const handlers = [
   rest.post("/login", async (req, res, ctx) => {

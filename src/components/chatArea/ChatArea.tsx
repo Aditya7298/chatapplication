@@ -1,19 +1,20 @@
 import { useState } from "react";
-import { useFetch } from "../hooks/useFetch";
+import { useQuery } from "../hooks/useQuery";
 import { ChatRoomInfo } from "../../ts/types/ChatRoom.interface";
 import sendicon from "../../assets/images/right-arrow.png";
 import exiticon from "../../assets/images/exit.png";
 import { Message } from "../message/Message";
 import "./ChatArea.css";
 
-interface ChatAreaProps {
+type ChatAreaProps = {
   chatRoomId: string;
-}
+};
 
 export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
-  const { data: chatRoomData, isLoading } = useFetch<ChatRoomInfo>(
-    `chatroom/${chatRoomId}`
-  );
+  const { data: chatRoomData, isLoading } = useQuery<ChatRoomInfo>({
+    url: `http://localhost:8080/chatrooms/${chatRoomId}`,
+    method: "GET",
+  });
   const [newMessage, setNewMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,14 +22,14 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     setNewMessage(value);
   };
 
-  const { chatRoomName, messageIds } = chatRoomData;
-
   return (
     <div className="chatarea">
-      {!isLoading && (
+      {!isLoading && chatRoomData && (
         <>
           <div className="chatarea-header">
-            <span className="chatarea-header-title">{chatRoomName}</span>
+            <span className="chatarea-header-title">
+              {chatRoomData.chatRoomName}
+            </span>
             <img
               className="chatarea-header-exit"
               alt="close current chat"
@@ -38,7 +39,7 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             />
           </div>
           <div className="chatarea-messages">
-            {messageIds.map((messageId) => (
+            {chatRoomData.messageIds.map((messageId) => (
               <Message key={messageId} messageId={messageId} />
             ))}
           </div>

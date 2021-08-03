@@ -1,26 +1,36 @@
-import { useFetch } from "../hooks/useFetch";
+import { useQuery } from "../hooks/useQuery";
 import { ChatRoomInfo } from "../../ts/types/ChatRoom.interface";
 
-interface ChatRoomPreviewProps {
+type ChatRoomPreviewProps = {
   chatRoomId: string;
-  onChatRoomPreviewClick: () => void;
-}
+  onChatRoomPreviewClick: (chatRoomId: string) => void;
+};
 
 export const ChatRoomPreview = ({
   chatRoomId,
   onChatRoomPreviewClick,
 }: ChatRoomPreviewProps) => {
-  const { data: chatRoomData } = useFetch<ChatRoomInfo>(
-    `chatroom/${chatRoomId}`
-  );
-  const { chatRoomName, avatar } = chatRoomData;
+  const { data: chatRoomData, isLoading } = useQuery<ChatRoomInfo>({
+    url: `http://localhost:8080/chatrooms/${chatRoomId}`,
+    method: "GET",
+  });
+
+  const handleClick = () => {
+    onChatRoomPreviewClick(chatRoomId);
+  };
 
   return (
     <li>
-      <div onClick={onChatRoomPreviewClick}>
-        <span>{avatar && <img src={avatar} alt="user avatar" />}</span>
-        <span>{chatRoomName}</span>
-      </div>
+      {!isLoading && (
+        <div onClick={handleClick}>
+          <span>
+            {chatRoomData?.avatar && (
+              <img src={chatRoomData?.avatar} alt="user avatar" />
+            )}
+          </span>
+          <span>{chatRoomData?.chatRoomName}</span>
+        </div>
+      )}
     </li>
   );
 };

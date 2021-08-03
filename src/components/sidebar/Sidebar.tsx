@@ -4,11 +4,11 @@ import "./Sidebar.css";
 import showicon from "../../assets/images/right-arrow.png";
 import hideicon from "../../assets/images/arrow-down-sign-to-navigate.png";
 
-interface SidebarProps {
+type SidebarProps = {
   groupChatIds: string[];
   personalChatIds: string[];
   onChatRoomPreviewClick: (chatRoomId: string) => void;
-}
+};
 
 export const Sidebar = ({
   groupChatIds,
@@ -18,49 +18,9 @@ export const Sidebar = ({
   const [showGroupChats, setShowGroupChats] = useState(true);
   const [showPersonalChats, setShowPersonalChats] = useState(true);
 
-  const renderGroupChatPreviews = () => (
-    <ul>
-      {groupChatIds.map((id) => (
-        <ChatRoomPreview
-          chatRoomId={id}
-          key={id}
-          onChatRoomPreviewClick={() => onChatRoomPreviewClick(id)}
-        />
-      ))}
-    </ul>
-  );
-
-  const renderPersonalChatPreviews = () => (
-    <ul>
-      {personalChatIds.map((id) => (
-        <ChatRoomPreview
-          key={id}
-          chatRoomId={id}
-          onChatRoomPreviewClick={() => onChatRoomPreviewClick(id)}
-        />
-      ))}
-    </ul>
-  );
-
-  const renderHideIcon = (altText: string) => (
-    <img
-      className="sidebar-toogle-icon"
-      src={hideicon}
-      alt={altText}
-      height="10px"
-      width="10px"
-    />
-  );
-
-  const renderShowIcon = (altText: string) => (
-    <img
-      className="sidebar-toogle-icon"
-      src={showicon}
-      alt={altText}
-      height="10px"
-      width="10px"
-    />
-  );
+  const handleChatRoomPreviewClick = (chatRoomId: string) => {
+    onChatRoomPreviewClick(chatRoomId);
+  };
 
   return (
     <div className="sidebar">
@@ -69,22 +29,70 @@ export const Sidebar = ({
           className="groupchats-toggle"
           onClick={() => setShowGroupChats(!showGroupChats)}
         >
-          {showGroupChats
-            ? renderHideIcon("hide groups")
-            : renderShowIcon("show groups")}
+          {showGroupChats ? (
+            <img
+              className="sidebar-toogle-icon"
+              src={hideicon}
+              alt={"hide groups"}
+              height="10px"
+              width="10px"
+            />
+          ) : (
+            <img
+              className="sidebar-toogle-icon"
+              src={showicon}
+              alt={"show groups"}
+              height="10px"
+              width="10px"
+            />
+          )}
         </span>
         <span className="groupchats-label">groups</span>
-        {showGroupChats && renderGroupChatPreviews()}
+        {showGroupChats && (
+          <ul>
+            {groupChatIds.map((id) => (
+              <ChatRoomPreview
+                chatRoomId={id}
+                key={id}
+                onChatRoomPreviewClick={handleChatRoomPreviewClick}
+              />
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="sidebar-personalchats">
         <span onClick={() => setShowPersonalChats(!showPersonalChats)}>
-          {showPersonalChats
-            ? renderHideIcon("hide personal messages")
-            : renderShowIcon("show personal messages")}
+          {showPersonalChats ? (
+            <img
+              className="sidebar-toogle-icon"
+              src={hideicon}
+              alt={"hide personal messages"}
+              height="10px"
+              width="10px"
+            />
+          ) : (
+            <img
+              className="sidebar-toogle-icon"
+              src={showicon}
+              alt={"show personal messages"}
+              height="10px"
+              width="10px"
+            />
+          )}
         </span>
         <span>personal messages</span>
-        {showPersonalChats && renderPersonalChatPreviews()}
+        {showPersonalChats && (
+          <ul>
+            {personalChatIds.map((id) => (
+              <ChatRoomPreview
+                key={id}
+                chatRoomId={id}
+                onChatRoomPreviewClick={handleChatRoomPreviewClick}
+              />
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

@@ -12,8 +12,11 @@ export const ChatApp = () => {
 
   return (
     <div className="chatapp">
-      {userId === "" && <Login onLogin={handleLogin} />}
-      {userId !== "" && <Main userId={userId} />}
+      {userId === "" ? (
+        <Login onLogin={handleLogin} />
+      ) : (
+        <Main userId={userId} />
+      )}
     </div>
   );
 };
