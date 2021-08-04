@@ -30,7 +30,7 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
     }
 
     if (!skip) {
-      setIsLoading((prevState) => !prevState);
+      setIsLoading(true);
 
       let serverFaliure = false;
 
@@ -49,10 +49,10 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
             setError(resBody.message);
           }
 
-          setIsLoading((prevState) => !prevState);
+          setIsLoading(false);
         })
         .catch((err) => {
-          setIsLoading((prevState) => !prevState);
+          setIsLoading(false);
           setError("Some unexpected error occurred !!");
         });
     }

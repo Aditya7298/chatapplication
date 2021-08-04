@@ -9,7 +9,7 @@ export const useMutation = <Type>(mutationFunction: MutationFunctionType) => {
 
   const mutate = useCallback(
     async (data: any) => {
-      setIsLoading((prevState) => !prevState);
+      setIsLoading(true);
 
       const response = await mutationFunction(data);
       const resBody = await response.json();
@@ -20,7 +20,7 @@ export const useMutation = <Type>(mutationFunction: MutationFunctionType) => {
         setData(resBody);
       }
 
-      setIsLoading((prevState) => !prevState);
+      setIsLoading(false);
     },
     [mutationFunction]
   );

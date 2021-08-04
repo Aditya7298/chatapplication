@@ -9,7 +9,6 @@ export const ChatApp = () => {
   const [showLoginForm, setShowLoginForm] = useState(true);
 
   const handleSignupAndLogin = useCallback((userId: string) => {
-    console.log(userId);
     setUserId(userId);
   }, []);
 
