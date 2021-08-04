@@ -1,4 +1,5 @@
 -> User
+    -> userId: string
     -> userName : string
     -> avatar : image
     -> personalChats : string[]

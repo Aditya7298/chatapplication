@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "../hooks/useQuery";
+import { useMutation } from "../hooks/useMutation";
+import { useSubscription } from "../hooks/useSubscription";
 import { ChatRoomInfo } from "../../ts/types/ChatRoom.interface";
 import exiticon from "../../assets/images/exit.png";
 import { Message } from "../message/Message";
@@ -9,11 +11,6 @@ import "./ChatArea.css";
 type ChatAreaProps = {
   chatRoomId: string;
   userId: string;
-};
-
-type ChatRoomUpdateQuery = {
-  skip: boolean;
-  payload: { key: string; value: any } | undefined;
 };
 
 export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
@@ -29,48 +26,87 @@ export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
     setChatRoomData(queriedChatRoomData);
   }, [queriedChatRoomData]);
 
-  const [chatRoomUpdateQuery, setChatRoomUpdateQuery] =
-    useState<ChatRoomUpdateQuery>({
-      skip: true,
-      payload: undefined,
+  const updateMessageIds = useCallback((newChatRoomData: ChatRoomInfo) => {
+    setChatRoomData((prevState) => {
+      if (prevState) {
+        return { ...prevState, messageIds: newChatRoomData.messageIds };
+      } else {
+        return prevState;
+      }
     });
+  }, []);
 
-  const { data: updatedChatRoomData } = useQuery<ChatRoomInfo>({
+  useSubscription<ChatRoomInfo>({
+    subscriptionCallback: updateMessageIds,
     url: `/chatrooms/${chatRoomId}`,
-    method: "PATCH",
-    skip: chatRoomUpdateQuery.skip,
-    payload: chatRoomUpdateQuery.payload,
   });
 
-  useEffect(() => {
-    return () => {
-      setChatRoomUpdateQuery({
-        skip: true,
-        payload: undefined,
-      });
+  const {
+    mutate,
+    isLoading: isChatRoomUpdated,
+    error: chatRoomUpdationError,
+  } = useMutation((data) => {
+    const options = {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
     };
-  }, [chatRoomId]);
+
+    const url = `${process.env.REACT_APP_BASE_URL}/chatrooms/${chatRoomId}`;
+
+    return fetch(url, options);
+  });
+
+  const newMessageIdRef = useRef<string>();
 
   const handleNewMessageCreation = useCallback(
     (newMessageId: string) => {
-      if (chatRoomData && !chatRoomData.messageIds.includes(newMessageId)) {
-        setChatRoomUpdateQuery({
-          skip: false,
-          payload: {
-            key: "messageIds",
-            value: [...chatRoomData.messageIds, newMessageId],
-          },
+      newMessageIdRef.current = newMessageId;
+      if (chatRoomData) {
+        const updatedMessageIds = [...chatRoomData.messageIds, newMessageId];
+
+        setChatRoomData((prevState) => {
+          if (prevState) {
+            return {
+              ...prevState,
+              messageIds: [...prevState.messageIds, newMessageId],
+            };
+          } else {
+            return prevState;
+          }
+        });
+
+        mutate({
+          key: "messageIds",
+          value: updatedMessageIds,
         });
       }
     },
-    [chatRoomData]
+    [chatRoomData, mutate]
   );
 
   useEffect(() => {
-    if (updatedChatRoomData) {
-      setChatRoomData(updatedChatRoomData);
+    if (!isChatRoomUpdated) {
+      if (chatRoomUpdationError) {
+        setChatRoomData((prevState) => {
+          if (prevState) {
+            return {
+              ...prevState,
+              messageIds: prevState.messageIds.filter(
+                (messageId) => messageId !== newMessageIdRef.current
+              ),
+            };
+          } else {
+            return prevState;
+          }
+        });
+
+        //Show Error Screen
+      }
     }
-  }, [updatedChatRoomData]);
+  }, [isChatRoomUpdated, chatRoomUpdationError]);
 
   return (
     <div className="chatarea">

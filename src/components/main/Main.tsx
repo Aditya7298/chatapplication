@@ -39,7 +39,11 @@ export const Main = ({ userId }: MainProps) => {
         />
       )}
       {selectedChatRoomId && (
-        <ChatArea userId={userId} chatRoomId={selectedChatRoomId} />
+        <ChatArea
+          key={selectedChatRoomId}
+          userId={userId}
+          chatRoomId={selectedChatRoomId}
+        />
       )}
     </div>
   );

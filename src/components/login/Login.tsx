@@ -4,9 +4,10 @@ import { useQuery } from "../hooks/useQuery";
 
 type LoginProps = {
   onLogin: (userId: string) => void;
+  onShowSignupFormClick: () => void;
 };
 
-export const Login = ({ onLogin }: LoginProps) => {
+export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -78,6 +79,16 @@ export const Login = ({ onLogin }: LoginProps) => {
         <button className="login-form-button" disabled={isLoading}>
           {isLoading ? "Please wait..." : "Login"}
         </button>
+        {!isLoading && (
+          <button
+            className="signup-form-toggle"
+            type="button"
+            disabled={isLoading}
+            onClick={onShowSignupFormClick}
+          >
+            Create Account
+          </button>
+        )}
       </form>
       <div className="login-error">{error}</div>
     </div>

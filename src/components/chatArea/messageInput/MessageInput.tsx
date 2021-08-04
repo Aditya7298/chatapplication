@@ -1,18 +1,15 @@
-import { useQuery } from "../../hooks/useQuery";
+import { useMutation } from "../../hooks/useMutation";
 import { useState, useEffect } from "react";
 import { MessageInfo } from "../../../ts/types/Message.interface";
 import sendicon from "../../../assets/images/right-arrow.png";
 import { nanoid } from "nanoid";
 import "./MessageInput.css";
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 type MessageInputProps = {
   userId: string;
   onNewMessageCreation: (newMessageId: string) => void;
-};
-
-type NewMessageQuery = {
-  skip: boolean;
-  payload: MessageInfo | undefined;
 };
 
 export const MessageInput = ({
@@ -20,44 +17,51 @@ export const MessageInput = ({
   onNewMessageCreation,
 }: MessageInputProps) => {
   const [newMessageText, setNewMessageText] = useState("");
+  const [requestSent, setRequestSent] = useState(true);
 
-  const [newMessageQuery, setNewMessageQuery] = useState<NewMessageQuery>({
-    skip: true,
-    payload: undefined,
-  });
+  const { mutate, isLoading, data, error } = useMutation<MessageInfo>(
+    (data) => {
+      const options = {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
 
-  const { data, isLoading } = useQuery<MessageInfo>({
-    url: "/messages",
-    method: "POST",
-    payload: newMessageQuery.payload,
-    skip: newMessageQuery.skip,
-  });
+      const url = `${BASE_URL}/messages`;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      return fetch(url, options);
+    }
+  );
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newMessageInfo: MessageInfo = {
+
+    const newMessageInfo = {
       text: newMessageText,
       messageId: nanoid(),
       senderId: userId,
       timestamp: new Date(),
     };
 
-    setNewMessageQuery({
-      skip: false,
-      payload: newMessageInfo,
-    });
+    mutate(newMessageInfo);
+    setRequestSent(false);
   };
 
   useEffect(() => {
     if (!isLoading) {
-      if (data) {
+      if (data && !requestSent) {
+        setRequestSent(true);
         setNewMessageText("");
         onNewMessageCreation(data.messageId);
-      } else {
-        //Handle Error Here !!
+      }
+
+      if (error) {
+        //Handle Error
       }
     }
-  }, [isLoading, data, onNewMessageCreation, newMessageQuery]);
+  }, [isLoading, data, error, onNewMessageCreation, requestSent]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
