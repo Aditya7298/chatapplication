@@ -4,6 +4,9 @@ const express = require("express"),
 const { UserController } = require("../controllers/UserController.js");
 const userController = new UserController();
 
+const { LoginController } = require("../controllers/LoginController.js");
+const loginController = new LoginController();
+
 router.use(express.json());
 
 router.get("/", (req, res) => {
@@ -33,10 +36,12 @@ router.get("/:userId", (req, res) => {
 
 router.post("/", (req, res) => {
   const payload = req.body;
-  userController
-    .createUser(payload)
-    .then((data) => {
-      res.status(200).json(data);
+  loginController
+    .createNewLoginInfo(payload)
+    .then(() => {
+      userController.createUser(payload).then((data) => {
+        res.status(200).json(data);
+      });
     })
     .catch((err) => {
       const { code, message } = err;

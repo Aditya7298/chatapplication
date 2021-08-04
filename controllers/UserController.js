@@ -79,7 +79,7 @@ class UserController extends DBLayer {
 
       await this.writeToDB(newUsersJSON);
 
-      return payload;
+      return { userId: payload.userId };
     } catch (err) {
       if (!err.code) {
         throw {

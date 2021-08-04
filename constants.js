@@ -23,6 +23,7 @@ const ERROR_MESSAGES = {
   401: {
     USER: "User not found.",
     PASSWORD: "Incorrect password.",
+    USER_SIGNUP: "Username already exists.",
   },
 };
 
