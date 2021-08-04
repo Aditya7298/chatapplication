@@ -18,7 +18,7 @@ export const Login = ({ onLogin }: LoginProps) => {
   });
 
   const { data, error, isLoading } = useQuery<{ userId: string }>({
-    url: "http://localhost:8080/login",
+    url: "/login",
     method: "POST",
     payload: queryData.payload,
     skip: queryData.skip,
@@ -41,10 +41,10 @@ export const Login = ({ onLogin }: LoginProps) => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (data?.userId) {
       onLogin(data.userId);
     }
-  }, [data, onLogin]);
+  }, [data?.userId, onLogin]);
 
   return (
     <div className="login">

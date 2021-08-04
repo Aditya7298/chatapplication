@@ -4,7 +4,7 @@ import { Main } from "../main/Main";
 import "./ChatApp.css";
 
 export const ChatApp = () => {
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState<string | undefined>();
 
   const handleLogin = (loggedUserId: string) => {
     setUserId(loggedUserId);
@@ -12,11 +12,7 @@ export const ChatApp = () => {
 
   return (
     <div className="chatapp">
-      {userId === "" ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <Main userId={userId} />
-      )}
+      {!userId ? <Login onLogin={handleLogin} /> : <Main userId={userId} />}
     </div>
   );
 };

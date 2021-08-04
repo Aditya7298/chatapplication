@@ -11,7 +11,7 @@ export const ChatRoomPreview = ({
   onChatRoomPreviewClick,
 }: ChatRoomPreviewProps) => {
   const { data: chatRoomData, isLoading } = useQuery<ChatRoomInfo>({
-    url: `http://localhost:8080/chatrooms/${chatRoomId}`,
+    url: `/chatrooms/${chatRoomId}`,
     method: "GET",
   });
 

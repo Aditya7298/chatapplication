@@ -27,7 +27,7 @@ export const Sidebar = ({
       <div className="sidebar-groupchats">
         <span
           className="groupchats-toggle"
-          onClick={() => setShowGroupChats(!showGroupChats)}
+          onClick={() => setShowGroupChats((prevState) => !prevState)}
         >
           {showGroupChats ? (
             <img
@@ -62,7 +62,7 @@ export const Sidebar = ({
       </div>
 
       <div className="sidebar-personalchats">
-        <span onClick={() => setShowPersonalChats(!showPersonalChats)}>
+        <span onClick={() => setShowPersonalChats((prevState) => !prevState)}>
           {showPersonalChats ? (
             <img
               className="sidebar-toogle-icon"
