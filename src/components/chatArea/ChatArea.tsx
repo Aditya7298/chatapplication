@@ -93,7 +93,7 @@ export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
 
   return (
     <div className="chatarea">
-      {chatRoomData && (
+      {chatRoomData ? (
         <>
           <div className="chatarea-header">
             <span className="chatarea-header-title">
@@ -117,7 +117,7 @@ export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
             onNewMessageCreation={handleNewMessageCreation}
           />
         </>
-      )}
+      ) : null}
     </div>
   );
 };

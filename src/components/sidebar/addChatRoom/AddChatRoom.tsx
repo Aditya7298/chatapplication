@@ -115,7 +115,7 @@ export const AddChatRoom = ({
             onChange={handleChange}
             className="addchatroom-form-field"
           />
-          {chatRoomFormDetails.type === CHAT_ROOM_TYPE.PERSONAL && (
+          {chatRoomFormDetails.type === CHAT_ROOM_TYPE.PERSONAL ? (
             <label>
               Enter Participant Username
               <input
@@ -126,7 +126,7 @@ export const AddChatRoom = ({
                 className="addchatroom-form-field"
               />
             </label>
-          )}
+          ) : null}
         </label>
         <button type="submit" className=".addchatroom-form-button">
           Create Chatroom

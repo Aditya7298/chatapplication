@@ -61,21 +61,21 @@ export const Main = ({ userId }: MainProps) => {
 
   return (
     <div className="main">
-      {userData && (
+      {userData ? (
         <Sidebar
           userName={userData.userName}
           groupChatIds={userData.groupChats}
           personalChatIds={userData.personalChats}
           onChatRoomPreviewClick={handleChatRoomPreviewClick}
         />
-      )}
-      {selectedChatRoomId && (
+      ) : null}
+      {selectedChatRoomId ? (
         <ChatArea
           key={selectedChatRoomId}
           userId={userId}
           chatRoomId={selectedChatRoomId}
         />
-      )}
+      ) : null}
     </div>
   );
 };
