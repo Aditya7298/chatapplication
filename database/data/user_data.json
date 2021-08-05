@@ -1,1 +1,16 @@
-{"0":{"userId":"0","avatar":"https://freesvg.org/img/BadDay.png","userName":"aditya","personalChats":["0"],"groupChats":["1"]},"1":{"userId":"1","avatar":"https://freesvg.org/img/comic-boy.png","userName":"vikram","personalChats":["0"],"groupChats":["1"]},"ytXexEAy3eBncIIh7RVz1":{"userName":"rahul","password":"123","userId":"ytXexEAy3eBncIIh7RVz1","personalChats":[],"groupChats":[]},"xdaxDaRvAcZMY6FkdAO-s":{"userName":"rahul1","password":"123","userId":"xdaxDaRvAcZMY6FkdAO-s","personalChats":[],"groupChats":[]}}
+{
+  "0": {
+    "userId": "0",
+    "avatar": "https://freesvg.org/img/BadDay.png",
+    "userName": "aditya",
+    "personalChats": ["aGSaJs20XmLRBpUhbyQt3"],
+    "groupChats": ["1", "4XQYdBeQUjsw0rdBQrJHb"]
+  },
+  "1": {
+    "userId": "1",
+    "avatar": "https://freesvg.org/img/comic-boy.png",
+    "userName": "vikram",
+    "personalChats": ["aGSaJs20XmLRBpUhbyQt3"],
+    "groupChats": ["1"]
+  }
+}

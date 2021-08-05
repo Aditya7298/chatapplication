@@ -31,9 +31,15 @@ const SUCCESS_MESSAGES = {
   LOGIN: "User successfully authticated.",
 };
 
+const CHAT_ROOM_TYPE = {
+  GROUP: "GROUP",
+  PERSONAL: "PERSONAL",
+};
+
 module.exports = {
   CONTROLLER_NAMES,
   FILE_MAPPINGS,
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
+  CHAT_ROOM_TYPE,
 };

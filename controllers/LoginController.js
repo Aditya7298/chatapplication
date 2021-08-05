@@ -7,6 +7,19 @@ class LoginController extends DBLayer {
     super(CONTROLLER_NAMES.LOGIN);
   }
 
+  async getLoginInfo() {
+    try {
+      const loginDataJSON = await this.readFromDB();
+      const loginData = JSON.parse(loginDataJSON);
+      return loginData;
+    } catch (err) {
+      throw {
+        code: 500,
+        message: ERROR_MESSAGES[500],
+      };
+    }
+  }
+
   async authenticateUser(username, password) {
     try {
       const loginDataJSON = await this.readFromDB();

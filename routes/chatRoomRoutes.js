@@ -6,6 +6,9 @@ router.use(express.json());
 const { ChatRoomController } = require("../controllers/ChatRoomController"),
   chatRoomController = new ChatRoomController();
 
+const { UserController } = require("../controllers/UserController"),
+  userController = new UserController();
+
 router.get("/:chatRoomId", async (req, res) => {
   const chatRoomId = req.params.chatRoomId;
 
@@ -26,7 +29,9 @@ router.post("/", async (req, res) => {
   chatRoomController
     .createChatRoom(payload)
     .then((data) => {
-      res.status(200).json(data);
+      userController
+        .addUsersToChatRooms(data)
+        .then((data) => res.status(200).json(data));
     })
     .catch((err) => {
       const { code, message } = err;

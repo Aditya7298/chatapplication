@@ -1,10 +1,12 @@
 const { DBLayer } = require("../database/dbLayer.js");
+const { LoginController } = require("../controllers/LoginController");
 const { checkPayloadForKeys } = require("./utils.js");
 const { CONTROLLER_NAMES, ERROR_MESSAGES } = require("../constants.js");
 
 class ChatRoomController extends DBLayer {
   constructor() {
     super(CONTROLLER_NAMES.CHATROOM);
+    this.loginController = new LoginController();
   }
 
   async getOneChatRoom(chatRoomId) {
@@ -38,7 +40,7 @@ class ChatRoomController extends DBLayer {
         !checkPayloadForKeys(payload, [
           "chatRoomId",
           "chatRoomName",
-          "userIds",
+          "participantNames",
           "messageIds",
           "type",
         ])
@@ -49,19 +51,34 @@ class ChatRoomController extends DBLayer {
         };
       }
 
+      const loginInfo = await this.loginController.getLoginInfo();
+
+      const userIds = payload.participantNames.map((id) => {
+        if (!loginInfo[id]) {
+          throw {
+            code: 400,
+            message: ERROR_MESSAGES[400],
+          };
+        }
+
+        return loginInfo[id].userId;
+      });
+
       const existingChatRoomsJSON = await this.readFromDB();
       const existingChatRooms = JSON.parse(existingChatRoomsJSON);
+      const { participantNames, ...newChatRoomData } = payload;
+      newChatRoomData.userIds = userIds;
 
       const newChatRooms = {
         ...existingChatRooms,
-        [payload.chatRoomId]: payload,
+        [newChatRoomData.chatRoomId]: newChatRoomData,
       };
 
       const newChatRoomsJSON = JSON.stringify(newChatRooms);
 
       await this.writeToDB(newChatRoomsJSON);
 
-      return payload;
+      return newChatRoomData;
     } catch (err) {
       if (!err.code) {
         throw {
