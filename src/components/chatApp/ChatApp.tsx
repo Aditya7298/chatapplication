@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
+
 import { Login } from "../login/Login";
 import { Signup } from "../../signup/Signup";
 import { Main } from "../main/Main";
+
 import "./ChatApp.css";
 
 export const ChatApp = () => {
@@ -23,20 +25,18 @@ export const ChatApp = () => {
 
   return (
     <div className="chatapp">
-      {!userId ? (
-        showLoginForm ? (
-          <Login
-            onLogin={handleSignupAndLogin}
-            onShowSignupFormClick={handleShowSignupFormClick}
-          />
-        ) : (
-          <Signup
-            onSignup={handleSignupAndLogin}
-            onShowLoginFormClick={handleShowLoginFormClick}
-          />
-        )
-      ) : (
+      {userId ? (
         <Main userId={userId} />
+      ) : showLoginForm ? (
+        <Login
+          onLogin={handleSignupAndLogin}
+          onShowSignupFormClick={handleShowSignupFormClick}
+        />
+      ) : (
+        <Signup
+          onSignup={handleSignupAndLogin}
+          onShowLoginFormClick={handleShowLoginFormClick}
+        />
       )}
     </div>
   );

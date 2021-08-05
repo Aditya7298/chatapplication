@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import "./Login.css";
+
 import { useQuery } from "../hooks/useQuery";
+
+import "./Login.css";
 
 type LoginProps = {
   onLogin: (userId: string) => void;

@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { useMutation } from "../components/hooks/useMutation";
-import { UserInfo } from "../ts/types/User.interface";
 import { nanoid } from "nanoid";
-import "./Signup.css";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+import { useMutation } from "../components/hooks/useMutation";
+
+import { fetchRequestBuilder } from "../components/utils/fetchRequestBuilder";
+
+import { UserInfo } from "../types/User.interface";
+
+import "./Signup.css";
 
 type SignupProps = {
   onSignup: (userId: string) => void;
@@ -23,15 +26,13 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
   };
 
   const { mutate, isLoading, data, error } = useMutation<UserInfo>((data) => {
-    const options = {
+    const { url, options } = fetchRequestBuilder({
+      path: "/users",
       method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+      payload: data,
+    });
 
-    return fetch(`${BASE_URL}/users`, options);
+    return fetch(url, options);
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,6 +40,7 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
     const newUserData = {
       ...userFormDetails,
       userId: nanoid(),
+      avatar: "",
       personalChats: [],
       groupChats: [],
     };
