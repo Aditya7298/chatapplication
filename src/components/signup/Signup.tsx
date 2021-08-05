@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 
-import { useMutation } from "../components/hooks/useMutation";
+import { useMutation } from "../hooks/useMutation";
 
-import { fetchRequestBuilder } from "../components/utils/fetchRequestBuilder";
+import { fetchRequestBuilder } from "../utils/fetchRequestBuilder";
 
-import { UserInfo } from "../types/User.interface";
+import { UserInfo } from "../../types/User.interface";
 
 import "./Signup.css";
 

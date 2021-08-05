@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
 import { Login } from "../login/Login";
-import { Signup } from "../../signup/Signup";
+import { Signup } from "../signup/Signup";
 import { Main } from "../main/Main";
 
 import "./ChatApp.css";
