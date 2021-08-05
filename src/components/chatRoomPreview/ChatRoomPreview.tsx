@@ -1,5 +1,6 @@
 import { useQuery } from "../hooks/useQuery";
-import { ChatRoomInfo } from "../../ts/types/ChatRoom.interface";
+
+import { ChatRoomInfo } from "../../types/ChatRoom.interface";
 
 type ChatRoomPreviewProps = {
   chatRoomId: string;

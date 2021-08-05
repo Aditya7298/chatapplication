@@ -1,8 +1,13 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "../hooks/useQuery";
+import { useState, useEffect, useCallback } from "react";
+
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatArea } from "../chatArea/ChatArea";
-import { UserInfo } from "../../ts/types/User.interface";
+
+import { useQuery } from "../hooks/useQuery";
+import { useSubscription } from "../hooks/useSubscription";
+
+import { UserInfo } from "../../types/User.interface";
+
 import "./Main.css";
 
 type MainProps = {
@@ -10,12 +15,37 @@ type MainProps = {
 };
 
 export const Main = ({ userId }: MainProps) => {
-  const { data, isLoading } = useQuery<UserInfo>({
+  const { data } = useQuery<UserInfo>({
     url: `/users/${userId}`,
     method: "GET",
   });
 
   const [userData, setUserData] = useState<UserInfo | undefined>();
+
+  const updateChatRooms = useCallback(
+    (personalChats: string[], groupChats: string[]) => {
+      setUserData((prevState) => {
+        if (!prevState) {
+          return prevState;
+        }
+
+        return { ...prevState, groupChats, personalChats };
+      });
+    },
+    []
+  );
+
+  useSubscription<UserInfo>({
+    subscriptionCallback: useCallback(
+      (updatedUserData: UserInfo) =>
+        updateChatRooms(
+          updatedUserData.personalChats,
+          updatedUserData.groupChats
+        ),
+      [updateChatRooms]
+    ),
+    url: `/users/${userId}`,
+  });
 
   const [selectedChatRoomId, setSelectedChatRoomId] = useState<
     string | undefined
@@ -31,20 +61,21 @@ export const Main = ({ userId }: MainProps) => {
 
   return (
     <div className="main">
-      {!isLoading && (
+      {userData ? (
         <Sidebar
-          groupChatIds={userData?.groupChats || []}
-          personalChatIds={userData?.personalChats || []}
+          userName={userData.userName}
+          groupChatIds={userData.groupChats}
+          personalChatIds={userData.personalChats}
           onChatRoomPreviewClick={handleChatRoomPreviewClick}
         />
-      )}
-      {selectedChatRoomId && (
+      ) : null}
+      {selectedChatRoomId ? (
         <ChatArea
           key={selectedChatRoomId}
           userId={userId}
           chatRoomId={selectedChatRoomId}
         />
-      )}
+      ) : null}
     </div>
   );
 };

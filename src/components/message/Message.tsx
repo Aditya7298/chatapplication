@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import { MessageInfo } from "../../ts/types/Message.interface";
-import { UserInfo } from "../../ts/types/User.interface";
+
 import { useQuery } from "../hooks/useQuery";
+
+import { MessageInfo } from "../../types/Message.interface";
+import { UserInfo } from "../../types/User.interface";
+
 import "./Message.css";
 
 type MessageProps = {

@@ -8,7 +8,7 @@ export const useMutation = <Type>(mutationFunction: MutationFunctionType) => {
   const [error, setError] = useState<string | undefined>();
 
   const mutate = useCallback(
-    async (data: any) => {
+    async (data: any, mutationSideEffects = {}) => {
       setIsLoading(true);
 
       const response = await mutationFunction(data);
@@ -16,8 +16,14 @@ export const useMutation = <Type>(mutationFunction: MutationFunctionType) => {
 
       if (!response.ok) {
         setError(resBody.message);
+        if (mutationSideEffects.onError) {
+          mutationSideEffects.onError();
+        }
       } else {
         setData(resBody);
+        if (mutationSideEffects.onSuccess) {
+          mutationSideEffects.onSuccess();
+        }
       }
 
       setIsLoading(false);
@@ -25,5 +31,10 @@ export const useMutation = <Type>(mutationFunction: MutationFunctionType) => {
     [mutationFunction]
   );
 
-  return { mutate, isLoading, data, error };
+  return {
+    mutate,
+    isLoading,
+    data,
+    error,
+  };
 };

@@ -1,11 +1,15 @@
-import { useMutation } from "../../hooks/useMutation";
 import { useState, useEffect } from "react";
-import { MessageInfo } from "../../../ts/types/Message.interface";
-import sendicon from "../../../assets/images/right-arrow.png";
 import { nanoid } from "nanoid";
-import "./MessageInput.css";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+import { useMutation } from "../../hooks/useMutation";
+
+import { fetchRequestBuilder } from "../../utils/fetchRequestBuilder";
+
+import { MessageInfo } from "../../../types/Message.interface";
+
+import sendicon from "../../../assets/images/right-arrow.png";
+
+import "./MessageInput.css";
 
 type MessageInputProps = {
   userId: string;
@@ -19,21 +23,15 @@ export const MessageInput = ({
   const [newMessageText, setNewMessageText] = useState("");
   const [requestSent, setRequestSent] = useState(true);
 
-  const { mutate, isLoading, data, error } = useMutation<MessageInfo>(
-    (data) => {
-      const options = {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+  const { mutate, data, error } = useMutation<MessageInfo>((data) => {
+    const { url, options } = fetchRequestBuilder({
+      path: "/messages",
+      payload: data,
+      method: "POST",
+    });
 
-      const url = `${BASE_URL}/messages`;
-
-      return fetch(url, options);
-    }
-  );
+    return fetch(url, options);
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,18 +48,16 @@ export const MessageInput = ({
   };
 
   useEffect(() => {
-    if (!isLoading) {
-      if (data && !requestSent) {
-        setRequestSent(true);
-        setNewMessageText("");
-        onNewMessageCreation(data.messageId);
-      }
-
-      if (error) {
-        //Handle Error
-      }
+    if (data && !requestSent) {
+      setRequestSent(true);
+      setNewMessageText("");
+      onNewMessageCreation(data.messageId);
     }
-  }, [isLoading, data, error, onNewMessageCreation, requestSent]);
+
+    if (error) {
+      //Handle Error
+    }
+  }, [data, error, onNewMessageCreation, requestSent]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
