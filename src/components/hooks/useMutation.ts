@@ -2,39 +2,35 @@ import { useState, useCallback } from "react";
 
 type MutationFunctionType = (...args: any[]) => Promise<Response>;
 
-export const useMutation = <Type>(mutationFunction: MutationFunctionType) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<Type | undefined>();
-  const [error, setError] = useState<string | undefined>();
+export const useMutation = (mutationFunction: MutationFunctionType) => {
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "fullfiled" | "rejected"
+  >("idle");
 
   const mutate = useCallback(
     async (data: any, mutationSideEffects = {}) => {
-      setIsLoading(true);
+      setStatus("loading");
 
-      const response = await mutationFunction(data);
-      const resBody = await response.json();
+      const res = await mutationFunction(data);
+      const resBody = await res.json();
 
-      if (!response.ok) {
-        setError(resBody.message);
+      if (!res.ok) {
+        setStatus("rejected");
         if (mutationSideEffects.onError) {
-          mutationSideEffects.onError();
+          mutationSideEffects.onError(resBody.message);
         }
       } else {
-        setData(resBody);
+        setStatus("fullfiled");
         if (mutationSideEffects.onSuccess) {
-          mutationSideEffects.onSuccess();
+          mutationSideEffects.onSuccess(resBody);
         }
       }
-
-      setIsLoading(false);
     },
     [mutationFunction]
   );
 
   return {
     mutate,
-    isLoading,
-    data,
-    error,
+    status,
   };
 };

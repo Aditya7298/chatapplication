@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { nanoid } from "nanoid";
 
 import { useMutation } from "../../hooks/useMutation";
 
-import { fetchRequestBuilder } from "../../utils/fetchRequestBuilder";
+import { ajaxClient } from "../../utils/ajaxClient";
 
 import { CHAT_ROOM_TYPE } from "../../../constants";
 
@@ -48,7 +48,11 @@ export const AddChatRoom = ({
       messageIds: [],
     };
 
-    mutate(newChatRoomData);
+    mutate(newChatRoomData, {
+      onSuccess: (data: { chatRoomId: string }) => {
+        onNewChatRoomCreation(data.chatRoomId);
+      },
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,27 +63,9 @@ export const AddChatRoom = ({
     }));
   };
 
-  const { mutate, data, error } = useMutation<{
-    chatRoomId: string;
-  }>((data) => {
-    const { url, options } = fetchRequestBuilder({
-      path: "/chatrooms",
-      method: "POST",
-      payload: data,
-    });
-
-    return fetch(url, options);
-  });
-
-  useEffect(() => {
-    if (data) {
-      onNewChatRoomCreation(data.chatRoomId);
-    }
-
-    if (error) {
-      //Handle Error Here
-    }
-  }, [data, error, onNewChatRoomCreation]);
+  const { mutate } = useMutation((data) =>
+    ajaxClient.post({ path: "/chatrooms", payload: data })
+  );
 
   return (
     <div className="addchatroom">

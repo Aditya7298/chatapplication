@@ -1,65 +1,89 @@
 import { useState, useEffect } from "react";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+import { ajaxClient } from "../utils/ajaxClient";
 
 type useQueryParams = {
-  url: string;
-  method: string;
+  path: string;
   payload?: Object;
+  skip?: boolean;
+  interval?: number;
+};
+
+type UseQueryState<Type> = {
+  data: Type | undefined;
+  error: string | undefined;
+  isLoading: boolean;
+  queryTimestamp: string;
   skip?: boolean;
 };
 
 export const useQuery = <Type = any>(params: useQueryParams) => {
-  const { url, method, payload, skip = false } = params;
+  const { path, payload, skip = false, interval } = params;
 
-  const [data, setData] = useState<Type | undefined>();
-  const [error, setError] = useState<string | undefined>();
-  const [isLoading, setIsLoading] = useState(!skip);
+  const [state, setState] = useState<UseQueryState<Type>>({
+    data: undefined,
+    error: undefined,
+    isLoading: false,
+    queryTimestamp: Date.now().toString(),
+  });
 
   useEffect(() => {
-    const options = { method };
-    const controller = new AbortController();
+    if (skip) {
+      return;
+    }
 
-    if (payload) {
-      Object.assign(options, {
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        signal: controller.signal,
+    setState((prevState) => ({ ...prevState, isLoading: true }));
+
+    ajaxClient
+      .get({ path })
+      .then(async (res) => {
+        const resBody = await res.json();
+
+        if (!res.ok) {
+          const message = resBody.message;
+
+          // eslint-disable-next-line no-throw-literal
+          throw {
+            status: res.status,
+            message,
+          };
+        }
+
+        setState((prevState) => ({
+          ...prevState,
+          data: resBody,
+          isLoading: false,
+        }));
+      })
+      .catch((err) => {
+        setState((prevState) => ({
+          ...prevState,
+          error: err.status ? err.message : "Some unexpected error occurred !!",
+          isLoading: false,
+        }));
       });
+  }, [path, skip, payload, state.queryTimestamp]);
+
+  useEffect(() => {
+    let timerId: NodeJS.Timeout;
+
+    if (interval) {
+      timerId = setInterval(
+        () =>
+          setState((prevState) => ({
+            ...prevState,
+            queryTimestamp: Date.now().toString(),
+          })),
+        interval
+      );
     }
 
-    if (!skip) {
-      setIsLoading(true);
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  });
 
-      let serverFaliure = false;
-
-      fetch(BASE_URL + url, options)
-        .then((res) => {
-          if (!res.ok) {
-            serverFaliure = true;
-          }
-
-          return res.json();
-        })
-        .then((resBody) => {
-          if (!serverFaliure) {
-            setData(resBody);
-          } else {
-            setError(resBody.message);
-          }
-
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          setIsLoading(false);
-          setError("Some unexpected error occurred !!");
-        });
-    }
-
-    return () => controller.abort();
-  }, [url, skip, method, payload]);
-
-  return { data, error, isLoading };
+  return { data: state.data, error: state.error, isLoading: state.isLoading };
 };

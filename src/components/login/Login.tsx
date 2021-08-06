@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { useQuery } from "../hooks/useQuery";
+import { useMutation } from "../hooks/useMutation";
+
+import { ajaxClient } from "../utils/ajaxClient";
 
 import "./Login.css";
 
@@ -15,16 +17,10 @@ export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
     password: "",
   });
 
-  const [queryData, setQueryData] = useState({
-    skip: true,
-    payload: {},
-  });
+  const [loginError, setLoginError] = useState<string | undefined>();
 
-  const { data, error, isLoading } = useQuery<{ userId: string }>({
-    url: "/login",
-    method: "POST",
-    payload: queryData.payload,
-    skip: queryData.skip,
+  const { mutate, status } = useMutation((data) => {
+    return ajaxClient.post({ path: "/login", payload: data });
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,19 +31,16 @@ export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { username, password } = formData;
+    mutate(formData, {
+      onSuccess: (data: { userId: string }) => {
+        onLogin(data.userId);
+      },
 
-    setQueryData({
-      payload: { username, password },
-      skip: false,
+      onError: (message: string) => {
+        setLoginError(message);
+      },
     });
   };
-
-  useEffect(() => {
-    if (data?.userId) {
-      onLogin(data.userId);
-    }
-  }, [data?.userId, onLogin]);
 
   return (
     <div className="login">
@@ -57,7 +50,9 @@ export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
           Username
           <input
             className={`login-form-field ${
-              error && error.match(/user/i) && "login-form-field-error"
+              loginError &&
+              loginError.match(/user/i) &&
+              "login-form-field-error"
             }`}
             placeholder="Enter Username"
             name="username"
@@ -69,7 +64,9 @@ export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
           Password
           <input
             className={`login-form-field ${
-              error && error.match(/password/i) && "login-form-field-error"
+              loginError &&
+              loginError.match(/password/i) &&
+              "login-form-field-error"
             }`}
             type="password"
             name="password"
@@ -78,21 +75,20 @@ export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
             onChange={handleChange}
           />
         </label>
-        <button className="login-form-button" disabled={isLoading}>
-          {isLoading ? "Please wait..." : "Login"}
+        <button className="login-form-button" disabled={status === "loading"}>
+          {status === "loading" ? "Please wait..." : "Login"}
         </button>
-        {!isLoading && (
+        {status === "idle" ? (
           <button
             className="signup-form-toggle"
             type="button"
-            disabled={isLoading}
             onClick={onShowSignupFormClick}
           >
             Create Account
           </button>
-        )}
+        ) : null}
       </form>
-      <div className="login-error">{error}</div>
+      <div className="login-error">{loginError}</div>
     </div>
   );
 };

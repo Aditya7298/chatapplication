@@ -11,9 +11,8 @@ export const ChatRoomPreview = ({
   chatRoomId,
   onChatRoomPreviewClick,
 }: ChatRoomPreviewProps) => {
-  const { data: chatRoomData, isLoading } = useQuery<ChatRoomInfo>({
-    url: `/chatrooms/${chatRoomId}`,
-    method: "GET",
+  const { data: chatRoomData } = useQuery<ChatRoomInfo>({
+    path: `/chatrooms/${chatRoomId}`,
   });
 
   const handleClick = () => {
@@ -22,16 +21,16 @@ export const ChatRoomPreview = ({
 
   return (
     <li>
-      {!isLoading && (
+      {chatRoomData ? (
         <div onClick={handleClick}>
           <span>
-            {chatRoomData?.avatar && (
-              <img src={chatRoomData?.avatar} alt="user avatar" />
+            {chatRoomData.avatar && (
+              <img src={chatRoomData.avatar} alt="user avatar" />
             )}
           </span>
-          <span>{chatRoomData?.chatRoomName}</span>
+          <span>{chatRoomData.chatRoomName}</span>
         </div>
-      )}
+      ) : null}
     </li>
   );
 };
