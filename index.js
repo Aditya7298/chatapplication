@@ -5,6 +5,9 @@ const cors = require("cors");
 const { appRoutes } = require("./routes/routes.js");
 
 // app.use(cors());
+app.get("/", (req, res) => {
+  res.json({ message: "application running" });
+});
 app.use("/", appRoutes);
 
 const port = 8080;
