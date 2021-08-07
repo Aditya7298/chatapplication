@@ -1,4 +1,4 @@
-const { DBLayer } = require("../database/dbLayer");
+const { DBLayer } = require("../database/DBLayer");
 const {
   CONTROLLER_NAMES,
   ERROR_MESSAGES,

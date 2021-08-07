@@ -1,4 +1,4 @@
-const { DBLayer } = require("../database/dblayer");
+const { DBLayer } = require("../database/DBLayer");
 const { checkPayloadForKeys } = require("./utils");
 const { ERROR_MESSAGES, CONTROLLER_NAMES } = require("../constants");
 
