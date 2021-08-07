@@ -2,10 +2,14 @@ const express = require("express"),
   app = express();
 const cors = require("cors");
 
-const { appRoutes } = require("./routes/routes.js");
+// const { appRoutes } = require("./routes/routes.js");
 
-app.use(cors());
-app.use("/", appRoutes);
+// app.use(cors());
+// app.use("/", appRoutes);
+
+app.get("/", (req, res) => {
+  res.json({ userId: "0" });
+});
 
 const port = 8080;
 
