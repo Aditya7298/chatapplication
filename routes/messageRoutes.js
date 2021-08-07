@@ -2,7 +2,7 @@ const express = require("express"),
   router = express.Router();
 router.use(express.json());
 
-const { MessageController } = require("../controllers/MessageController.js");
+const { MessageController } = require("../controllers/MessageController");
 messageController = new MessageController();
 
 router.get("/:messageId", (req, res) => {

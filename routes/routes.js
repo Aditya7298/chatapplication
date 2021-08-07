@@ -1,10 +1,10 @@
 const express = require("express"),
   router = express.Router();
 
-const { userRoutes } = require("./userRoutes.js");
-const { messageRoutes } = require("./messageRoutes.js");
-const { chatRoomRoutes } = require("./chatRoomRoutes.js");
-const { loginRoutes } = require("./loginRoutes.js");
+const { userRoutes } = require("./userRoutes");
+const { messageRoutes } = require("./messageRoutes");
+const { chatRoomRoutes } = require("./chatRoomRoutes");
+const { loginRoutes } = require("./loginRoutes");
 
 router.use("/users", userRoutes);
 router.use("/messages", messageRoutes);

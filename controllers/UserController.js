@@ -1,10 +1,10 @@
-const { DBLayer } = require("../database/dbLayer.js");
+const { DBLayer } = require("../database/dbLayer");
 const {
   CONTROLLER_NAMES,
   ERROR_MESSAGES,
   CHAT_ROOM_TYPE,
 } = require("../constants");
-const { checkPayloadForKeys } = require("./utils.js");
+const { checkPayloadForKeys } = require("./utils");
 
 class UserController extends DBLayer {
   constructor() {

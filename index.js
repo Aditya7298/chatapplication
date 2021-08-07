@@ -2,7 +2,7 @@ const express = require("express"),
   app = express();
 const cors = require("cors");
 
-const { appRoutes } = require("./routes/routes.js");
+const { appRoutes } = require("./routes/routes");
 
 // app.use(cors());
 app.get("/", (req, res) => {

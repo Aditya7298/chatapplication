@@ -3,7 +3,7 @@ const express = require("express"),
 
 router.use(express.json());
 
-const { LoginController } = require("../controllers/LoginController.js"),
+const { LoginController } = require("../controllers/LoginController"),
   loginController = new LoginController();
 
 router.post("/", (req, res) => {

@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { FILE_MAPPINGS, ERROR_MESSAGES } = require("../constants.js");
+const { FILE_MAPPINGS, ERROR_MESSAGES } = require("../constants");
 
 class DBLayer {
   constructor(controllerName) {

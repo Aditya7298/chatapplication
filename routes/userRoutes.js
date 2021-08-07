@@ -1,10 +1,10 @@
 const express = require("express"),
   router = express.Router();
 
-const { UserController } = require("../controllers/UserController.js");
+const { UserController } = require("../controllers/UserController");
 const userController = new UserController();
 
-const { LoginController } = require("../controllers/LoginController.js");
+const { LoginController } = require("../controllers/LoginController");
 const loginController = new LoginController();
 
 router.use(express.json());

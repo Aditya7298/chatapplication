@@ -1,6 +1,6 @@
 const { DBLayer } = require("../database/dblayer");
-const { checkPayloadForKeys } = require("./utils.js");
-const { ERROR_MESSAGES, CONTROLLER_NAMES } = require("../constants.js");
+const { checkPayloadForKeys } = require("./utils");
+const { ERROR_MESSAGES, CONTROLLER_NAMES } = require("../constants");
 
 class LoginController extends DBLayer {
   constructor() {
