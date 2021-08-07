@@ -5,15 +5,13 @@ const CONTROLLER_NAMES = {
   LOGIN: "LOGIN",
 };
 
+const pwd = process.env.PWD;
+
 const FILE_MAPPINGS = {
-  [CONTROLLER_NAMES.USER]:
-    "/Users/aditya/Desktop/code/chatapp-server/database/data/user_data.json",
-  [CONTROLLER_NAMES.MESSAGE]:
-    "/Users/aditya/Desktop/code/chatapp-server/database/data/message_data.json",
-  [CONTROLLER_NAMES.CHATROOM]:
-    "/Users/aditya/Desktop/code/chatapp-server/database/data/chatroom_data.json",
-  [CONTROLLER_NAMES.LOGIN]:
-    "/Users/aditya/Desktop/code/chatapp-server/database/data/login_data.json",
+  [CONTROLLER_NAMES.USER]: `${pwd}/database/data/user_data.json`,
+  [CONTROLLER_NAMES.MESSAGE]: `${pwd}/database/data/message_data.json`,
+  [CONTROLLER_NAMES.CHATROOM]: `${pwd}/database/data/chatroom_data.json`,
+  [CONTROLLER_NAMES.LOGIN]: `${pwd}/database/data/login_data.json`,
 };
 
 const ERROR_MESSAGES = {
