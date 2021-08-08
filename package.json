@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "npm run test",
-    "heroku-deploy": "git push heroku core/server:master"
+    "deploy": "git push heroku core/server:master"
   },
   "author": "Aditya Vikram Choudhary",
   "license": "ISC",
