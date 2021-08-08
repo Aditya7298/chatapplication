@@ -49,11 +49,11 @@ export const Message = ({ messageId }: MessageProps) => {
           </div>
 
           <div className="message-right-info">
-            <div>
-              <span className="message-sender-info-name">
+            <div className="message-info">
+              <span className="message-info-sendername">
                 {senderData.userName}
               </span>
-              <span className="message-time">
+              <span className="message-info-time">
                 {" "}
                 {formatTimestamp(messageData.timestamp)}
               </span>

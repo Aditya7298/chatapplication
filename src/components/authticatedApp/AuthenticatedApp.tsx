@@ -10,7 +10,10 @@ type AuthenticatedAppProps = {
 };
 
 export const AuthenticatedApp = ({ userId }: AuthenticatedAppProps) => {
-  const { data: userData } = useQuery<UserInfo>({ path: `/users/${userId}` });
+  const { data: userData } = useQuery<UserInfo>({
+    path: `/users/${userId}`,
+    interval: 1000,
+  });
 
   return (
     <>

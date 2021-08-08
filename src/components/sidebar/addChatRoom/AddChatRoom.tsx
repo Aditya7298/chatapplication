@@ -27,7 +27,7 @@ export const AddChatRoom = ({
   const [chatRoomFormDetails, setChatRoomFormDetails] =
     useState<ChatRoomFormDetails>({
       name: "",
-      type: CHAT_ROOM_TYPE.PERSONAL,
+      type: CHAT_ROOM_TYPE.GROUP,
       participantName: "",
     });
 
@@ -69,52 +69,20 @@ export const AddChatRoom = ({
 
   return (
     <div className="addchatroom">
+      <h2>Create a new group</h2>
       <form onSubmit={handleSubmit} className="addchatroom-form">
         <label>
-          Chatroom Name
+          Group Name
           <input
             type="text"
             name="name"
             value={chatRoomFormDetails.name}
+            placeholder="Enter group name"
             onChange={handleChange}
             className="addchatroom-form-field"
           />
         </label>
-        <label>
-          Personal Chat
-          <input
-            type="checkbox"
-            name="type"
-            value={CHAT_ROOM_TYPE.PERSONAL}
-            checked={chatRoomFormDetails.type === CHAT_ROOM_TYPE.PERSONAL}
-            onChange={handleChange}
-            className="addchatroom-form-field"
-          />
-        </label>
-        <label>
-          Group Chat
-          <input
-            type="checkbox"
-            name="type"
-            value={CHAT_ROOM_TYPE.GROUP}
-            checked={chatRoomFormDetails.type === CHAT_ROOM_TYPE.GROUP}
-            onChange={handleChange}
-            className="addchatroom-form-field"
-          />
-          {chatRoomFormDetails.type === CHAT_ROOM_TYPE.PERSONAL ? (
-            <label>
-              Enter Participant Username
-              <input
-                type="text"
-                name="participantName"
-                value={chatRoomFormDetails.participantName}
-                onChange={handleChange}
-                className="addchatroom-form-field"
-              />
-            </label>
-          ) : null}
-        </label>
-        <button type="submit" className=".addchatroom-form-button">
+        <button type="submit" className="addchatroom-form-button">
           Create Chatroom
         </button>
       </form>

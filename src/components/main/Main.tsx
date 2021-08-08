@@ -21,11 +21,19 @@ export const Main = () => {
   return (
     <div className="main">
       {userData ? (
-        <Sidebar onChatRoomPreviewClick={handleChatRoomPreviewClick} />
+        <Sidebar
+          selectedChatRoomId={selectedChatRoomId}
+          onChatRoomPreviewClick={handleChatRoomPreviewClick}
+        />
       ) : null}
       {selectedChatRoomId ? (
         <ChatArea key={selectedChatRoomId} chatRoomId={selectedChatRoomId} />
-      ) : null}
+      ) : (
+        <h1 className="main-nochatroom-message">
+          Select an existing chatroom or create a new one to start a
+          conversation...
+        </h1>
+      )}
     </div>
   );
 };

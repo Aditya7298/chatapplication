@@ -3,13 +3,19 @@
   width: 10%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   background-color: rgb(25, 23, 29);
   color: rgb(163, 163, 166);
   border-right: 1px solid black;
   overflow-y: auto;
-  padding-left: 20px;
   box-sizing: border-box;
+}
+
+.sidebar-logo {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  width: 90%;
+  height: 10%;
+  align-self: center;
 }
 
 .sidebar-groupchats,
@@ -20,15 +26,18 @@
 }
 
 .sidebar-toogle-icon {
+  cursor: pointer;
+  margin-left: 8px;
   margin-right: 4px;
   filter: invert(74%) sepia(0%) saturate(412%) hue-rotate(341deg)
     brightness(88%) contrast(93%);
 }
 
 .sidebar-addchatroom_button {
-  max-width: fit-content;
+  padding: 8px;
   border: 1px solid black;
-  border-radius: 8px;
-  margin-left: 20px;
+  border-radius: 50%;
   margin-bottom: 100px;
+  align-self: center;
+  cursor: pointer;
 }

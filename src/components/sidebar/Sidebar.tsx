@@ -9,14 +9,19 @@ import { UserContext } from "../contexts/UserContext";
 import showicon from "../../assets/images/right-arrow.svg";
 import hideicon from "../../assets/images/down-arrow.svg";
 import newchaticon from "../../assets/images/new-chat.svg";
+import sprinklr_logo from "../../assets/images/sprinklr_logo.svg";
 
 import "./Sidebar.css";
 
 type SidebarProps = {
+  selectedChatRoomId: string | undefined;
   onChatRoomPreviewClick: (chatRoomId: string) => void;
 };
 
-export const Sidebar = ({ onChatRoomPreviewClick }: SidebarProps) => {
+export const Sidebar = ({
+  selectedChatRoomId,
+  onChatRoomPreviewClick,
+}: SidebarProps) => {
   const [showGroupChats, setShowGroupChats] = useState(true);
   const [showPersonalChats, setShowPersonalChats] = useState(true);
   const [showCreateChatRoomForm, setShowCreateChatRoomForm] = useState(false);
@@ -46,15 +51,13 @@ export const Sidebar = ({ onChatRoomPreviewClick }: SidebarProps) => {
           onNewChatRoomCreation={handleCreateChatRoomFormClose}
         />
       </Modal>
-      <div className="sidebar-addchatroom_button">
-        <button onClick={handleAddChatRoomButtonClick}>
-          <img
-            src={newchaticon}
-            className="sidebar-newchaticon"
-            alt="start a new group chat"
-          />
-        </button>
-      </div>
+      <img className="sidebar-logo" src={sprinklr_logo} alt="sprinklr_logo" />
+      <button
+        className="sidebar-addchatroom_button"
+        onClick={handleAddChatRoomButtonClick}
+      >
+        <img src={newchaticon} alt="start a new group chat" />
+      </button>
       <div className="sidebar-groupchats">
         <span
           className="groupchats-toggle"
@@ -70,15 +73,16 @@ export const Sidebar = ({ onChatRoomPreviewClick }: SidebarProps) => {
         </span>
         <span className="groupchats-label">groups</span>
         {showGroupChats ? (
-          <ul>
+          <>
             {groupChats.map((id) => (
               <ChatRoomPreview
+                selectedChatRoomId={selectedChatRoomId}
                 chatRoomId={id}
                 key={id}
                 onChatRoomPreviewClick={handleChatRoomPreviewClick}
               />
             ))}
-          </ul>
+          </>
         ) : null}
       </div>
 
@@ -98,15 +102,16 @@ export const Sidebar = ({ onChatRoomPreviewClick }: SidebarProps) => {
         </span>
         <span>personal messages</span>
         {showPersonalChats ? (
-          <ul>
+          <>
             {personalChats.map((id) => (
               <ChatRoomPreview
                 key={id}
+                selectedChatRoomId={selectedChatRoomId}
                 chatRoomId={id}
                 onChatRoomPreviewClick={handleChatRoomPreviewClick}
               />
             ))}
-          </ul>
+          </>
         ) : null}
       </div>
     </div>

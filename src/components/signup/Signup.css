@@ -5,6 +5,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: rgb(25, 23, 29);
+  color: rgb(163, 163, 166);
 }
 
 .signup-form {
@@ -22,6 +24,9 @@
   font-size: 1rem;
   border-radius: 5px;
   border: 1px solid black;
+  background-color: rgb(34, 37, 41);
+  color: rgb(209, 210, 211);
+  outline: none;
 }
 
 .signup-form-field-error {
@@ -32,29 +37,15 @@
   height: 35px;
   border-radius: 5px;
   font-size: 1.2rem;
-  color: white;
-  background-color: #1c6cfd;
-  border: 1px solid #1c6cfd;
+  color: rgb(209, 210, 211);
+  background-color: rgb(26, 29, 33);
+  border: 1px solid black;
   cursor: pointer;
+  margin-top: 8px;
 }
 
 .signup-form-button:hover {
-  background-color: #034fdc;
-}
-
-.signup-form-toggle {
-  height: 35px;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  color: white;
-  margin-top: 8px;
-  background-color: #42b72a;
-  border: 1px solid #42b72a;
-  cursor: pointer;
-}
-
-.signup-form-toggle:hover {
-  background-color: #2aa511;
+  background-color: rgb(31, 33, 36);
 }
 
 .signup-error {
