@@ -11,34 +11,7 @@
     "chatRoomId": "1",
     "chatRoomName": "test2",
     "userIds": ["0", "1", "2"],
-    "messageIds": [
-      "EHdk4oiuKtlijxCw3lT_G",
-      "CaMVXtFa6-7OzmbH-_Dl4",
-      "5nySltzcKYdms1kNM2g7Z",
-      "KfIhYsn-PH9vIyW1Ffs8u",
-      "SyXV4U_MaYPSU4UpMqLz-",
-      "3io2clWLrmubo1yg2JX2k",
-      "WlKCCDcOzJTkb_Ejd5VBF"
-    ],
+    "messageIds": ["0", "2"],
     "type": "GROUP"
-  },
-  "yDgXExO3QvTv7cC6WMOtB": {
-    "chatRoomId": "yDgXExO3QvTv7cC6WMOtB",
-    "chatRoomName": "new group",
-    "type": "GROUP",
-    "messageIds": [
-      "871AmnHfXFPuiNAFZkUdh",
-      "5q7N1FDLdA1ZwUGFGo2wy",
-      "DfjwlyYINO2pzaSK29tfK",
-      "_ihX9HQ2yWPY7rR7rnVJx"
-    ],
-    "userIds": ["1", "0"]
-  },
-  "jPBqr1VDSE-FN_QLF5tPh": {
-    "chatRoomId": "jPBqr1VDSE-FN_QLF5tPh",
-    "chatRoomName": "new chat room",
-    "type": "GROUP",
-    "messageIds": [],
-    "userIds": ["1"]
   }
 }

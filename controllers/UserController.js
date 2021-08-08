@@ -1,14 +1,17 @@
 const { DBLayer } = require("../database/DBLayer");
+const { ChatRoomController } = require("./ChatRoomController");
 const {
   CONTROLLER_NAMES,
   ERROR_MESSAGES,
   CHAT_ROOM_TYPE,
+  SAMPLE_AVATARS,
 } = require("../constants");
 const { checkPayloadForKeys } = require("./utils");
 
 class UserController extends DBLayer {
   constructor() {
     super(CONTROLLER_NAMES.USER);
+    this.chatRoomController = new ChatRoomController();
   }
 
   async getOneUser(userId) {
@@ -93,6 +96,13 @@ class UserController extends DBLayer {
       const existingUsersJSON = await this.readFromDB();
       const existingUsers = JSON.parse(existingUsersJSON);
       const { password, ...newUserData } = payload;
+
+      if (!newUserData.avatar) {
+        const randomAvatarIndex = Math.floor(
+          Math.random() * SAMPLE_AVATARS.length
+        );
+        newUserData.avatar = SAMPLE_AVATARS[randomAvatarIndex];
+      }
 
       const newUsers = {
         ...existingUsers,
