@@ -1,0 +1,29 @@
+.chatroom-preview {
+  height: 24px;
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+.chatroom-preview:hover {
+  background-color: #27242c;
+}
+
+.chatroom-preview-name {
+  cursor: pointer;
+  height: 100%;
+}
+
+.chatroom-preview-name:before {
+  content: "• ";
+}
+
+.chatroom-preview-selected {
+  color: #ffffff !important;
+  background: #1164a3 !important;
+}

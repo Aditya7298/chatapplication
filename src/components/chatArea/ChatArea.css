@@ -21,6 +21,31 @@
   font-size: xx-large;
 }
 
+.chatarea-header-adduser {
+  position: absolute;
+  right: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatarea-header-adduser_icon {
+  cursor: pointer;
+  filter: invert(95%) sepia(6%) saturate(41%) hue-rotate(169deg) brightness(90%)
+    contrast(88%);
+  height: 50px;
+  width: 50px;
+}
+
+.chatarea-header-adduser_text {
+  visibility: hidden;
+  width: 80px;
+}
+
+.chatarea-header-adduser_icon:hover + .chatarea-header-adduser_text {
+  visibility: visible;
+}
+
 .chatarea-header-exit {
   font-weight: bold;
   font-size: x-large;
@@ -30,9 +55,11 @@
 
 .chatarea-messages {
   height: 80%;
+  padding: 20px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  overflow-y: auto;
 }

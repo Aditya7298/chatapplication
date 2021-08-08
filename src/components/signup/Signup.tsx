@@ -88,7 +88,7 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
         >
           {status === "loading" ? "Please wait..." : "Submit"}
         </button>
-        {status === "idle" && (
+        {status === "idle" || status === "rejected" ? (
           <button
             className="signup-form-toggle"
             type="button"
@@ -96,7 +96,7 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
           >
             Log In
           </button>
-        )}
+        ) : null}
       </form>
       <div className="signup-error">{signupError}</div>
     </div>

@@ -3,9 +3,30 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
+  background-color: rgb(25, 23, 29);
+  color: rgb(163, 163, 166);
   padding: 50px;
   z-index: 1000;
+  border: 5px solid black;
+  border-radius: 5%;
+}
+
+.modal-close {
+  background-color: transparent;
+  border: 0px;
+  height: fit-content;
+  width: fit-content;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.modal-close img {
+  height: 20px;
+  width: 20px;
+  filter: invert(78%) sepia(43%) saturate(5%) hue-rotate(169deg) brightness(96%)
+    contrast(101%);
 }
 
 .overlay {

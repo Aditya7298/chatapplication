@@ -78,7 +78,7 @@ export const Login = ({ onLogin, onShowSignupFormClick }: LoginProps) => {
         <button className="login-form-button" disabled={status === "loading"}>
           {status === "loading" ? "Please wait..." : "Login"}
         </button>
-        {status === "idle" ? (
+        {status === "idle" || status === "rejected" ? (
           <button
             className="signup-form-toggle"
             type="button"

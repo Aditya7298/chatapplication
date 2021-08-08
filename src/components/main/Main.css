@@ -4,3 +4,9 @@
   display: flex;
   overflow: hidden;
 }
+
+.main-nochatroom-message {
+  margin-left: 20px;
+  margin-top: 40px;
+  color: rgb(163, 163, 166);
+}

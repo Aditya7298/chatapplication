@@ -4,9 +4,19 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
+  background-color: rgb(26, 29, 33);
+  font-family: Consolas, monaco, "Ubuntu Mono", courier, monospace !important;
+  font-size: small;
 }
 
 #root {
   height: 100%;
   width: 100%;
+}
+
+input[type="text"],
+input,
+button {
+  font-family: Consolas, monaco, "Ubuntu Mono", courier, monospace !important;
+  font-size: medium;
 }

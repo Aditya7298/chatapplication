@@ -3,32 +3,84 @@
   width: 10%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   background-color: rgb(25, 23, 29);
   color: rgb(163, 163, 166);
   border-right: 1px solid black;
   overflow-y: auto;
-  padding-left: 20px;
   box-sizing: border-box;
+}
+
+.sidebar-logo {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  width: 90%;
+  height: 10%;
+  align-self: center;
 }
 
 .sidebar-groupchats,
 .sidebar-personalchats {
-  padding-left: 4px;
   margin: 16px 0px;
   min-height: 80px;
 }
 
 .sidebar-toogle-icon {
+  cursor: pointer;
+  margin-left: 8px;
   margin-right: 4px;
   filter: invert(74%) sepia(0%) saturate(412%) hue-rotate(341deg)
     brightness(88%) contrast(93%);
 }
 
-.sidebar-addchatroom_button {
-  max-width: fit-content;
-  border: 1px solid black;
-  border-radius: 8px;
-  margin-left: 20px;
+.sidebar-addchatroom {
   margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar-addchatroom_button {
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+}
+
+.sidebar-addchatroom_text {
+  width: 80%;
+  margin-top: 8px;
+  text-align: center;
+  visibility: hidden;
+}
+
+.sidebar-addchatroom_button:hover + .sidebar-addchatroom_text {
+  visibility: visible;
+}
+
+.sidebar-addteammate {
+  background-color: transparent;
+  color: rgb(163, 163, 166);
+  border: 0px;
+  font-size: small;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  width: 100%;
+}
+
+.sidebar-addteammate-sign {
+  margin-right: 4px;
+  filter: invert(73%) sepia(6%) saturate(115%) hue-rotate(202deg)
+    brightness(89%) contrast(90%);
+}
+
+.sidebar-addteammate:hover {
+  background-color: #27242c;
 }

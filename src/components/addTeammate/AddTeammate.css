@@ -1,17 +1,17 @@
-.addchatroom {
+.addteammate {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.addchatroom-form {
+.addteammate-form {
   display: flex;
   flex-direction: column;
   margin-bottom: 2px;
 }
 
-.addchatroom-form-field {
+.addteammate-form-field {
   display: block;
   width: 200px;
   height: 30px;
@@ -25,11 +25,7 @@
   outline: none;
 }
 
-.addchatroom-form-field-error {
-  border-color: red;
-}
-
-.addchatroom-form-button {
+.addteammate-form-button {
   height: 35px;
   border-radius: 5px;
   font-size: 1.2rem;
@@ -42,6 +38,12 @@
   align-self: center;
 }
 
-.addchatroom-form-button:hover {
+.addteammate-form-button:hover {
   background-color: rgb(31, 33, 36);
+}
+
+.error {
+  color: red;
+  font-size: medium;
+  margin-top: 5px;
 }

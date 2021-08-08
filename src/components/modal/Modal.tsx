@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import closeIcon from "../../assets/images/close-icon.svg";
+
 import "./Modal.css";
 
 type ModalProps = {
@@ -18,7 +20,9 @@ export const Modal = ({ open, onClose, children }: ModalProps) => {
     <>
       <div className="overlay" />
       <div className="modal">
-        <button onClick={onClose}>Close</button>
+        <button className="modal-close" onClick={onClose}>
+          <img src={closeIcon} alt="close" />
+        </button>
         {children}
       </div>
     </>,

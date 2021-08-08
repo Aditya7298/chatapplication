@@ -4,12 +4,38 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.message-sender-info-name {
+.message-left-info {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.message-right-info {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.message-info {
+  margin-bottom: 4px;
+}
+
+.message-info-sendername {
+  font-size: larger;
   font-weight: bold;
+  display: inline-block;
 }
 
-.message-time {
+.message-info-time {
+  margin-left: 8px;
+  display: inline-block;
   font-size: small;
+}
+
+.message-sender-avatar {
+  align-self: flex-start;
 }

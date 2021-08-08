@@ -52,7 +52,7 @@ export const MessageInput = ({ onNewMessageCreation }: MessageInputProps) => {
         <input
           className="chatarea-input-text"
           type="text"
-          placeholder="Type a message..."
+          placeholder="Type a new message..."
           name="newmessage"
           value={newMessageText}
           onChange={handleChange}
