@@ -2,11 +2,13 @@ const { DBLayer } = require("../database/DBLayer");
 const { LoginController } = require("../controllers/LoginController");
 const { checkPayloadForKeys } = require("./utils");
 const { CONTROLLER_NAMES, ERROR_MESSAGES } = require("../constants");
+const { UserController } = require("./UserController");
 
 class ChatRoomController extends DBLayer {
   constructor() {
     super(CONTROLLER_NAMES.CHATROOM);
     this.loginController = new LoginController();
+    this.userController = new UserController();
   }
 
   async getOneChatRoom(chatRoomId) {
@@ -92,11 +94,11 @@ class ChatRoomController extends DBLayer {
   }
 
   async updateChatRoom(chatRoomId, payload) {
-    const { key, value } = payload;
+    let { key, value } = payload;
     const chatRoomProps = [
       "chatRoomId",
       "chatRoomName",
-      "userIds",
+      "userNames",
       "messageIds",
       "type",
     ];
@@ -112,10 +114,35 @@ class ChatRoomController extends DBLayer {
       const existingChatRoomsJSON = await this.readFromDB();
       const existingChatRooms = JSON.parse(existingChatRoomsJSON);
 
+      if (key === "userNames") {
+        value = await this.userController.getUserIdsFromUsername(value);
+
+        key = "userIds";
+
+        if (value.length === 0) {
+          throw {
+            code: 400,
+            message: "Entered users do not exist...",
+          };
+        }
+
+        value = [
+          ...new Set([...value, ...existingChatRooms[chatRoomId].userIds]),
+        ];
+      }
+
       const newChatRooms = {
         ...existingChatRooms,
         [chatRoomId]: { ...existingChatRooms[chatRoomId], [key]: value },
       };
+
+      if (key === "userIds") {
+        await this.userController.addUsersToChatRooms({
+          userIds: value,
+          type: existingChatRooms[chatRoomId].type,
+          chatRoomId,
+        });
+      }
 
       const newChatRoomsJSON = JSON.stringify(newChatRooms);
 

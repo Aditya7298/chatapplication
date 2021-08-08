@@ -5,7 +5,8 @@ const CONTROLLER_NAMES = {
   LOGIN: "LOGIN",
 };
 
-const pwd = process.env.PWD;
+// const pwd = process.env.PWD;
+const pwd = "/Users/aditya/Desktop/code/chatapp-server";
 
 const FILE_MAPPINGS = {
   [CONTROLLER_NAMES.USER]: `${pwd}/database/data/user_data.json`,

@@ -53,6 +53,26 @@ class UserController extends DBLayer {
     }
   }
 
+  async getUserIdsFromUsername(userNames) {
+    try {
+      const userDataJSON = await this.readFromDB();
+      const userData = JSON.parse(userDataJSON);
+
+      return Object.keys(userData).filter((userId) =>
+        userNames.includes(userData[userId].userName)
+      );
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
+  }
+
   async createUser(payload) {
     try {
       if (
@@ -105,6 +125,8 @@ class UserController extends DBLayer {
         };
       }
 
+      const { chatRoomId, userIds, type } = payload;
+
       const usersDataJSON = await this.readFromDB();
       const usersData = JSON.parse(usersDataJSON);
 
@@ -112,22 +134,22 @@ class UserController extends DBLayer {
         (newUsersData, userId) => {
           newUsersData[userId] = usersData[userId];
 
-          if (payload.userIds.includes(userId)) {
-            if (payload.type === CHAT_ROOM_TYPE.GROUP) {
+          if (
+            userIds.includes(userId) &&
+            !(
+              usersData[userId].groupChats.includes(chatRoomId) ||
+              usersData[userId].personalChats.includes(chatRoomId)
+            )
+          ) {
+            if (type === CHAT_ROOM_TYPE.GROUP) {
               newUsersData[userId] = {
                 ...usersData[userId],
-                groupChats: [
-                  ...usersData[userId].groupChats,
-                  payload.chatRoomId,
-                ],
+                groupChats: [...usersData[userId].groupChats, chatRoomId],
               };
             } else {
               newUsersData[userId] = {
                 ...usersData[userId],
-                personalChats: [
-                  ...usersData[userId].personalChats,
-                  payload.chatRoomId,
-                ],
+                personalChats: [...usersData[userId].personalChats, chatRoomId],
               };
             }
           }
@@ -138,7 +160,7 @@ class UserController extends DBLayer {
       );
 
       await this.writeToDB(JSON.stringify(newUsersData));
-      return { chatRoomId: payload.chatRoomId };
+      return { chatRoomId };
     } catch (err) {
       if (!err.code) {
         throw {
