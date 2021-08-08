@@ -1,5 +1,4 @@
 const { DBLayer } = require("../database/DBLayer");
-const { ChatRoomController } = require("./ChatRoomController");
 const {
   CONTROLLER_NAMES,
   ERROR_MESSAGES,
@@ -11,7 +10,6 @@ const { checkPayloadForKeys } = require("./utils");
 class UserController extends DBLayer {
   constructor() {
     super(CONTROLLER_NAMES.USER);
-    this.chatRoomController = new ChatRoomController();
   }
 
   async getOneUser(userId) {
