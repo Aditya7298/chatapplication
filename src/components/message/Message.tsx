@@ -12,19 +12,16 @@ type MessageProps = {
 };
 
 export const Message = ({ messageId }: MessageProps) => {
-  const { data: messageData, isLoading } = useQuery<MessageInfo>({
-    url: `/messages/${messageId}`,
-    method: "GET",
+  const { data: messageData } = useQuery<MessageInfo>({
+    path: `/messages/${messageId}`,
   });
 
   const [skipUserQuery, setSkipUserQuery] = useState(true);
 
-  const { data: senderData, isLoading: isSenderDataLoading } =
-    useQuery<UserInfo>({
-      url: `/users/${messageData?.senderId}`,
-      method: "GET",
-      skip: skipUserQuery,
-    });
+  const { data: senderData } = useQuery<UserInfo>({
+    path: `/users/${messageData?.senderId}`,
+    skip: skipUserQuery,
+  });
 
   useEffect(() => {
     if (messageData) {
@@ -32,25 +29,39 @@ export const Message = ({ messageId }: MessageProps) => {
     }
   }, [messageData]);
 
+  const formatTimestamp = (timestamp: Date) => {
+    const time = new Date(timestamp);
+    return `${time.getHours()}:${time.getMinutes()}`;
+  };
+
   return (
     <div className="message">
-      <div className="message-left-info">
-        {!isSenderDataLoading && (
-          <img
-            className="message-sender-avatar"
-            src={senderData?.avatar}
-            alt="user avatar"
-            height="50px"
-            width="50px"
-          />
-        )}
-      </div>
-      <div className="message-right-info">
-        {!isSenderDataLoading && (
-          <div className="message-sender-info">{senderData?.userName}</div>
-        )}
-        {!isLoading && <div className="message-text">{messageData?.text}</div>}
-      </div>
+      {senderData && messageData ? (
+        <>
+          <div className="message-left-info">
+            <img
+              className="message-sender-avatar"
+              src={senderData.avatar}
+              alt="user avatar"
+              height="50px"
+              width="50px"
+            />
+          </div>
+
+          <div className="message-right-info">
+            <div>
+              <span className="message-sender-info-name">
+                {senderData.userName}
+              </span>
+              <span className="message-time">
+                {" "}
+                {formatTimestamp(messageData.timestamp)}
+              </span>
+            </div>
+            <div className="message-text">{messageData.text}</div>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };

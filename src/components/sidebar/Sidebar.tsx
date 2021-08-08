@@ -1,30 +1,27 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useContext } from "react";
 
 import { ChatRoomPreview } from "../chatRoomPreview/ChatRoomPreview";
 import { AddChatRoom } from "./addChatRoom/AddChatRoom";
 import { Modal } from "../modal/Modal";
 
-import showicon from "../../assets/images/right-arrow.png";
-import hideicon from "../../assets/images/arrow-down-sign-to-navigate.png";
+import { UserContext } from "../contexts/UserContext";
+
+import showicon from "../../assets/images/right-arrow.svg";
+import hideicon from "../../assets/images/down-arrow.svg";
+import newchaticon from "../../assets/images/new-chat.svg";
 
 import "./Sidebar.css";
 
 type SidebarProps = {
-  userName: string;
-  groupChatIds: string[];
-  personalChatIds: string[];
   onChatRoomPreviewClick: (chatRoomId: string) => void;
 };
 
-export const Sidebar = ({
-  userName,
-  groupChatIds,
-  personalChatIds,
-  onChatRoomPreviewClick,
-}: SidebarProps) => {
+export const Sidebar = ({ onChatRoomPreviewClick }: SidebarProps) => {
   const [showGroupChats, setShowGroupChats] = useState(true);
   const [showPersonalChats, setShowPersonalChats] = useState(true);
   const [showCreateChatRoomForm, setShowCreateChatRoomForm] = useState(false);
+
+  const { userName, groupChats, personalChats } = useContext(UserContext);
 
   const handleChatRoomPreviewClick = (chatRoomId: string) => {
     onChatRoomPreviewClick(chatRoomId);
@@ -50,35 +47,31 @@ export const Sidebar = ({
         />
       </Modal>
       <div className="sidebar-addchatroom_button">
-        <button onClick={handleAddChatRoomButtonClick}>Add Chatroom</button>
+        <button onClick={handleAddChatRoomButtonClick}>
+          <img
+            src={newchaticon}
+            className="sidebar-newchaticon"
+            alt="start a new group chat"
+          />
+        </button>
       </div>
       <div className="sidebar-groupchats">
         <span
           className="groupchats-toggle"
           onClick={() => setShowGroupChats((prevState) => !prevState)}
         >
-          {showGroupChats ? (
-            <img
-              className="sidebar-toogle-icon"
-              src={hideicon}
-              alt={"hide groups"}
-              height="10px"
-              width="10px"
-            />
-          ) : (
-            <img
-              className="sidebar-toogle-icon"
-              src={showicon}
-              alt={"show groups"}
-              height="10px"
-              width="10px"
-            />
-          )}
+          <img
+            className="sidebar-toogle-icon"
+            src={showGroupChats ? hideicon : showicon}
+            alt={showGroupChats ? "hide groups" : "show groups"}
+            height="10px"
+            width="10px"
+          />
         </span>
         <span className="groupchats-label">groups</span>
-        {showGroupChats && (
+        {showGroupChats ? (
           <ul>
-            {groupChatIds.map((id) => (
+            {groupChats.map((id) => (
               <ChatRoomPreview
                 chatRoomId={id}
                 key={id}
@@ -86,33 +79,27 @@ export const Sidebar = ({
               />
             ))}
           </ul>
-        )}
+        ) : null}
       </div>
 
       <div className="sidebar-personalchats">
         <span onClick={() => setShowPersonalChats((prevState) => !prevState)}>
-          {showPersonalChats ? (
-            <img
-              className="sidebar-toogle-icon"
-              src={hideicon}
-              alt={"hide personal messages"}
-              height="10px"
-              width="10px"
-            />
-          ) : (
-            <img
-              className="sidebar-toogle-icon"
-              src={showicon}
-              alt={"show personal messages"}
-              height="10px"
-              width="10px"
-            />
-          )}
+          <img
+            className="sidebar-toogle-icon"
+            src={showPersonalChats ? hideicon : showicon}
+            alt={
+              showPersonalChats
+                ? "hide personal messages"
+                : "show personal messages"
+            }
+            height="10px"
+            width="10px"
+          />
         </span>
         <span>personal messages</span>
-        {showPersonalChats && (
+        {showPersonalChats ? (
           <ul>
-            {personalChatIds.map((id) => (
+            {personalChats.map((id) => (
               <ChatRoomPreview
                 key={id}
                 chatRoomId={id}
@@ -120,7 +107,7 @@ export const Sidebar = ({
               />
             ))}
           </ul>
-        )}
+        ) : null}
       </div>
     </div>
   );

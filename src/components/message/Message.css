@@ -6,6 +6,10 @@
   align-items: center;
 }
 
-.message-sender-info {
+.message-sender-info-name {
   font-weight: bold;
+}
+
+.message-time {
+  font-size: small;
 }

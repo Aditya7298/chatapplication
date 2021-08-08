@@ -1,13 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback } from "react";
 
 import { Message } from "../message/Message";
 import { MessageInput } from "./messageInput/MessageInput";
 
 import { useQuery } from "../hooks/useQuery";
 import { useMutation } from "../hooks/useMutation";
-import { useSubscription } from "../hooks/useSubscription";
 
-import { fetchRequestBuilder } from "../utils/fetchRequestBuilder";
+import { ajaxClient } from "../utils/ajaxClient";
 
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
 
@@ -17,48 +16,19 @@ import "./ChatArea.css";
 
 type ChatAreaProps = {
   chatRoomId: string;
-  userId: string;
 };
 
-export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
-  const { data: queriedChatRoomData } = useQuery<ChatRoomInfo>({
-    url: `/chatrooms/${chatRoomId}`,
-    method: "GET",
-  });
-
-  const [chatRoomData, setChatRoomData] = useState<ChatRoomInfo | undefined>();
-
-  useEffect(() => {
-    setChatRoomData(queriedChatRoomData);
-  }, [queriedChatRoomData]);
-
-  const updateMessageIds = useCallback((newMessageIds: string[]) => {
-    setChatRoomData((prevState) => {
-      if (!prevState) {
-        return prevState;
-      }
-
-      return { ...prevState, messageIds: newMessageIds };
-    });
-  }, []);
-
-  useSubscription<ChatRoomInfo>({
-    subscriptionCallback: useCallback(
-      (updatedChatRoomData: ChatRoomInfo) =>
-        updateMessageIds(updatedChatRoomData.messageIds),
-      [updateMessageIds]
-    ),
-    url: `/chatrooms/${chatRoomId}`,
+export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
+  const { data: chatRoomData } = useQuery<ChatRoomInfo>({
+    path: `/chatrooms/${chatRoomId}`,
+    interval: 1000,
   });
 
   const { mutate } = useMutation((data) => {
-    const { url, options } = fetchRequestBuilder({
+    return ajaxClient.patch({
       path: `/chatrooms/${chatRoomId}`,
       payload: data,
-      method: "PATCH",
     });
-
-    return fetch(url, options);
   });
 
   const handleNewMessageCreation = useCallback(
@@ -69,26 +39,13 @@ export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
 
       const updatedMessageIds = [...chatRoomData.messageIds, newMessageId];
 
-      updateMessageIds(updatedMessageIds);
-
-      mutate(
-        {
-          key: "messageIds",
-          value: updatedMessageIds,
-        },
-        {
-          onError: () => {
-            updateMessageIds(
-              chatRoomData.messageIds.filter(
-                (messageId) => messageId !== newMessageId
-              )
-            );
-          },
-        }
-      );
+      mutate({
+        key: "messageIds",
+        value: updatedMessageIds,
+      });
     },
 
-    [chatRoomData, mutate, updateMessageIds]
+    [chatRoomData, mutate]
   );
 
   return (
@@ -112,10 +69,7 @@ export const ChatArea = ({ chatRoomId, userId }: ChatAreaProps) => {
               <Message key={messageId} messageId={messageId} />
             ))}
           </div>
-          <MessageInput
-            userId={userId}
-            onNewMessageCreation={handleNewMessageCreation}
-          />
+          <MessageInput onNewMessageCreation={handleNewMessageCreation} />
         </>
       ) : null}
     </div>

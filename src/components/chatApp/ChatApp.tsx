@@ -1,42 +1,23 @@
 import { useState, useCallback } from "react";
 
-import { Login } from "../login/Login";
-import { Signup } from "../signup/Signup";
-import { Main } from "../main/Main";
+import { UnauthenticatedApp } from "../unauthenticatedApp/UnauthenticatedApp";
+import { AuthenticatedApp } from "../authticatedApp/AuthenticatedApp";
 
 import "./ChatApp.css";
 
 export const ChatApp = () => {
   const [userId, setUserId] = useState<string | undefined>();
-  const [showLoginForm, setShowLoginForm] = useState(true);
 
-  const handleSignupAndLogin = useCallback((userId: string) => {
+  const handleAuthentication = useCallback((userId: string) => {
     setUserId(userId);
   }, []);
-
-  const handleShowSignupFormClick = useCallback(
-    () => setShowLoginForm(false),
-    []
-  );
-  const handleShowLoginFormClick = useCallback(
-    () => setShowLoginForm(true),
-    []
-  );
 
   return (
     <div className="chatapp">
       {userId ? (
-        <Main userId={userId} />
-      ) : showLoginForm ? (
-        <Login
-          onLogin={handleSignupAndLogin}
-          onShowSignupFormClick={handleShowSignupFormClick}
-        />
+        <AuthenticatedApp userId={userId} />
       ) : (
-        <Signup
-          onSignup={handleSignupAndLogin}
-          onShowLoginFormClick={handleShowLoginFormClick}
-        />
+        <UnauthenticatedApp onAuthentication={handleAuthentication} />
       )}
     </div>
   );

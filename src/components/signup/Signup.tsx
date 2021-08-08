@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { nanoid } from "nanoid";
 
 import { useMutation } from "../hooks/useMutation";
 
-import { fetchRequestBuilder } from "../utils/fetchRequestBuilder";
-
-import { UserInfo } from "../../types/User.interface";
+import { ajaxClient } from "../utils/ajaxClient";
 
 import "./Signup.css";
 
@@ -25,15 +23,11 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
     setUserFormDetails((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const { mutate, isLoading, data, error } = useMutation<UserInfo>((data) => {
-    const { url, options } = fetchRequestBuilder({
-      path: "/users",
-      method: "POST",
-      payload: data,
-    });
-
-    return fetch(url, options);
+  const { status, mutate } = useMutation((data) => {
+    return ajaxClient.post({ path: "/users", payload: data });
   });
+
+  const [signupError, setSignupError] = useState<string | undefined>();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,16 +39,16 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
       groupChats: [],
     };
 
-    mutate(newUserData);
-  };
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (data) {
+    mutate(newUserData, {
+      onSuccess: (data: { userId: string }) => {
         onSignup(data.userId);
-      }
-    }
-  }, [isLoading, data, onSignup]);
+      },
+
+      onError: (message: string) => {
+        setSignupError(message);
+      },
+    });
+  };
 
   return (
     <div className="signup">
@@ -69,7 +63,9 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
             required
             placeholder="Enter New Username"
             className={`signup-form-field ${
-              error && error.match(/user/i) && "signup-form-field-error"
+              signupError &&
+              signupError.match(/user/i) &&
+              "signup-form-field-error"
             }`}
           />
         </label>
@@ -88,22 +84,21 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
         <button
           className="signup-form-button"
           type="submit"
-          disabled={isLoading}
+          disabled={status === "loading"}
         >
-          {isLoading ? "Please wait..." : "Submit"}
+          {status === "loading" ? "Please wait..." : "Submit"}
         </button>
-        {!isLoading && (
+        {status === "idle" && (
           <button
             className="signup-form-toggle"
             type="button"
-            disabled={isLoading}
             onClick={onShowLoginFormClick}
           >
             Log In
           </button>
         )}
       </form>
-      <div className="signup-error">{error}</div>
+      <div className="signup-error">{signupError}</div>
     </div>
   );
 };
