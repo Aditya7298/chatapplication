@@ -2,6 +2,7 @@ import { useState, useCallback, useContext } from "react";
 
 import { ChatRoomPreview } from "../chatRoomPreview/ChatRoomPreview";
 import { AddChatRoom } from "./addChatRoom/AddChatRoom";
+import { AddTeammate } from "../addTeammate/AddTeammate";
 import { Modal } from "../modal/Modal";
 
 import { UserContext } from "../contexts/UserContext";
@@ -10,6 +11,7 @@ import showicon from "../../assets/images/right-arrow.svg";
 import hideicon from "../../assets/images/down-arrow.svg";
 import newchaticon from "../../assets/images/new-chat.svg";
 import sprinklr_logo from "../../assets/images/sprinklr_logo.svg";
+import addTeammate from "../../assets/images/plus-sign.svg";
 
 import "./Sidebar.css";
 
@@ -25,6 +27,7 @@ export const Sidebar = ({
   const [showGroupChats, setShowGroupChats] = useState(true);
   const [showPersonalChats, setShowPersonalChats] = useState(true);
   const [showCreateChatRoomForm, setShowCreateChatRoomForm] = useState(false);
+  const [showAddTeammateForm, setShowAddTeammateForm] = useState(false);
 
   const { userName, groupChats, personalChats } = useContext(UserContext);
 
@@ -32,12 +35,20 @@ export const Sidebar = ({
     onChatRoomPreviewClick(chatRoomId);
   };
 
-  const handleAddChatRoomButtonClick = () => {
+  const handleAddChatRoomButtonClick = useCallback(() => {
     setShowCreateChatRoomForm(true);
-  };
+  }, []);
 
   const handleCreateChatRoomFormClose = useCallback(() => {
     setShowCreateChatRoomForm(false);
+  }, []);
+
+  const handleAddTeammateClick = useCallback(() => {
+    setShowAddTeammateForm(true);
+  }, []);
+
+  const handleAddTeammateFormClose = useCallback(() => {
+    setShowAddTeammateForm(false);
   }, []);
 
   return (
@@ -51,13 +62,22 @@ export const Sidebar = ({
           onNewChatRoomCreation={handleCreateChatRoomFormClose}
         />
       </Modal>
+      <Modal onClose={handleAddTeammateFormClose} open={showAddTeammateForm}>
+        <AddTeammate
+          currUserName={userName}
+          onNewTeammateAddition={handleAddTeammateFormClose}
+        />
+      </Modal>
       <img className="sidebar-logo" src={sprinklr_logo} alt="sprinklr_logo" />
-      <button
-        className="sidebar-addchatroom_button"
-        onClick={handleAddChatRoomButtonClick}
-      >
-        <img src={newchaticon} alt="start a new group chat" />
-      </button>
+      <div className="sidebar-addchatroom">
+        <button
+          className="sidebar-addchatroom_button"
+          onClick={handleAddChatRoomButtonClick}
+        >
+          <img src={newchaticon} alt="start a new group chat" />
+        </button>
+        <div className="sidebar-addchatroom_text">Create a new group</div>
+      </div>
       <div className="sidebar-groupchats">
         <span
           className="groupchats-toggle"
@@ -113,6 +133,19 @@ export const Sidebar = ({
             ))}
           </>
         ) : null}
+        <button
+          className="sidebar-addteammate"
+          onClick={handleAddTeammateClick}
+        >
+          <img
+            className="sidebar-addteammate-sign"
+            src={addTeammate}
+            alt="add sign"
+            height="16px"
+            width="16px"
+          />{" "}
+          Add teammates
+        </button>
       </div>
     </div>
   );

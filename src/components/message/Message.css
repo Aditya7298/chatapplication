@@ -36,10 +36,6 @@
   font-size: small;
 }
 
-.message-text {
-  align-self: center;
-}
-
 .message-sender-avatar {
   align-self: flex-start;
 }

@@ -20,7 +20,6 @@
 
 .sidebar-groupchats,
 .sidebar-personalchats {
-  padding-left: 4px;
   margin: 16px 0px;
   min-height: 80px;
 }
@@ -33,11 +32,55 @@
     brightness(88%) contrast(93%);
 }
 
+.sidebar-addchatroom {
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .sidebar-addchatroom_button {
   padding: 8px;
   border: 1px solid black;
   border-radius: 50%;
-  margin-bottom: 100px;
-  align-self: center;
+  height: 50px;
+  width: 50px;
   cursor: pointer;
+}
+
+.sidebar-addchatroom_text {
+  width: 80%;
+  margin-top: 8px;
+  text-align: center;
+  visibility: hidden;
+}
+
+.sidebar-addchatroom_button:hover + .sidebar-addchatroom_text {
+  visibility: visible;
+}
+
+.sidebar-addteammate {
+  background-color: transparent;
+  color: rgb(163, 163, 166);
+  border: 0px;
+  font-size: small;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  width: 100%;
+}
+
+.sidebar-addteammate-sign {
+  margin-right: 4px;
+  filter: invert(73%) sepia(6%) saturate(115%) hue-rotate(202deg)
+    brightness(89%) contrast(90%);
+}
+
+.sidebar-addteammate:hover {
+  background-color: #27242c;
 }

@@ -10,6 +10,10 @@
   box-sizing: border-box;
 }
 
+.chatroom-preview:hover {
+  background-color: #27242c;
+}
+
 .chatroom-preview-name {
   cursor: pointer;
   height: 100%;
@@ -20,6 +24,6 @@
 }
 
 .chatroom-preview-selected {
-  color: #ffffff;
-  background: #1164a3;
+  color: #ffffff !important;
+  background: #1164a3 !important;
 }
