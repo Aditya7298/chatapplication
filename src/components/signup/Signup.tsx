@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { nanoid } from "nanoid";
 
+import { Form } from "../form/Form";
+import { Input } from "../form/Input";
+import { Button } from "../form/Button";
+
 import { useMutation } from "../hooks/useMutation";
 
 import { ajaxClient } from "../utils/ajaxClient";
@@ -53,52 +57,36 @@ export const Signup = ({ onSignup, onShowLoginFormClick }: SignupProps) => {
   return (
     <div className="signup">
       <h2>Create a new account</h2>
-      <form onSubmit={handleSubmit} className="signup-form">
-        <label>
-          Username
-          <input
-            name="userName"
-            value={userFormDetails.userName}
-            onChange={handleChange}
-            required
-            placeholder="Enter New Username"
-            className={`signup-form-field ${
-              signupError &&
-              signupError.match(/user/i) &&
-              "signup-form-field-error"
-            }`}
-          />
-        </label>
-        <label>
-          Password
-          <input
-            name="password"
-            type="password"
-            value={userFormDetails.password}
-            required
-            placeholder="Enter New Password"
-            onChange={handleChange}
-            className="signup-form-field"
-          />
-        </label>
-        <button
-          className="signup-form-button"
-          type="submit"
-          disabled={status === "loading"}
-        >
+      <Form onSubmit={handleSubmit}>
+        <Input
+          label="Username"
+          name="userName"
+          type="text"
+          value={userFormDetails.userName}
+          onChange={handleChange}
+          required={true}
+          placeholder="Enter New Username"
+          error={signupError?.match(/user/i) !== undefined}
+        />
+        <Input
+          name="password"
+          type="password"
+          value={userFormDetails.password}
+          required={true}
+          placeholder="Enter New Password"
+          onChange={handleChange}
+          label="Password"
+        />
+        <Button isDisabled={status === "loading"}>
           {status === "loading" ? "Please wait..." : "Submit"}
-        </button>
+        </Button>
         {status === "idle" || status === "rejected" ? (
-          <button
-            className="signup-form-toggle"
-            type="button"
-            onClick={onShowLoginFormClick}
-          >
+          <Button type="button" onClick={onShowLoginFormClick}>
             Log In
-          </button>
+          </Button>
         ) : null}
-      </form>
-      <div className="signup-error">{signupError}</div>
+      </Form>
+      <div className="error">{signupError}</div>
     </div>
   );
 };

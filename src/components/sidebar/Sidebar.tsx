@@ -1,8 +1,8 @@
 import { useState, useCallback, useContext } from "react";
 
-import { ChatRoomPreview } from "../chatRoomPreview/ChatRoomPreview";
+import { ChatRoomPreview } from "./chatRoomPreview/ChatRoomPreview";
 import { AddChatRoom } from "./addChatRoom/AddChatRoom";
-import { AddTeammate } from "../addTeammate/AddTeammate";
+import { AddTeammate } from "./addTeammate/AddTeammate";
 import { Modal } from "../modal/Modal";
 
 import { UserContext } from "../contexts/UserContext";
@@ -26,8 +26,7 @@ export const Sidebar = ({
 }: SidebarProps) => {
   const [showGroupChats, setShowGroupChats] = useState(true);
   const [showPersonalChats, setShowPersonalChats] = useState(true);
-  const [showCreateChatRoomForm, setShowCreateChatRoomForm] = useState(false);
-  const [showAddTeammateForm, setShowAddTeammateForm] = useState(false);
+  const [modalForm, setModalForm] = useState<"addChatRoom" | "addTeammate">();
 
   const { userName, groupChats, personalChats } = useContext(UserContext);
 
@@ -36,37 +35,42 @@ export const Sidebar = ({
   };
 
   const handleAddChatRoomButtonClick = useCallback(() => {
-    setShowCreateChatRoomForm(true);
+    setModalForm("addChatRoom");
   }, []);
 
   const handleCreateChatRoomFormClose = useCallback(() => {
-    setShowCreateChatRoomForm(false);
+    setModalForm(undefined);
   }, []);
 
   const handleAddTeammateClick = useCallback(() => {
-    setShowAddTeammateForm(true);
+    setModalForm("addTeammate");
   }, []);
 
   const handleAddTeammateFormClose = useCallback(() => {
-    setShowAddTeammateForm(false);
+    setModalForm(undefined);
   }, []);
 
   return (
     <div className="sidebar">
       <Modal
-        onClose={handleCreateChatRoomFormClose}
-        open={showCreateChatRoomForm}
+        onClose={
+          modalForm === "addChatRoom"
+            ? handleCreateChatRoomFormClose
+            : handleAddTeammateFormClose
+        }
+        open={modalForm !== undefined}
       >
-        <AddChatRoom
-          userName={userName}
-          onNewChatRoomCreation={handleCreateChatRoomFormClose}
-        />
-      </Modal>
-      <Modal onClose={handleAddTeammateFormClose} open={showAddTeammateForm}>
-        <AddTeammate
-          currUserName={userName}
-          onNewTeammateAddition={handleAddTeammateFormClose}
-        />
+        {modalForm === "addChatRoom" ? (
+          <AddChatRoom
+            userName={userName}
+            onNewChatRoomCreation={handleCreateChatRoomFormClose}
+          />
+        ) : (
+          <AddTeammate
+            currUserName={userName}
+            onNewTeammateAddition={handleAddTeammateFormClose}
+          />
+        )}
       </Modal>
       <img className="sidebar-logo" src={sprinklr_logo} alt="sprinklr_logo" />
       <div className="sidebar-addchatroom">

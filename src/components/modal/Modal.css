@@ -29,6 +29,13 @@
     contrast(101%);
 }
 
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .overlay {
   position: fixed;
   top: 0;

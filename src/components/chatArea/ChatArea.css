@@ -29,6 +29,11 @@
   align-items: center;
 }
 
+.chatarea-header-adduser-button {
+  background-color: transparent;
+  border: 0px;
+}
+
 .chatarea-header-adduser_icon {
   cursor: pointer;
   filter: invert(95%) sepia(6%) saturate(41%) hue-rotate(169deg) brightness(90%)
@@ -42,7 +47,7 @@
   width: 80px;
 }
 
-.chatarea-header-adduser_icon:hover + .chatarea-header-adduser_text {
+.chatarea-header-adduser-button:hover + .chatarea-header-adduser_text {
   visibility: visible;
 }
 
@@ -62,4 +67,5 @@
   flex-direction: column;
   align-items: flex-start;
   overflow-y: auto;
+  overflow-x: hidden;
 }

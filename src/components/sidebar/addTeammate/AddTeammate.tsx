@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { nanoid } from "nanoid";
 
-import { useMutation } from "../hooks/useMutation";
+import { Form } from "../../form/Form";
+import { Input } from "../../form/Input";
+import { Button } from "../../form/Button";
 
-import { ajaxClient } from "../utils/ajaxClient";
+import { useMutation } from "../../hooks/useMutation";
 
-import { CHAT_ROOM_TYPE } from "../../constants";
+import { ajaxClient } from "../../utils/ajaxClient";
 
-import "./AddTeammate.css";
+import { CHAT_ROOM_TYPE } from "../../../constants";
 
 type AddTeammateProps = {
   currUserName: string;
@@ -19,7 +21,7 @@ export const AddTeammate = ({
   onNewTeammateAddition,
 }: AddTeammateProps) => {
   const [userName, setUserName] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   const { mutate } = useMutation((data) => {
     return ajaxClient.post({
@@ -53,25 +55,20 @@ export const AddTeammate = ({
   };
 
   return (
-    <div className="addteammate">
-      <form onSubmit={handleSubmit} className="addteammate-form">
-        <h2>Start a new personal chat</h2>
-        <label>
-          Username
-          <input
-            type="text"
-            name="name"
-            value={userName}
-            onChange={handleChange}
-            placeholder="Enter username"
-            className="addteammate-form-field"
-          />
-        </label>
-        <button type="submit" className="addteammate-form-button">
-          Add personal chat
-        </button>
-      </form>
+    <>
+      <h2>Start a new personal chat</h2>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          label="Username"
+          type="text"
+          name="name"
+          value={userName}
+          onChange={handleChange}
+          placeholder="Enter username"
+        />
+        <Button>Add personal chat</Button>
+      </Form>
       <div className="error">{errorMessage}</div>
-    </div>
+    </>
   );
 };

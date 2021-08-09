@@ -1,9 +1,9 @@
 import { useCallback, useState, useEffect, useContext } from "react";
 
-import { Message } from "../message/Message";
+import { Message } from "./message/Message";
 import { MessageInput } from "./messageInput/MessageInput";
 import { Modal } from "../modal/Modal";
-import { AddUserForm } from "./addUserForm/AddUserForm";
+import { AddUserToGroup } from "./addUserToGroup/AddUserToGroup";
 import { Snackbar } from "../snackbar/Snackbar";
 import { UserContext } from "../contexts/UserContext";
 
@@ -112,7 +112,7 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             open={addUserState.showAddUserForm}
             onClose={handleAddUserFormClose}
           >
-            <AddUserForm
+            <AddUserToGroup
               onNewUserAddition={handleNewUserAddition}
               chatRoomId={chatRoomId}
               chatRoomName={chatRoomData.chatRoomName}
@@ -133,21 +133,27 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             </span>
             {chatRoomData.type === "GROUP" ? (
               <div className="chatarea-header-adduser">
+                <button className="chatarea-header-adduser-button">
+                  <img
+                    onClick={handleAddUserFormOpen}
+                    className="chatarea-header-adduser_icon"
+                    src={addUserIcon}
+                    alt="add user"
+                  />
+                </button>
                 <span className="chatarea-header-adduser_text">
                   Add user to {chatRoomData.chatRoomName}
                 </span>
-                <img
-                  onClick={handleAddUserFormOpen}
-                  className="chatarea-header-adduser_icon"
-                  src={addUserIcon}
-                  alt="add user"
-                />
               </div>
             ) : null}
           </div>
           <div className="chatarea-messages">
-            {chatRoomData.messageIds.map((messageId) => (
-              <Message key={messageId} messageId={messageId} />
+            {chatRoomData.messageIds.map((messageId, ind) => (
+              <Message
+                prevMessageId={chatRoomData.messageIds[ind - 1]}
+                key={messageId}
+                messageId={messageId}
+              />
             ))}
           </div>
           <MessageInput onNewMessageCreation={handleNewMessageCreation} />

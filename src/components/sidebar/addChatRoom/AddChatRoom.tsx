@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { nanoid } from "nanoid";
 
+import { Form } from "../../form/Form";
+import { Input } from "../../form/Input";
+import { Button } from "../../form/Button";
+
 import { useMutation } from "../../hooks/useMutation";
 
 import { ajaxClient } from "../../utils/ajaxClient";
 
 import { CHAT_ROOM_TYPE } from "../../../constants";
-
-import "./AddChatRoom.css";
 
 type ChatRoomFormDetails = {
   name: string;
@@ -68,24 +70,19 @@ export const AddChatRoom = ({
   );
 
   return (
-    <div className="addchatroom">
+    <>
       <h2>Create a new group</h2>
-      <form onSubmit={handleSubmit} className="addchatroom-form">
-        <label>
-          Group Name
-          <input
-            type="text"
-            name="name"
-            value={chatRoomFormDetails.name}
-            placeholder="Enter group name"
-            onChange={handleChange}
-            className="addchatroom-form-field"
-          />
-        </label>
-        <button type="submit" className="addchatroom-form-button">
-          Create Chatroom
-        </button>
-      </form>
-    </div>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          label="Group Name"
+          type="text"
+          name="name"
+          value={chatRoomFormDetails.name}
+          placeholder="Enter group name"
+          onChange={handleChange}
+        />
+        <Button>Create Chatroom</Button>
+      </Form>
+    </>
   );
 };

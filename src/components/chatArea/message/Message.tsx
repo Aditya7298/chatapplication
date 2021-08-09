@@ -1,20 +1,34 @@
 import { useState, useEffect } from "react";
 
-import { useQuery } from "../hooks/useQuery";
+import { useQuery } from "../../hooks/useQuery";
 
-import { MessageInfo } from "../../types/Message.interface";
-import { UserInfo } from "../../types/User.interface";
+import { MessageInfo } from "../../../types/Message.interface";
+import { UserInfo } from "../../../types/User.interface";
 
 import "./Message.css";
 
 type MessageProps = {
   messageId: string;
+  prevMessageId: string;
 };
 
-export const Message = ({ messageId }: MessageProps) => {
+export const Message = ({ messageId, prevMessageId }: MessageProps) => {
   const { data: messageData } = useQuery<MessageInfo>({
     path: `/messages/${messageId}`,
   });
+
+  const [skipPrevMessageQuery, setskipPrevMessageQuery] = useState(true);
+
+  const { data: prevMessageData } = useQuery<MessageInfo>({
+    path: `/messages/${prevMessageId}`,
+    skip: skipPrevMessageQuery,
+  });
+
+  useEffect(() => {
+    if (prevMessageId) {
+      setskipPrevMessageQuery(false);
+    }
+  }, [prevMessageId]);
 
   const [skipUserQuery, setSkipUserQuery] = useState(true);
 
@@ -29,15 +43,31 @@ export const Message = ({ messageId }: MessageProps) => {
     }
   }, [messageData]);
 
-  const formatTimestamp = (timestamp: Date) => {
+  const getMessageDateAndTime = (timestamp: Date, format: "date" | "time") => {
     const time = new Date(timestamp);
-    return `${time.getHours()}:${time.getMinutes()}`;
+
+    if (format === "date") {
+      return time.toDateString();
+    }
+
+    return `${time.getHours()}:${
+      time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()
+    }`;
   };
 
   return (
     <div className="message">
       {senderData && messageData ? (
         <>
+          <div className="message-info-date">
+            {prevMessageData === undefined ||
+            getMessageDateAndTime(messageData.timestamp, "date") !==
+              getMessageDateAndTime(prevMessageData.timestamp, "date") ? (
+              <div className="message-info-date_text">
+                {getMessageDateAndTime(messageData.timestamp, "date")}
+              </div>
+            ) : null}
+          </div>
           <div className="message-left-info">
             <img
               className="message-sender-avatar"
@@ -55,7 +85,7 @@ export const Message = ({ messageId }: MessageProps) => {
               </span>
               <span className="message-info-time">
                 {" "}
-                {formatTimestamp(messageData.timestamp)}
+                {getMessageDateAndTime(messageData.timestamp, "time")}
               </span>
             </div>
             <div className="message-text">{messageData.text}</div>
