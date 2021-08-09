@@ -1,11 +1,11 @@
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback } from "react";
 
 import { ChatRoomPreview } from "./chatRoomPreview/ChatRoomPreview";
 import { AddChatRoom } from "./addChatRoom/AddChatRoom";
 import { AddTeammate } from "./addTeammate/AddTeammate";
 import { Modal } from "../modal/Modal";
 
-import { UserContext } from "../contexts/UserContext";
+import { useUserContext } from "../contexts/UserContext";
 
 import showicon from "../../assets/images/right-arrow.svg";
 import hideicon from "../../assets/images/down-arrow.svg";
@@ -28,7 +28,7 @@ export const Sidebar = ({
   const [showPersonalChats, setShowPersonalChats] = useState(true);
   const [modalForm, setModalForm] = useState<"addChatRoom" | "addTeammate">();
 
-  const { userName, groupChats, personalChats } = useContext(UserContext);
+  const { userName, groupChats, personalChats } = useUserContext();
 
   const handleChatRoomPreviewClick = (chatRoomId: string) => {
     onChatRoomPreviewClick(chatRoomId);

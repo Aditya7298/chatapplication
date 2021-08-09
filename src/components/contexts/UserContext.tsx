@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { UserInfo } from "../../types/User.interface";
 
@@ -16,4 +16,12 @@ export const UserContextProvider = ({
   return (
     <UserContext.Provider value={userData}>{children}</UserContext.Provider>
   );
+};
+
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error("useUserContext must be used within a UserContextProvider");
+  }
+  return context;
 };

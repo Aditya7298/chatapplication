@@ -1,11 +1,12 @@
-import { useCallback, useState, useEffect, useContext } from "react";
+import { useCallback, useState, useEffect } from "react";
 
 import { Message } from "./message/Message";
 import { MessageInput } from "./messageInput/MessageInput";
 import { Modal } from "../modal/Modal";
 import { AddUserToGroup } from "./addUserToGroup/AddUserToGroup";
 import { Snackbar } from "../snackbar/Snackbar";
-import { UserContext } from "../contexts/UserContext";
+
+import { useUserContext } from "../contexts/UserContext";
 
 import { useQuery } from "../hooks/useQuery";
 import { useMutation } from "../hooks/useMutation";
@@ -32,7 +33,7 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     successMessage: "",
   });
 
-  const { userId } = useContext(UserContext);
+  const { userId } = useUserContext();
 
   const { data: chatRoomData } = useQuery<ChatRoomInfo>({
     path: `/chatrooms/${chatRoomId}`,
