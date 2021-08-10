@@ -3,8 +3,10 @@
   margin-left: 4px;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .message-left-info {
@@ -38,4 +40,19 @@
 
 .message-sender-avatar {
   align-self: flex-start;
+}
+
+.message-info-date {
+  flex-basis: 100%;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.message-info-date_text {
+  width: fit-content;
+  border: 1px solid white;
+  border-radius: 5px;
+  margin: 0 auto;
+  padding: 4px;
 }

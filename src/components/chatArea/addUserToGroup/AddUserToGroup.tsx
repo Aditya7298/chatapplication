@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 
+import { Form } from "../../form/Form";
+import { Input } from "../../form/Input";
+import { Button } from "../../form/Button";
+
 import { useMutation } from "../../hooks/useMutation";
 
 import { ajaxClient } from "../../utils/ajaxClient";
 
-import "./AddUserForm.css";
-
-type AddUserFormProps = {
+type AddUserToGroupProps = {
   chatRoomId: string;
   chatRoomName: string;
   onNewUserAddition: (newUserName: string) => void;
 };
 
-export const AddUserForm = ({
+export const AddUserToGroup = ({
   chatRoomId,
   chatRoomName,
   onNewUserAddition,
-}: AddUserFormProps) => {
+}: AddUserToGroupProps) => {
   const [userName, setUserName] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
@@ -49,25 +51,20 @@ export const AddUserForm = ({
   };
 
   return (
-    <div className="adduser">
-      <form onSubmit={handleSubmit} className="adduser-form">
-        <h2>Add a new user to {chatRoomName}</h2>
-        <label>
-          Username
-          <input
-            type="text"
-            name="name"
-            value={userName}
-            onChange={handleChange}
-            placeholder="Enter username"
-            className="adduser-form-field"
-          />
-        </label>
-        <button type="submit" className="adduser-form-button">
-          Add User
-        </button>
-      </form>
+    <>
+      <h2>Add a new user to {chatRoomName}</h2>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          label="Username"
+          type="text"
+          name="name"
+          value={userName}
+          onChange={handleChange}
+          placeholder="Enter username"
+        />
+        <Button>Add User</Button>
+      </Form>
       <div className="error">{errorMessage}</div>
-    </div>
+    </>
   );
 };

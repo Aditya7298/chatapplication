@@ -1,17 +1,17 @@
-.addchatroom {
+.form-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.addchatroom-form {
+.form {
   display: flex;
   flex-direction: column;
   margin-bottom: 2px;
 }
 
-.addchatroom-form-field {
+.form-input {
   display: block;
   width: 200px;
   height: 30px;
@@ -25,11 +25,11 @@
   outline: none;
 }
 
-.addchatroom-form-field-error {
+.form-input-error {
   border-color: red;
 }
 
-.addchatroom-form-button {
+.form-button {
   height: 35px;
   border-radius: 5px;
   font-size: 1.2rem;
@@ -38,10 +38,10 @@
   border: 1px solid black;
   cursor: pointer;
   margin-top: 8px;
-  width: fit-content;
+  width: 100%;
   align-self: center;
 }
 
-.addchatroom-form-button:hover {
+.form-button:hover {
   background-color: rgb(31, 33, 36);
 }

@@ -1,14 +1,14 @@
 import { useContext, useState, useEffect } from "react";
 
-import { useQuery } from "../hooks/useQuery";
+import { useQuery } from "../../hooks/useQuery";
 
-import { UserContext } from "../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 
-import { computePersonalChatRoomName } from "../utils/computePersonalChatRoomName";
+import { computePersonalChatRoomName } from "../../utils/computePersonalChatRoomName";
 
-import { ChatRoomInfo } from "../../types/ChatRoom.interface";
+import { ChatRoomInfo } from "../../../types/ChatRoom.interface";
 
-import { CHAT_ROOM_TYPE } from "../../constants";
+import { CHAT_ROOM_TYPE } from "../../../constants";
 
 import "./ChatRoomPreview.css";
 
