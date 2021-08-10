@@ -1,16 +1,1 @@
-{
-  "0": {
-    "userId": "0",
-    "avatar": "https://freesvg.org/img/BadDay.png",
-    "userName": "aditya",
-    "personalChats": ["0"],
-    "groupChats": ["1"]
-  },
-  "1": {
-    "userId": "1",
-    "avatar": "https://freesvg.org/img/comic-boy.png",
-    "userName": "vikram",
-    "personalChats": ["0"],
-    "groupChats": ["1"]
-  }
-}
+{"0":{"userId":"0","avatar":"https://freesvg.org/img/BadDay.png","userName":"aditya","personalChats":["0"],"groupChats":["1","U5jOKWZ1esmnZBonYKbNW"]},"1":{"userId":"1","avatar":"https://freesvg.org/img/comic-boy.png","userName":"vikram","personalChats":["0"],"groupChats":["1"]}}

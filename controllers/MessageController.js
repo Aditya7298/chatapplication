@@ -32,6 +32,30 @@ class MessageController extends DBLayer {
     }
   }
 
+  async getMultiplemessages(messageIds) {
+    try {
+      const messageDataJSON = await this.readFromDB();
+      const messageData = JSON.parse(messageDataJSON);
+
+      return Object.keys(messageData).reduce(
+        (messages, messageId) =>
+          messageIds.includes(messageId)
+            ? [...messages, messageData[messageId]]
+            : messages,
+        []
+      );
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
+  }
+
   async createMessage(payload) {
     try {
       if (
