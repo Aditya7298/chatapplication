@@ -15,6 +15,7 @@ import { ajaxClient } from "../utils/ajaxClient";
 import { computePersonalChatRoomName } from "../utils/computePersonalChatRoomName";
 
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
+import { MessageInfo } from "../../types/Message.interface";
 
 import { CHAT_ROOM_TYPE } from "../../constants";
 
@@ -37,7 +38,21 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
 
   const { data: chatRoomData } = useQuery<ChatRoomInfo>({
     path: `/chatrooms/${chatRoomId}`,
+  });
+
+  const [skipChatRoomMessagesQuery, setSkipChatRoomMessagesQuery] =
+    useState(true);
+
+  useEffect(() => {
+    if (chatRoomData) {
+      setSkipChatRoomMessagesQuery(false);
+    }
+  }, [chatRoomData]);
+
+  const { data: chatRoomMessages } = useQuery<MessageInfo[]>({
+    path: `/chatrooms/${chatRoomId}/messages`,
     interval: 1000,
+    skip: skipChatRoomMessagesQuery,
   });
 
   const { mutate } = useMutation((data) => {
@@ -49,11 +64,15 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
 
   const handleNewMessageCreation = useCallback(
     (newMessageId: string) => {
-      if (!chatRoomData) {
+      if (!chatRoomMessages) {
         return;
       }
 
-      const updatedMessageIds = [...chatRoomData.messageIds, newMessageId];
+      const existingMessageIds = chatRoomMessages.map(
+        (message) => message.messageId
+      );
+
+      const updatedMessageIds = [...existingMessageIds, newMessageId];
 
       mutate({
         key: "messageIds",
@@ -61,7 +80,7 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
       });
     },
 
-    [chatRoomData, mutate]
+    [chatRoomMessages, mutate]
   );
 
   const [computedChatRoomName, setComputedChatRoomName] = useState<
@@ -148,14 +167,20 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
               </div>
             ) : null}
           </div>
+
           <div className="chatarea-messages">
-            {chatRoomData.messageIds.map((messageId, ind) => (
-              <Message
-                prevMessageId={chatRoomData.messageIds[ind - 1]}
-                key={messageId}
-                messageId={messageId}
-              />
-            ))}
+            {chatRoomMessages
+              ? chatRoomMessages
+                  .slice(0)
+                  .reverse()
+                  .map((message, ind, arr) => (
+                    <Message
+                      key={message.messageId}
+                      nextMessageDate={arr[ind + 1]?.timestamp}
+                      messageData={message}
+                    />
+                  ))
+              : null}
           </div>
           <MessageInput onNewMessageCreation={handleNewMessageCreation} />
         </>

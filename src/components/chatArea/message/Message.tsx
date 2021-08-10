@@ -8,40 +8,16 @@ import { UserInfo } from "../../../types/User.interface";
 import "./Message.css";
 
 type MessageProps = {
-  messageId: string;
-  prevMessageId: string;
+  messageData: MessageInfo;
+  nextMessageDate: Date | undefined;
 };
 
-export const Message = ({ messageId, prevMessageId }: MessageProps) => {
-  const { data: messageData } = useQuery<MessageInfo>({
-    path: `/messages/${messageId}`,
-  });
-
-  const [skipPrevMessageQuery, setskipPrevMessageQuery] = useState(true);
-
-  const { data: prevMessageData } = useQuery<MessageInfo>({
-    path: `/messages/${prevMessageId}`,
-    skip: skipPrevMessageQuery,
-  });
-
-  useEffect(() => {
-    if (prevMessageId) {
-      setskipPrevMessageQuery(false);
-    }
-  }, [prevMessageId]);
-
-  const [skipUserQuery, setSkipUserQuery] = useState(true);
+export const Message = ({ messageData, nextMessageDate }: MessageProps) => {
+  const [showMessageDate, setShowMessageDate] = useState(false);
 
   const { data: senderData } = useQuery<UserInfo>({
     path: `/users/${messageData?.senderId}`,
-    skip: skipUserQuery,
   });
-
-  useEffect(() => {
-    if (messageData) {
-      setSkipUserQuery(false);
-    }
-  }, [messageData]);
 
   const getMessageDateAndTime = (timestamp: Date, format: "date" | "time") => {
     const time = new Date(timestamp);
@@ -55,19 +31,18 @@ export const Message = ({ messageId, prevMessageId }: MessageProps) => {
     }`;
   };
 
+  useEffect(() => {
+    setShowMessageDate(
+      nextMessageDate === undefined ||
+        getMessageDateAndTime(nextMessageDate, "date") !==
+          getMessageDateAndTime(messageData.timestamp, "date")
+    );
+  }, [messageData.timestamp, nextMessageDate]);
+
   return (
-    <div className="message">
+    <>
       {senderData && messageData ? (
-        <>
-          <div className="message-info-date">
-            {prevMessageData === undefined ||
-            getMessageDateAndTime(messageData.timestamp, "date") !==
-              getMessageDateAndTime(prevMessageData.timestamp, "date") ? (
-              <div className="message-info-date_text">
-                {getMessageDateAndTime(messageData.timestamp, "date")}
-              </div>
-            ) : null}
-          </div>
+        <div className="message">
           <div className="message-left-info">
             <img
               className="message-sender-avatar"
@@ -90,8 +65,15 @@ export const Message = ({ messageId, prevMessageId }: MessageProps) => {
             </div>
             <div className="message-text">{messageData.text}</div>
           </div>
-        </>
+        </div>
       ) : null}
-    </div>
+      {messageData && showMessageDate ? (
+        <div className="message-info-date">
+          <div className="message-info-date_text">
+            {getMessageDateAndTime(messageData.timestamp, "date")}
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 };
