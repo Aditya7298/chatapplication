@@ -1,1 +1,17 @@
-{"0":{"chatRoomId":"0","chatRoomName":"test1","userIds":["0","1"],"messageIds":["1","GSm5OOzE8U98iJ9Z6IUm_","8BZKj1ihBJBZ5W-kAN_D9","v_eXz1o-vX7uFSrQJOA7z"],"type":"PERSONAL","userNames":{}},"1":{"chatRoomId":"1","chatRoomName":"test2","userIds":["0","1","2"],"messageIds":["0","2","D-lRWtcLa0_YYZiwMD9n4","8BtfKCy-3qdopthJeOeUo","Gr2dT8yoe74o_UEIRPq34","nqH5ddhs5Ql70iQ9zadsj","P3MhLudPRNzDNQhoss-yj","0Yc226GonSzVkjx71lscP","kVM_5xvKbd4m-edbegPG_","8vfGGlcJ1XHdYqCoXsUe7","aX4ozgthXmm36JbuoVyck","LjrhQkbwowPxg900eUKoN","BunlAJdqBk7Fx2KZmJEA1","2FS7BtKllg-zlr76g6YeW"],"type":"GROUP"},"U5jOKWZ1esmnZBonYKbNW":{"chatRoomId":"U5jOKWZ1esmnZBonYKbNW","chatRoomName":"date test","type":"GROUP","messageIds":["GZGSqxYAlBvPXmpndEray","01d_XY4v4B8Aa5XCD1iC7","qyZwoLVEKO-G-BnY5Y0yM"],"userIds":["0"]}}
+{
+  "0": {
+    "chatRoomId": "0",
+    "chatRoomName": "test1",
+    "userIds": ["0", "1"],
+    "messageIds": ["1"],
+    "type": "PERSONAL",
+    "userNames": {}
+  },
+  "1": {
+    "chatRoomId": "1",
+    "chatRoomName": "test2",
+    "userIds": ["0", "1", "2"],
+    "messageIds": ["0", "2"],
+    "type": "GROUP"
+  }
+}
