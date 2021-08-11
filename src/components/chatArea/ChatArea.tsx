@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect } from "react";
+import { VariableSizeList } from "react-window";
 
 import { Message } from "./message/Message";
 import { MessageInput } from "./messageInput/MessageInput";
@@ -40,20 +41,26 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     path: `/chatrooms/${chatRoomId}`,
   });
 
-  const [skipChatRoomMessagesQuery, setSkipChatRoomMessagesQuery] =
-    useState(true);
+  const [chatRoomMessages, setChatRoomMessages] = useState<MessageInfo[]>([]);
+
+  const { data: updatedChatRoomMessages } = useQuery<MessageInfo[]>({
+    path: `/chatrooms/${chatRoomId}/messages`,
+    queryInterval: 1000,
+    skip: !chatRoomData,
+  });
 
   useEffect(() => {
-    if (chatRoomData) {
-      setSkipChatRoomMessagesQuery(false);
+    if (!updatedChatRoomMessages) {
+      return;
     }
-  }, [chatRoomData]);
 
-  const { data: chatRoomMessages } = useQuery<MessageInfo[]>({
-    path: `/chatrooms/${chatRoomId}/messages`,
-    interval: 1000,
-    skip: skipChatRoomMessagesQuery,
-  });
+    if (updatedChatRoomMessages.length !== chatRoomMessages.length) {
+      setChatRoomMessages((prevState) => [
+        ...prevState,
+        ...updatedChatRoomMessages.slice(prevState.length),
+      ]);
+    }
+  }, [updatedChatRoomMessages, chatRoomMessages.length]);
 
   const { mutate } = useMutation((data) => {
     return ajaxClient.patch({
@@ -83,19 +90,17 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     [chatRoomMessages, mutate]
   );
 
-  const [computedChatRoomName, setComputedChatRoomName] = useState<
-    string | undefined
-  >();
+  const [personalChatRoomName, setPersonalChatRoomName] = useState<string>();
 
   useEffect(() => {
     if (chatRoomData?.type === CHAT_ROOM_TYPE.PERSONAL) {
       computePersonalChatRoomName(chatRoomId, userId).then(
         (computedChatRoomName) => {
-          setComputedChatRoomName(computedChatRoomName);
+          setPersonalChatRoomName(computedChatRoomName);
         }
       );
     }
-  }, [chatRoomId, userId, chatRoomData]);
+  }, [chatRoomData?.type, chatRoomId, userId]);
 
   const handleAddUserFormClose = useCallback(() => {
     setAddUserState((prevState) => ({ ...prevState, showAddUserForm: false }));
@@ -124,6 +129,51 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     }));
   }, []);
 
+  const getMessageHeight = (index: number): number => {
+    if (!chatRoomMessages) {
+      return 0;
+    }
+
+    const messageText = chatRoomMessages[index].text;
+
+    const messageContainerWidth =
+      document.body.getBoundingClientRect().width * 0.9;
+
+    const numOfCharactersInMessage = messageText.split("").length;
+
+    // For 1000 pixel width one line takes at most 118 characters (approx)
+
+    const numOfLinesInMessage = Math.ceil(
+      (1000 / messageContainerWidth) * (numOfCharactersInMessage / 118)
+    );
+
+    // 17 is the font line-height and 50 is the base height for only one line rest 20 is just to be safe.
+
+    const lineHeight = 17;
+    const baseHeight = 50;
+    const extraOffset = 20;
+    const messageHeight =
+      lineHeight * (numOfLinesInMessage - 1) + baseHeight + extraOffset;
+
+    return messageHeight;
+  };
+
+  const messageRow = useCallback(
+    ({ index, style }: { index: number; style: object }) => (
+      <>
+        {chatRoomMessages ? (
+          <div style={style}>
+            <Message
+              key={chatRoomMessages[index].messageId}
+              messageData={chatRoomMessages[index]}
+            />
+          </div>
+        ) : null}
+      </>
+    ),
+    [chatRoomMessages]
+  );
+
   return (
     <div className="chatarea">
       {chatRoomData ? (
@@ -148,7 +198,7 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
           <div className="chatarea-header">
             <span className="chatarea-header-title">
               {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL
-                ? computedChatRoomName
+                ? personalChatRoomName
                 : chatRoomData.chatRoomName}
             </span>
             {chatRoomData.type === "GROUP" ? (
@@ -168,20 +218,19 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             ) : null}
           </div>
 
-          <div className="chatarea-messages">
-            {chatRoomMessages
-              ? chatRoomMessages
-                  .slice(0)
-                  .reverse()
-                  .map((message, ind, arr) => (
-                    <Message
-                      key={message.messageId}
-                      nextMessageDate={arr[ind + 1]?.timestamp}
-                      messageData={message}
-                    />
-                  ))
-              : null}
-          </div>
+          {chatRoomMessages ? (
+            <div className="chatarea-messages">
+              <VariableSizeList
+                itemCount={chatRoomMessages.length}
+                itemSize={getMessageHeight}
+                height={1000}
+                width={"100%"}
+              >
+                {messageRow}
+              </VariableSizeList>
+            </div>
+          ) : null}
+
           <MessageInput onNewMessageCreation={handleNewMessageCreation} />
         </>
       ) : null}

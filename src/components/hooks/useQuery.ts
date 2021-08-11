@@ -1,37 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { ajaxClient } from "../utils/ajaxClient";
 
 type useQueryParams = {
   path: string;
-  payload?: Object;
   skip?: boolean;
-  interval?: number;
+  queryInterval?: number;
 };
 
 type UseQueryState<Type> = {
   data: Type | undefined;
   error: string | undefined;
-  isLoading: boolean;
-  queryTimestamp: string;
+  status: "loading" | "rejected" | "fullfilled" | "idle";
   skip?: boolean;
 };
 
 export const useQuery = <Type = any>(params: useQueryParams) => {
-  const { path, payload, skip = false, interval } = params;
+  const { path, skip = false, queryInterval } = params;
 
   const [state, setState] = useState<UseQueryState<Type>>({
     data: undefined,
     error: undefined,
-    isLoading: false,
-    queryTimestamp: Date.now().toString(),
+    status: "idle",
   });
 
-  useEffect(() => {
-    if (skip) {
-      return;
-    }
-
+  const fetchCall = useCallback(() => {
     setState((prevState) => ({ ...prevState, isLoading: true }));
 
     ajaxClient
@@ -62,20 +55,19 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
           isLoading: false,
         }));
       });
-  }, [path, skip, payload, state.queryTimestamp]);
+  }, [path]);
+
+  useEffect(() => {
+    if (!skip) {
+      fetchCall();
+    }
+  }, [fetchCall, skip]);
 
   useEffect(() => {
     let timerId: NodeJS.Timeout;
 
-    if (interval) {
-      timerId = setInterval(
-        () =>
-          setState((prevState) => ({
-            ...prevState,
-            queryTimestamp: Date.now().toString(),
-          })),
-        interval
-      );
+    if (queryInterval) {
+      timerId = setInterval(() => fetchCall(), queryInterval);
     }
 
     return () => {
@@ -85,5 +77,5 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
     };
   });
 
-  return { data: state.data, error: state.error, isLoading: state.isLoading };
+  return { data: state.data, error: state.error, status: state.status };
 };

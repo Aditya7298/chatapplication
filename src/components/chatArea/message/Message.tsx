@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 import { useQuery } from "../../hooks/useQuery";
 
 import { MessageInfo } from "../../../types/Message.interface";
@@ -9,35 +7,30 @@ import "./Message.css";
 
 type MessageProps = {
   messageData: MessageInfo;
-  nextMessageDate: Date | undefined;
 };
 
-export const Message = ({ messageData, nextMessageDate }: MessageProps) => {
-  const [showMessageDate, setShowMessageDate] = useState(false);
+const TIME_STAMP_FORMAT = {
+  DATE: "DATE",
+  TIME: "TIME",
+} as const;
 
+export const Message = ({ messageData }: MessageProps) => {
   const { data: senderData } = useQuery<UserInfo>({
-    path: `/users/${messageData?.senderId}`,
+    path: `/users/${messageData.senderId}`,
   });
 
-  const getMessageDateAndTime = (timestamp: Date, format: "date" | "time") => {
+  const getMessageDateAndTime = (
+    timestamp: Date,
+    format: typeof TIME_STAMP_FORMAT.DATE | typeof TIME_STAMP_FORMAT.TIME
+  ) => {
     const time = new Date(timestamp);
 
-    if (format === "date") {
-      return time.toDateString();
-    }
-
-    return `${time.getHours()}:${
-      time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()
-    }`;
+    return format === TIME_STAMP_FORMAT.DATE
+      ? time.toDateString().slice(4)
+      : `${time.getHours()}:${
+          time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()
+        }`;
   };
-
-  useEffect(() => {
-    setShowMessageDate(
-      nextMessageDate === undefined ||
-        getMessageDateAndTime(nextMessageDate, "date") !==
-          getMessageDateAndTime(messageData.timestamp, "date")
-    );
-  }, [messageData.timestamp, nextMessageDate]);
 
   return (
     <>
@@ -60,17 +53,17 @@ export const Message = ({ messageData, nextMessageDate }: MessageProps) => {
               </span>
               <span className="message-info-time">
                 {" "}
-                {getMessageDateAndTime(messageData.timestamp, "time")}
+                {getMessageDateAndTime(
+                  messageData.timestamp,
+                  TIME_STAMP_FORMAT.TIME
+                )}{" "}
+                {getMessageDateAndTime(
+                  messageData.timestamp,
+                  TIME_STAMP_FORMAT.DATE
+                )}
               </span>
             </div>
             <div className="message-text">{messageData.text}</div>
-          </div>
-        </div>
-      ) : null}
-      {messageData && showMessageDate ? (
-        <div className="message-info-date">
-          <div className="message-info-date_text">
-            {getMessageDateAndTime(messageData.timestamp, "date")}
           </div>
         </div>
       ) : null}
