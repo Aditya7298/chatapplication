@@ -1,16 +1,1 @@
-{
-  "0": {
-    "userId": "0",
-    "avatar": "https://freesvg.org/img/BadDay.png",
-    "userName": "aditya",
-    "personalChats": ["0"],
-    "groupChats": ["1"]
-  },
-  "1": {
-    "userId": "1",
-    "avatar": "https://freesvg.org/img/comic-boy.png",
-    "userName": "vikram",
-    "personalChats": ["0"],
-    "groupChats": ["1"]
-  }
-}
+{"0":{"userId":"0","avatar":"https://freesvg.org/img/BadDay.png","userName":"aditya","personalChats":["0","UlkU6w8PazDJfZ8h7quAp","QQWoafpmpBrwdhhL-gRX2"],"groupChats":["1","DwgzybS9xUfDlKm2NNnyg"]},"1":{"userId":"1","avatar":"https://freesvg.org/img/comic-boy.png","userName":"vikram","personalChats":["0"],"groupChats":["1"]},"b7Sk3FfbQUZSWCPeLYfNm":{"userName":"ankit","userId":"b7Sk3FfbQUZSWCPeLYfNm","avatar":"https://image.flaticon.com/icons/png/512/145/145843.png","personalChats":["QQWoafpmpBrwdhhL-gRX2"],"groupChats":["1"]},"Zu0VPrTQ_wEOWwU2tShTU":{"userName":"new_user","userId":"Zu0VPrTQ_wEOWwU2tShTU","avatar":"https://image.flaticon.com/icons/png/512/560/560216.png","personalChats":["UlkU6w8PazDJfZ8h7quAp"],"groupChats":["DwgzybS9xUfDlKm2NNnyg"]}}

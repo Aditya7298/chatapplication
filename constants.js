@@ -5,8 +5,8 @@ const CONTROLLER_NAMES = {
   LOGIN: "LOGIN",
 };
 
-const pwd = process.env.PWD;
-// const pwd = "/Users/aditya/Desktop/code/chatapp-server";
+// const pwd = process.env.PWD;
+const pwd = "/Users/aditya/Desktop/code/chatapp-server";
 
 const SAMPLE_AVATARS = [
   "https://image.flaticon.com/icons/png/512/145/145843.png",
