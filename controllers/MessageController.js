@@ -2,7 +2,7 @@ const { DBLayer } = require("../database/DBLayer");
 const { checkPayloadForKeys } = require("./utils");
 const { CONTROLLER_NAMES, ERROR_MESSAGES } = require("../constants");
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 class MessageController extends DBLayer {
   constructor() {
