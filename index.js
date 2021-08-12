@@ -4,7 +4,8 @@ const cors = require("cors");
 
 const { appRoutes } = require("./routes/routes");
 
-// app.use(cors());
+// console.log(process.env.PWD);
+app.use(cors());
 app.get("/", (req, res) => {
   res.json({ message: "application running" });
 });

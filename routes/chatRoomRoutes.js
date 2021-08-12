@@ -9,6 +9,9 @@ const { ChatRoomController } = require("../controllers/ChatRoomController"),
 const { UserController } = require("../controllers/UserController"),
   userController = new UserController();
 
+const { MessageController } = require("../controllers/MessageController"),
+  messageController = new MessageController();
+
 router.get("/:chatRoomId", async (req, res) => {
   const chatRoomId = req.params.chatRoomId;
 
@@ -16,6 +19,23 @@ router.get("/:chatRoomId", async (req, res) => {
     .getOneChatRoom(chatRoomId)
     .then((data) => {
       res.status(200).json(data);
+    })
+    .catch((err) => {
+      const { code, message } = err;
+      res.status(code).json({ message });
+    });
+});
+
+router.get("/:chatRoomId/messages", async (req, res) => {
+  const chatRoomId = req.params.chatRoomId;
+
+  chatRoomController
+    .getOneChatRoom(chatRoomId)
+    .then((data) => {
+      const { messageIds } = data;
+      messageController.getMultiplemessages(messageIds).then((data) => {
+        res.status(200).json(data);
+      });
     })
     .catch((err) => {
       const { code, message } = err;

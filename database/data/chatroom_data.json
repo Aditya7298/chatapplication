@@ -1,1 +1,17 @@
-{"0":{"chatRoomId":"0","chatRoomName":"test1","userIds":["0","1"],"messageIds":["1"],"type":"PERSONAL"},"1":{"chatRoomId":"1","chatRoomName":"test2","userIds":["0","1","2"],"messageIds":["EHdk4oiuKtlijxCw3lT_G","CaMVXtFa6-7OzmbH-_Dl4","5nySltzcKYdms1kNM2g7Z","KfIhYsn-PH9vIyW1Ffs8u","SyXV4U_MaYPSU4UpMqLz-","3io2clWLrmubo1yg2JX2k","WlKCCDcOzJTkb_Ejd5VBF"],"type":"GROUP"}}
+{
+  "0": {
+    "chatRoomId": "0",
+    "chatRoomName": "test1",
+    "userIds": ["0", "1"],
+    "messageIds": ["1"],
+    "type": "PERSONAL",
+    "userNames": {}
+  },
+  "1": {
+    "chatRoomId": "1",
+    "chatRoomName": "test2",
+    "userIds": ["0", "1", "2"],
+    "messageIds": ["0", "2"],
+    "type": "GROUP"
+  }
+}

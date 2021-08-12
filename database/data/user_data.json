@@ -3,14 +3,14 @@
     "userId": "0",
     "avatar": "https://freesvg.org/img/BadDay.png",
     "userName": "aditya",
-    "personalChats": [],
+    "personalChats": ["0"],
     "groupChats": ["1"]
   },
   "1": {
     "userId": "1",
     "avatar": "https://freesvg.org/img/comic-boy.png",
     "userName": "vikram",
-    "personalChats": [],
+    "personalChats": ["0"],
     "groupChats": ["1"]
   }
 }
