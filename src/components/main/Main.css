@@ -2,6 +2,42 @@
   height: 100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-header {
+  flex: 0 0 auto;
+  height: 5%;
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  background-color: rgb(34, 37, 41);
+  border-bottom: 1px solid black;
+}
+
+.main-header-username {
+  color: #fff;
+  font-size: x-large;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.main-header-avatar {
+  height: 30px;
+  width: 30px;
+  border-radius: 10%;
+  margin-right: 10px;
+  margin-left: 10px;
+  /* border: 5px solid rgb(25, 23, 29); */
+}
+
+.main-content {
+  flex: 0 0 auto;
+  height: 95%;
+  width: 100%;
+  display: flex;
   overflow: hidden;
 }
 

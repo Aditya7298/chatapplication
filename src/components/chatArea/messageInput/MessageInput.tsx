@@ -56,6 +56,7 @@ export const MessageInput = ({ onNewMessageCreation }: MessageInputProps) => {
           name="newmessage"
           value={newMessageText}
           onChange={handleChange}
+          required
         />
         <button className="chatarea-input-send">
           <img alt="send message" src={sendicon} />

@@ -9,6 +9,8 @@ export const useMutation = (mutationFunction: MutationFunctionType) => {
 
   const mutate = useCallback(
     async (data: any, mutationSideEffects = {}) => {
+      console.log(data);
+
       setStatus("loading");
 
       const res = await mutationFunction(data);

@@ -20,20 +20,30 @@ export const Main = () => {
 
   return (
     <div className="main">
-      {userData ? (
-        <Sidebar
-          selectedChatRoomId={selectedChatRoomId}
-          onChatRoomPreviewClick={handleChatRoomPreviewClick}
+      <div className="main-header">
+        <img
+          className="main-header-avatar"
+          src={userData.avatar}
+          alt="user avatar"
         />
-      ) : null}
-      {selectedChatRoomId ? (
-        <ChatArea key={selectedChatRoomId} chatRoomId={selectedChatRoomId} />
-      ) : (
-        <h1 className="main-nochatroom-message">
-          Select an existing chatroom or create a new one to start a
-          conversation...
-        </h1>
-      )}
+        <span className="main-header-username">{userData.userName}</span>
+      </div>
+      <div className="main-content">
+        {userData ? (
+          <Sidebar
+            selectedChatRoomId={selectedChatRoomId}
+            onChatRoomPreviewClick={handleChatRoomPreviewClick}
+          />
+        ) : null}
+        {selectedChatRoomId ? (
+          <ChatArea key={selectedChatRoomId} chatRoomId={selectedChatRoomId} />
+        ) : (
+          <h1 className="main-nochatroom-message">
+            Select an existing chatroom or create a new one to start a
+            conversation...
+          </h1>
+        )}
+      </div>
     </div>
   );
 };
