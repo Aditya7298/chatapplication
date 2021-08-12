@@ -20,9 +20,8 @@ export const AddUserToGroup = ({
   onNewUserAddition,
 }: AddUserToGroupProps) => {
   const [userName, setUserName] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-  const { mutate } = useMutation((data) => {
+  const { mutate, error: errorMessage } = useMutation((data) => {
     return ajaxClient.patch({
       path: `/chatrooms/${chatRoomId}`,
       payload: {
@@ -37,10 +36,6 @@ export const AddUserToGroup = ({
     mutate([userName], {
       onSuccess: () => {
         onNewUserAddition(userName);
-      },
-
-      onError: (message: string) => {
-        setErrorMessage(message);
       },
     });
   };

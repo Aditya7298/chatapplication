@@ -21,9 +21,8 @@ export const AddTeammate = ({
   onNewTeammateAddition,
 }: AddTeammateProps) => {
   const [userName, setUserName] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>();
 
-  const { mutate } = useMutation((data) => {
+  const { mutate, error: errorMessage } = useMutation((data) => {
     return ajaxClient.post({
       path: `/chatrooms`,
       payload: {
@@ -41,10 +40,6 @@ export const AddTeammate = ({
     mutate([userName], {
       onSuccess: () => {
         onNewTeammateAddition();
-      },
-
-      onError: (message: string) => {
-        setErrorMessage(message);
       },
     });
   };

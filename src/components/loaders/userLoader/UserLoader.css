@@ -1,0 +1,22 @@
+.user-loader {
+  height: 40px;
+  width: 200px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.user-loader-name {
+  height: 24px;
+  width: 140px;
+  background-color: #606264;
+  border-radius: 10px;
+}
+
+.user-loader-avatar {
+  height: 30px;
+  width: 30px;
+  background-color: #606264;
+  border-radius: 10px;
+}

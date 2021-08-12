@@ -1,10 +1,11 @@
 import { useCallback, useState, useEffect } from "react";
 
-import { Message } from "./message/Message";
+import { ChatAreaMessages } from "./chatAreaMessages/ChatAreaMessages";
 import { MessageInput } from "./messageInput/MessageInput";
 import { Modal } from "../modal/Modal";
 import { AddUserToGroup } from "./addUserToGroup/AddUserToGroup";
 import { Snackbar } from "../snackbar/Snackbar";
+import { UserLoader } from "../loaders/userLoader/UserLoader";
 
 import { useUserContext } from "../contexts/UserContext";
 
@@ -12,7 +13,7 @@ import { useQuery } from "../hooks/useQuery";
 import { useMutation } from "../hooks/useMutation";
 
 import { ajaxClient } from "../utils/ajaxClient";
-import { computePersonalChatRoomName } from "../utils/computePersonalChatRoomName";
+import { getPersonalChatRoomInfo } from "../utils/computePersonalChatRoomName";
 
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
 import { MessageInfo } from "../../types/Message.interface";
@@ -20,6 +21,7 @@ import { MessageInfo } from "../../types/Message.interface";
 import { CHAT_ROOM_TYPE } from "../../constants";
 
 import addUserIcon from "../../assets/images/add-user.svg";
+import loadingIcon from "../../assets/images/loading-animation.svg";
 
 import "./ChatArea.css";
 
@@ -40,62 +42,48 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     path: `/chatrooms/${chatRoomId}`,
   });
 
-  const [skipChatRoomMessagesQuery, setSkipChatRoomMessagesQuery] =
-    useState(true);
-
-  useEffect(() => {
-    if (chatRoomData) {
-      setSkipChatRoomMessagesQuery(false);
-    }
-  }, [chatRoomData]);
-
   const { data: chatRoomMessages } = useQuery<MessageInfo[]>({
     path: `/chatrooms/${chatRoomId}/messages`,
-    interval: 1000,
-    skip: skipChatRoomMessagesQuery,
+    skip: !chatRoomData,
   });
+
+  const [newMessageData, setNewMessageData] = useState<MessageInfo>();
 
   const { mutate } = useMutation((data) => {
     return ajaxClient.patch({
-      path: `/chatrooms/${chatRoomId}`,
+      path: `/chatrooms/${chatRoomId}/messages`,
       payload: data,
     });
   });
 
   const handleNewMessageCreation = useCallback(
-    (newMessageId: string) => {
+    (newMessageData: MessageInfo) => {
       if (!chatRoomMessages) {
         return;
       }
 
-      const existingMessageIds = chatRoomMessages.map(
-        (message) => message.messageId
-      );
-
-      const updatedMessageIds = [...existingMessageIds, newMessageId];
-
       mutate({
-        key: "messageIds",
-        value: updatedMessageIds,
+        messageId: newMessageData.messageId,
       });
+
+      setNewMessageData(newMessageData);
     },
 
     [chatRoomMessages, mutate]
   );
 
-  const [computedChatRoomName, setComputedChatRoomName] = useState<
-    string | undefined
-  >();
+  const [personalChatRoomTeamMateInfo, setPersonalChatRoomTeamMateInfo] =
+    useState<{ userName: string; avatar?: string }>();
 
   useEffect(() => {
     if (chatRoomData?.type === CHAT_ROOM_TYPE.PERSONAL) {
-      computePersonalChatRoomName(chatRoomId, userId).then(
-        (computedChatRoomName) => {
-          setComputedChatRoomName(computedChatRoomName);
+      getPersonalChatRoomInfo(chatRoomId, userId).then(
+        ({ userName, avatar }) => {
+          setPersonalChatRoomTeamMateInfo({ userName, avatar });
         }
       );
     }
-  }, [chatRoomId, userId, chatRoomData]);
+  }, [chatRoomData?.type, chatRoomId, userId]);
 
   const handleAddUserFormClose = useCallback(() => {
     setAddUserState((prevState) => ({ ...prevState, showAddUserForm: false }));
@@ -147,9 +135,21 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
 
           <div className="chatarea-header">
             <span className="chatarea-header-title">
-              {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL
-                ? computedChatRoomName
-                : chatRoomData.chatRoomName}
+              {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
+                personalChatRoomTeamMateInfo ? (
+                  <>
+                    <img
+                      src={personalChatRoomTeamMateInfo.avatar}
+                      alt="teammate photograph"
+                    />{" "}
+                    <span>{personalChatRoomTeamMateInfo.userName}</span>
+                  </>
+                ) : (
+                  <UserLoader />
+                )
+              ) : (
+                `# ${chatRoomData.chatRoomName}`
+              )}
             </span>
             {chatRoomData.type === "GROUP" ? (
               <div className="chatarea-header-adduser">
@@ -168,23 +168,21 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             ) : null}
           </div>
 
-          <div className="chatarea-messages">
-            {chatRoomMessages
-              ? chatRoomMessages
-                  .slice(0)
-                  .reverse()
-                  .map((message, ind, arr) => (
-                    <Message
-                      key={message.messageId}
-                      nextMessageDate={arr[ind + 1]?.timestamp}
-                      messageData={message}
-                    />
-                  ))
-              : null}
-          </div>
+          <ChatAreaMessages
+            newMessageData={newMessageData}
+            chatRoomId={chatRoomData.chatRoomId}
+          />
           <MessageInput onNewMessageCreation={handleNewMessageCreation} />
         </>
-      ) : null}
+      ) : (
+        <object
+          className="chatarea-loading-indicator"
+          type="image/svg+xml"
+          data={loadingIcon}
+        >
+          svg-animation
+        </object>
+      )}
     </div>
   );
 };

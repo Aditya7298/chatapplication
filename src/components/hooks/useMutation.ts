@@ -2,27 +2,31 @@ import { useState, useCallback } from "react";
 
 type MutationFunctionType = (...args: any[]) => Promise<Response>;
 
+type UseMutationState = {
+  status: "idle" | "loading" | "fullfiled" | "rejected";
+  error: string | undefined;
+};
+
 export const useMutation = (mutationFunction: MutationFunctionType) => {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "fullfiled" | "rejected"
-  >("idle");
+  const [state, setState] = useState<UseMutationState>({
+    status: "idle",
+    error: undefined,
+  });
 
   const mutate = useCallback(
     async (data: any, mutationSideEffects = {}) => {
-      console.log(data);
-
-      setStatus("loading");
+      setState({ status: "loading", error: undefined });
 
       const res = await mutationFunction(data);
       const resBody = await res.json();
 
       if (!res.ok) {
-        setStatus("rejected");
+        setState({ status: "rejected", error: resBody.message });
         if (mutationSideEffects.onError) {
-          mutationSideEffects.onError(resBody.message);
+          mutationSideEffects.onError();
         }
       } else {
-        setStatus("fullfiled");
+        setState({ status: "fullfiled", error: undefined });
         if (mutationSideEffects.onSuccess) {
           mutationSideEffects.onSuccess(resBody);
         }
@@ -33,6 +37,7 @@ export const useMutation = (mutationFunction: MutationFunctionType) => {
 
   return {
     mutate,
-    status,
+    status: state.status,
+    error: state.error,
   };
 };

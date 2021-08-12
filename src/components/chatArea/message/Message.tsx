@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { MessageLoader } from "../../loaders/messageLoader/MessageLoader";
 
 import { useQuery } from "../../hooks/useQuery";
+
+import { useUserContext } from "../../contexts/UserContext";
 
 import { MessageInfo } from "../../../types/Message.interface";
 import { UserInfo } from "../../../types/User.interface";
@@ -8,36 +10,47 @@ import { UserInfo } from "../../../types/User.interface";
 import "./Message.css";
 
 type MessageProps = {
+  ind: number;
   messageData: MessageInfo;
   nextMessageDate: Date | undefined;
 };
 
-export const Message = ({ messageData, nextMessageDate }: MessageProps) => {
-  const [showMessageDate, setShowMessageDate] = useState(false);
+const TIME_STAMP_FORMAT = {
+  DATE: "DATE",
+  TIME: "TIME",
+} as const;
 
-  const { data: senderData } = useQuery<UserInfo>({
-    path: `/users/${messageData?.senderId}`,
+export const Message = ({
+  messageData,
+  nextMessageDate,
+  ind,
+}: MessageProps) => {
+  const userData = useUserContext();
+
+  const { data } = useQuery<UserInfo>({
+    path: `/users/${messageData.senderId}`,
+    skip: messageData.senderId === userData.userId,
   });
 
-  const getMessageDateAndTime = (timestamp: Date, format: "date" | "time") => {
+  const senderData = messageData.senderId === userData.userId ? userData : data;
+
+  const getMessageDateAndTime = (
+    timestamp: Date,
+    format: typeof TIME_STAMP_FORMAT.DATE | typeof TIME_STAMP_FORMAT.TIME
+  ) => {
     const time = new Date(timestamp);
 
-    if (format === "date") {
-      return time.toDateString();
-    }
-
-    return `${time.getHours()}:${
-      time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()
-    }`;
+    return format === TIME_STAMP_FORMAT.DATE
+      ? time.toDateString()
+      : `${time.getHours()}:${
+          time.getMinutes() < 10 ? `0${time.getMinutes()}` : time.getMinutes()
+        }`;
   };
 
-  useEffect(() => {
-    setShowMessageDate(
-      nextMessageDate === undefined ||
-        getMessageDateAndTime(nextMessageDate, "date") !==
-          getMessageDateAndTime(messageData.timestamp, "date")
-    );
-  }, [messageData.timestamp, nextMessageDate]);
+  const showMessageDate =
+    !nextMessageDate ||
+    getMessageDateAndTime(nextMessageDate, TIME_STAMP_FORMAT.DATE) !==
+      getMessageDateAndTime(messageData.timestamp, TIME_STAMP_FORMAT.DATE);
 
   return (
     <>
@@ -60,17 +73,25 @@ export const Message = ({ messageData, nextMessageDate }: MessageProps) => {
               </span>
               <span className="message-info-time">
                 {" "}
-                {getMessageDateAndTime(messageData.timestamp, "time")}
+                {getMessageDateAndTime(
+                  messageData.timestamp,
+                  TIME_STAMP_FORMAT.TIME
+                )}
               </span>
             </div>
             <div className="message-text">{messageData.text}</div>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <MessageLoader />
+      )}
       {messageData && showMessageDate ? (
-        <div className="message-info-date">
+        <div style={{ zIndex: 1000 - ind }} className="message-info-date">
           <div className="message-info-date_text">
-            {getMessageDateAndTime(messageData.timestamp, "date")}
+            {getMessageDateAndTime(
+              messageData.timestamp,
+              TIME_STAMP_FORMAT.DATE
+            )}
           </div>
         </div>
       ) : null}
