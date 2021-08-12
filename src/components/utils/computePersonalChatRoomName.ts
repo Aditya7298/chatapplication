@@ -3,7 +3,7 @@ import { ajaxClient } from "./ajaxClient";
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
 import { UserInfo } from "../../types/User.interface";
 
-export const computePersonalChatRoomName = async (
+export const getPersonalChatRoomInfo = async (
   chatRoomId: string,
   currUserId: string
 ) => {
@@ -18,5 +18,5 @@ export const computePersonalChatRoomName = async (
     path: `/users/${teammateUserID}`,
   });
   const teammateData: UserInfo = await teammatePayload.json();
-  return teammateData.userName;
+  return { userName: teammateData.userName, avatar: teammateData.avatar };
 };

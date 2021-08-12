@@ -6,12 +6,14 @@ import { useMutation } from "../../hooks/useMutation";
 
 import { ajaxClient } from "../../utils/ajaxClient";
 
+import { MessageInfo } from "../../../types/Message.interface";
+
 import sendicon from "../../../assets/images/paper-plane.svg";
 
 import "./MessageInput.css";
 
 type MessageInputProps = {
-  onNewMessageCreation: (newMessageId: string) => void;
+  onNewMessageCreation: (newMessageData: MessageInfo) => void;
 };
 
 export const MessageInput = ({ onNewMessageCreation }: MessageInputProps) => {
@@ -26,18 +28,18 @@ export const MessageInput = ({ onNewMessageCreation }: MessageInputProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newMessageInfo = {
+    const newMessageDate = {
       text: newMessageText,
       messageId: nanoid(),
       senderId: userId,
       timestamp: new Date(),
     };
 
-    mutate(newMessageInfo, {
-      onSuccess: (data: { messageId: string }) => {
-        setNewMessageText("");
-        onNewMessageCreation(data.messageId);
-      },
+    setNewMessageText("");
+    onNewMessageCreation(newMessageDate);
+
+    mutate(newMessageDate, {
+      onSuccess: () => {},
     });
   };
 

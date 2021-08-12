@@ -4,7 +4,7 @@ import { useQuery } from "../../hooks/useQuery";
 
 import { UserContext } from "../../contexts/UserContext";
 
-import { computePersonalChatRoomName } from "../../utils/computePersonalChatRoomName";
+import { getPersonalChatRoomInfo } from "../../utils/computePersonalChatRoomName";
 
 import { ChatRoomInfo } from "../../../types/ChatRoom.interface";
 
@@ -29,15 +29,14 @@ export const ChatRoomPreview = ({
     path: `/chatrooms/${chatRoomId}`,
   });
 
-  const [computedChatRoomName, setComputedChatRoomName] = useState<
-    string | undefined
-  >();
+  const [teamMateInfo, setTeamMateInfo] =
+    useState<{ userName: string; avatar: string | undefined }>();
 
   useEffect(() => {
     if (chatRoomData?.type === CHAT_ROOM_TYPE.PERSONAL) {
-      computePersonalChatRoomName(chatRoomId, userId).then(
-        (computedChatRoomName) => {
-          setComputedChatRoomName(computedChatRoomName);
+      getPersonalChatRoomInfo(chatRoomId, userId).then(
+        ({ userName, avatar }) => {
+          setTeamMateInfo({ userName, avatar });
         }
       );
     }
@@ -49,21 +48,34 @@ export const ChatRoomPreview = ({
 
   return (
     <div
+      onClick={handleClick}
       className={`chatroom-preview ${
         selectedChatRoomId === chatRoomId ? "chatroom-preview-selected" : ""
       }`}
     >
       {chatRoomData ? (
-        <div onClick={handleClick}>
+        <div>
           <span>
             {chatRoomData.avatar && (
               <img src={chatRoomData.avatar} alt="user avatar" />
             )}
           </span>
           <span className="chatroom-preview-name">
-            {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL
-              ? computedChatRoomName
-              : chatRoomData.chatRoomName}
+            {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
+              teamMateInfo ? (
+                <>
+                  <img
+                    src={teamMateInfo?.avatar}
+                    height="20px"
+                    width="20px"
+                    alt="teammate photograph"
+                  />{" "}
+                  <span>{teamMateInfo?.userName}</span>
+                </>
+              ) : null
+            ) : (
+              `# ${chatRoomData.chatRoomName}`
+            )}
           </span>
         </div>
       ) : null}

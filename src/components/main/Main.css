@@ -8,12 +8,12 @@
 
 .main-header {
   flex: 0 0 auto;
-  height: 5%;
+  height: 4%;
   width: 100%;
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  background-color: rgb(34, 37, 41);
+  background-color: #121016;
   border-bottom: 1px solid black;
 }
 
@@ -35,7 +35,7 @@
 
 .main-content {
   flex: 0 0 auto;
-  height: 95%;
+  height: 96%;
   width: 100%;
   display: flex;
   overflow: hidden;

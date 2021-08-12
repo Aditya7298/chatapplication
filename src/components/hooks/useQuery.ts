@@ -25,7 +25,7 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
   });
 
   const fetchCall = useCallback(() => {
-    setState((prevState) => ({ ...prevState, isLoading: true }));
+    setState((prevState) => ({ ...prevState, status: "loading" }));
 
     ajaxClient
       .get({ path })
@@ -45,14 +45,14 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
         setState((prevState) => ({
           ...prevState,
           data: resBody,
-          isLoading: false,
+          status: "rejected",
         }));
       })
       .catch((err) => {
         setState((prevState) => ({
           ...prevState,
           error: err.status ? err.message : "Some unexpected error occurred !!",
-          isLoading: false,
+          status: "fullfilled",
         }));
       });
   }, [path]);
