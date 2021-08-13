@@ -10,9 +10,7 @@ import { UserLoader } from "../loaders/userLoader/UserLoader";
 import { useUserContext } from "../contexts/UserContext";
 
 import { useQuery } from "../hooks/useQuery";
-import { useMutation } from "../hooks/useMutation";
 
-import { ajaxClient } from "../utils/ajaxClient";
 import { getPersonalChatRoomInfo } from "../utils/computePersonalChatRoomName";
 
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
@@ -30,11 +28,9 @@ type ChatAreaProps = {
 };
 
 export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
-  const [addUserState, setAddUserState] = useState({
-    showAddUserForm: false,
-    showSuccessMessage: false,
-    successMessage: "",
-  });
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
+
+  const [snackbarMessage, setSnackbarMessage] = useState<string>();
 
   const { userId } = useUserContext();
 
@@ -42,34 +38,13 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     path: `/chatrooms/${chatRoomId}`,
   });
 
-  const { data: chatRoomMessages } = useQuery<MessageInfo[]>({
-    path: `/chatrooms/${chatRoomId}/messages`,
-    skip: !chatRoomData,
-  });
-
   const [newMessageData, setNewMessageData] = useState<MessageInfo>();
-
-  const { mutate } = useMutation((data) => {
-    return ajaxClient.patch({
-      path: `/chatrooms/${chatRoomId}/messages`,
-      payload: data,
-    });
-  });
 
   const handleNewMessageCreation = useCallback(
     (newMessageData: MessageInfo) => {
-      if (!chatRoomMessages) {
-        return;
-      }
-
-      mutate({
-        messageId: newMessageData.messageId,
-      });
-
       setNewMessageData(newMessageData);
     },
-
-    [chatRoomMessages, mutate]
+    []
   );
 
   const [personalChatRoomTeamMateInfo, setPersonalChatRoomTeamMateInfo] =
@@ -86,40 +61,32 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
   }, [chatRoomData?.type, chatRoomId, userId]);
 
   const handleAddUserFormClose = useCallback(() => {
-    setAddUserState((prevState) => ({ ...prevState, showAddUserForm: false }));
+    setShowAddUserForm(false);
   }, []);
 
   const handleAddUserFormOpen = useCallback(() => {
-    setAddUserState((prevState) => ({ ...prevState, showAddUserForm: true }));
+    setShowAddUserForm(true);
   }, []);
 
   const handleNewUserAddition = useCallback(
     (addUserName: string) => {
-      setAddUserState({
-        showAddUserForm: false,
-        showSuccessMessage: true,
-        successMessage: `${addUserName} successfully added to ${chatRoomData?.chatRoomName}`,
-      });
+      setShowAddUserForm(false);
+      setSnackbarMessage(
+        `${addUserName} successfully added to ${chatRoomData?.chatRoomName}`
+      );
     },
     [chatRoomData?.chatRoomName]
   );
 
   const handleSnackbarClose = useCallback(() => {
-    setAddUserState((prevState) => ({
-      ...prevState,
-      showSuccessMessage: false,
-      successMessage: "",
-    }));
+    setSnackbarMessage(undefined);
   }, []);
 
   return (
-    <div className="chatarea">
+    <div className={`${chatRoomData ? "chatarea" : "chatarea-loading"}`}>
       {chatRoomData ? (
         <>
-          <Modal
-            open={addUserState.showAddUserForm}
-            onClose={handleAddUserFormClose}
-          >
+          <Modal open={showAddUserForm} onClose={handleAddUserFormClose}>
             <AddUserToGroup
               onNewUserAddition={handleNewUserAddition}
               chatRoomId={chatRoomId}
@@ -127,11 +94,12 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             />
           </Modal>
 
-          {addUserState.showSuccessMessage ? (
-            <Snackbar onSnackbarClose={handleSnackbarClose}>
-              {addUserState.successMessage}
-            </Snackbar>
-          ) : null}
+          <Snackbar
+            show={snackbarMessage !== undefined}
+            onSnackbarClose={handleSnackbarClose}
+          >
+            {snackbarMessage}
+          </Snackbar>
 
           <div className="chatarea-header">
             <span className="chatarea-header-title">
@@ -172,7 +140,10 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
             newMessageData={newMessageData}
             chatRoomId={chatRoomData.chatRoomId}
           />
-          <MessageInput onNewMessageCreation={handleNewMessageCreation} />
+          <MessageInput
+            chatRoomId={chatRoomId}
+            onNewMessageCreation={handleNewMessageCreation}
+          />
         </>
       ) : (
         <object

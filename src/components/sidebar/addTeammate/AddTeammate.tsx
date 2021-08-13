@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { nanoid } from "nanoid";
 
 import { Form } from "../../form/Form";
-import { Input } from "../../form/Input";
 import { Button } from "../../form/Button";
+import { UserDropdown } from "../../form/UserDropdown";
 
 import { useMutation } from "../../hooks/useMutation";
 
@@ -44,23 +44,15 @@ export const AddTeammate = ({
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setUserName(value);
-  };
+  const handleUserNameChange = useCallback((newUserName: string) => {
+    setUserName(newUserName);
+  }, []);
 
   return (
     <>
       <h2>Start a new personal chat</h2>
       <Form onSubmit={handleSubmit}>
-        <Input
-          label="Username"
-          type="text"
-          name="name"
-          value={userName}
-          onChange={handleChange}
-          placeholder="Enter username"
-        />
+        <UserDropdown onChange={handleUserNameChange} value={userName} />
         <Button>Add personal chat</Button>
       </Form>
       <div className="error">{errorMessage}</div>

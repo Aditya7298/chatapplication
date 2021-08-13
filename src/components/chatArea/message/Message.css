@@ -32,6 +32,16 @@
   display: inline-block;
 }
 
+.message-info-sendername-loading {
+  font-size: larger;
+  font-weight: bold;
+  display: inline-block;
+  background-color: #606264;
+  width: 100px;
+  height: 20px;
+  border-radius: 20px;
+}
+
 .message-info-time {
   margin-left: 8px;
   display: inline-block;
@@ -40,6 +50,13 @@
 
 .message-sender-avatar {
   align-self: flex-start;
+}
+
+.message-sender-avatar-loading {
+  height: 50px;
+  width: 50px;
+  background-color: #606264;
+  border-radius: 10px;
 }
 
 .message-info-date {

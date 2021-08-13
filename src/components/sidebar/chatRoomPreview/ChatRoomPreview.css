@@ -30,3 +30,11 @@
   color: #ffffff !important;
   background: #1164a3 !important;
 }
+
+.chatroom-preview-loading {
+  height: 24px;
+  width: 70%;
+  background-color: #606264;
+  border-radius: 5px;
+  margin: 4px auto;
+}

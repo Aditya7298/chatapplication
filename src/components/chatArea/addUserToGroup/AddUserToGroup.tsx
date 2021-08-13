@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import { Form } from "../../form/Form";
-import { Input } from "../../form/Input";
+import { UserDropdown } from "../../form/UserDropdown";
 import { Button } from "../../form/Button";
 
 import { useMutation } from "../../hooks/useMutation";
@@ -23,10 +23,9 @@ export const AddUserToGroup = ({
 
   const { mutate, error: errorMessage } = useMutation((data) => {
     return ajaxClient.patch({
-      path: `/chatrooms/${chatRoomId}`,
+      path: `/chatrooms/${chatRoomId}/users`,
       payload: {
-        key: "userNames",
-        value: [...data],
+        userNames: [...data],
       },
     });
   });
@@ -40,23 +39,15 @@ export const AddUserToGroup = ({
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setUserName(value);
-  };
+  const handleUserNameChange = useCallback((newUserName: string) => {
+    setUserName(newUserName);
+  }, []);
 
   return (
     <>
       <h2>Add a new user to {chatRoomName}</h2>
       <Form onSubmit={handleSubmit}>
-        <Input
-          label="Username"
-          type="text"
-          name="name"
-          value={userName}
-          onChange={handleChange}
-          placeholder="Enter username"
-        />
+        <UserDropdown value={userName} onChange={handleUserNameChange} />
         <Button>Add User</Button>
       </Form>
       <div className="error">{errorMessage}</div>

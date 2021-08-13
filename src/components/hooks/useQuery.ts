@@ -25,6 +25,10 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
   });
 
   const fetchCall = useCallback(() => {
+    if (skip) {
+      return;
+    }
+
     setState((prevState) => ({ ...prevState, status: "loading" }));
 
     ajaxClient
@@ -45,23 +49,21 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
         setState((prevState) => ({
           ...prevState,
           data: resBody,
-          status: "rejected",
+          status: "fullfilled",
         }));
       })
       .catch((err) => {
         setState((prevState) => ({
           ...prevState,
           error: err.status ? err.message : "Some unexpected error occurred !!",
-          status: "fullfilled",
+          status: "rejected",
         }));
       });
-  }, [path]);
+  }, [path, skip]);
 
   useEffect(() => {
-    if (!skip) {
-      fetchCall();
-    }
-  }, [fetchCall, skip]);
+    fetchCall();
+  }, [fetchCall]);
 
   useEffect(() => {
     let timerId: NodeJS.Timeout;

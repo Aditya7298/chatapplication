@@ -54,23 +54,32 @@ export const Message = ({
 
   return (
     <>
-      {senderData && messageData ? (
+      {messageData ? (
         <div className="message">
           <div className="message-left-info">
-            <img
-              className="message-sender-avatar"
-              src={senderData.avatar}
-              alt="user avatar"
-              height="50px"
-              width="50px"
-            />
+            {senderData ? (
+              <img
+                className="message-sender-avatar"
+                src={senderData.avatar}
+                alt="user avatar"
+                height="50px"
+                width="50px"
+              />
+            ) : (
+              <div className="message-sender-avatar-loading"></div>
+            )}
           </div>
 
           <div className="message-right-info">
             <div className="message-info">
-              <span className="message-info-sendername">
-                {senderData.userName}
-              </span>
+              {senderData ? (
+                <span className="message-info-sendername">
+                  {senderData.userName}
+                </span>
+              ) : (
+                <div className="message-info-sendername-loading"></div>
+              )}
+
               <span className="message-info-time">
                 {" "}
                 {getMessageDateAndTime(
