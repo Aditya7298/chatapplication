@@ -69,8 +69,6 @@ export const ChatAreaMessages = ({
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
 
-    console.log(scrollTop, clientHeight, scrollHeight);
-
     if (chatRoomMessages.length === 0) {
       return;
     }

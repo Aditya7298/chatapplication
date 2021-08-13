@@ -60,25 +60,28 @@ export const ChatRoomPreview = ({
               <img src={chatRoomData.avatar} alt="user avatar" />
             )}
           </span>
-          <span className="chatroom-preview-name">
-            {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
-              teamMateInfo ? (
-                <>
-                  <img
-                    src={teamMateInfo.avatar}
-                    height="20px"
-                    width="20px"
-                    alt="teammate photograph"
-                  />{" "}
-                  <span>{teamMateInfo.userName}</span>
-                </>
-              ) : (
-                <div className="chatroom-preview-loading"></div>
-              )
+          {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
+            teamMateInfo ? (
+              <span className="chatroom-preview-name">
+                <img
+                  src={teamMateInfo.avatar}
+                  height="20px"
+                  width="20px"
+                  alt="teammate photograph"
+                />{" "}
+                <span>{teamMateInfo.userName}</span>
+              </span>
             ) : (
-              `# ${chatRoomData.chatRoomName}`
-            )}
-          </span>
+              <>
+                <span className=".chatroom-personal-preview-loading-avatar"></span>
+                <span className="chatroom-personal-preview-loading-name"></span>
+              </>
+            )
+          ) : (
+            <span className="chatroom-preview-name">
+              {`# ${chatRoomData.chatRoomName}`}
+            </span>
+          )}
         </div>
       ) : (
         <div className="chatroom-preview-loading"></div>

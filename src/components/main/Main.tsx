@@ -5,8 +5,6 @@ import { ChatArea } from "../chatArea/ChatArea";
 
 import { UserContext } from "../contexts/UserContext";
 
-import loadingIcon from "../../assets/images/loading-animation.svg";
-
 import "./Main.css";
 
 export const Main = () => {
@@ -21,7 +19,7 @@ export const Main = () => {
   };
 
   return (
-    <div className={`${userData ? "main" : "main-loading"}`}>
+    <div className="main">
       {userData ? (
         <>
           <div className="main-header">
@@ -50,15 +48,7 @@ export const Main = () => {
             )}
           </div>
         </>
-      ) : (
-        <object
-          className="main-loading-indicator"
-          type="image/svg+xml"
-          data={loadingIcon}
-        >
-          svg-animation
-        </object>
-      )}
+      ) : null}
     </div>
   );
 };
