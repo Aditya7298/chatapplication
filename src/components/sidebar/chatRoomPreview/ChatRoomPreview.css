@@ -8,6 +8,7 @@
   padding: 4px;
   padding-left: 20px;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .chatroom-preview:hover {
@@ -15,12 +16,14 @@
 }
 
 .chatroom-preview-name {
-  cursor: pointer;
   height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.chatroom-preview-name:before {
-  content: "• ";
+.chatroom-preview-name img {
+  margin-right: 10px;
 }
 
 .chatroom-preview-selected {

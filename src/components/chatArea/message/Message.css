@@ -47,7 +47,10 @@
   text-align: center;
   margin-bottom: 20px;
   /* position: sticky;
-  top: 0px;  */
+  top: -89%; */
+  /* bottom: 200px; */
+  background-color: rgb(26, 29, 33);
+  z-index: 1000;
 }
 
 .message-info-date_text {

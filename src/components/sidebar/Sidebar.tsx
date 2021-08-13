@@ -95,7 +95,7 @@ export const Sidebar = ({
             width="10px"
           />
         </span>
-        <span className="groupchats-label">groups</span>
+        <span className="groupchats-label">Channels</span>
         {showGroupChats ? (
           <>
             {groupChats.map((id) => (
@@ -124,7 +124,7 @@ export const Sidebar = ({
             width="10px"
           />
         </span>
-        <span>personal messages</span>
+        <span>Direct messages</span>
         {showPersonalChats ? (
           <>
             {personalChats.map((id) => (

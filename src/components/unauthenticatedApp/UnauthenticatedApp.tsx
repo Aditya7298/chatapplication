@@ -1,7 +1,15 @@
 import { useState, useCallback } from "react";
+import { nanoid } from "nanoid";
 
-import { Login } from "../login/Login";
-import { Signup } from "../signup/Signup";
+import { AuthenticationForm } from "./authenticationForm/AuthenticationForm";
+
+import { useMutation } from "../hooks/useMutation";
+
+import { ajaxClient } from "../utils/ajaxClient";
+
+import { AUTHENTICATION_MODE } from "../../constants";
+
+import "./UnauthenticatedApp.css";
 
 type UnauthenticatedAppProps = {
   onAuthentication: (userId: string) => void;
@@ -10,31 +18,69 @@ type UnauthenticatedAppProps = {
 export const UnauthenticatedApp = ({
   onAuthentication,
 }: UnauthenticatedAppProps) => {
-  const [authForm, setAuthForm] = useState<"login" | "signup">("login");
+  const [authMode, setAuthMode] = useState<
+    typeof AUTHENTICATION_MODE.SIGNUP | typeof AUTHENTICATION_MODE.LOGIN
+  >(AUTHENTICATION_MODE.LOGIN);
 
-  const handleLoginAndSignup = useCallback(
-    (userId: string) => {
-      onAuthentication(userId);
+  const { status, mutate, error } = useMutation(
+    useCallback(
+      (data) =>
+        ajaxClient.post({
+          path: `${
+            authMode === AUTHENTICATION_MODE.SIGNUP ? "/users" : "/login"
+          }`,
+          payload: data,
+        }),
+      [authMode]
+    )
+  );
+
+  const handleSubmit = useCallback(
+    (userName: string, password: string) => {
+      const payload =
+        authMode === AUTHENTICATION_MODE.SIGNUP
+          ? {
+              userName,
+              password,
+              userId: nanoid(),
+              avatar: "",
+              personalChats: [],
+              groupChats: [],
+            }
+          : { userName, password };
+
+      mutate(payload, {
+        onSuccess: (data: { userId: string }) => onAuthentication(data.userId),
+      });
     },
-    [onAuthentication]
+    [mutate, onAuthentication, authMode]
   );
 
-  const handleShowSignupFormClick = useCallback(
-    () => setAuthForm("signup"),
-    []
-  );
+  const toggleAuthMode = () => {
+    setAuthMode((prevState) =>
+      prevState === AUTHENTICATION_MODE.LOGIN
+        ? AUTHENTICATION_MODE.SIGNUP
+        : AUTHENTICATION_MODE.LOGIN
+    );
+  };
 
-  const handleShowLoginFormClick = useCallback(() => setAuthForm("login"), []);
-
-  return authForm === "login" ? (
-    <Login
-      onLogin={handleLoginAndSignup}
-      onShowSignupFormClick={handleShowSignupFormClick}
-    />
-  ) : (
-    <Signup
-      onSignup={handleLoginAndSignup}
-      onShowLoginFormClick={handleShowLoginFormClick}
-    />
+  return (
+    <div className="unauthenticated-app">
+      <AuthenticationForm
+        authMode={authMode}
+        onSubmit={handleSubmit}
+        onToggleClick={toggleAuthMode}
+        toggleMessage={
+          authMode === AUTHENTICATION_MODE.LOGIN ? "Sign Up" : "Log In"
+        }
+        formTitle={
+          authMode === AUTHENTICATION_MODE.SIGNUP
+            ? "Create a new account"
+            : "Enter your login details"
+        }
+        errorMessage={error}
+        isLoading={status === "loading"}
+      />
+    </div>
   );
 };
