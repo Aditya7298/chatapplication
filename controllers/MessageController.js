@@ -1,8 +1,8 @@
 const { DBLayer } = require("../database/DBLayer");
-const { checkPayloadForKeys } = require("./utils");
+const { checkPayloadForKeys } = require("./utlils/checkPayloadForKeys");
 const { CONTROLLER_NAMES, ERROR_MESSAGES } = require("../constants");
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 class MessageController extends DBLayer {
   constructor() {
@@ -94,6 +94,14 @@ class MessageController extends DBLayer {
         const msg2Time = new Date(msg2.timestamp).valueOf();
         return msg2Time - msg1Time;
       });
+
+      if (lastMessageId === "undefined") {
+        if (messages.length === 0) {
+          return [];
+        } else {
+          return [messages[0]];
+        }
+      }
 
       const lastMessageIndex = messages.findIndex(
         (message) => message.messageId === lastMessageId

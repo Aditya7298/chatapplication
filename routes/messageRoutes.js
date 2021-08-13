@@ -5,6 +5,9 @@ router.use(express.json());
 const { MessageController } = require("../controllers/MessageController");
 messageController = new MessageController();
 
+const { ChatRoomController } = require("../controllers/ChatRoomController"),
+  chatRoomController = new ChatRoomController();
+
 router.get("/:messageId", (req, res) => {
   const messageId = req.params.messageId;
   messageController
@@ -19,11 +22,17 @@ router.get("/:messageId", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const payload = req.body;
+  const { chatRoomId, ...newMessageData } = req.body;
   messageController
-    .createMessage(payload)
-    .then((data) => {
-      res.status(200).json(data);
+    .createMessage(newMessageData)
+    .then(() => {
+      chatRoomController
+        .addMessageToChatRoom(chatRoomId, {
+          messageId: newMessageData.messageId,
+        })
+        .then((data) => {
+          res.status(200).json(data);
+        });
     })
     .catch((err) => {
       const { code, message } = err;

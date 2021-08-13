@@ -21,6 +21,20 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/filter/:query", (req, res) => {
+  const query = req.params.query;
+
+  userController
+    .getFilteredUsers(query)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      const { code, message } = err;
+      res.status(code).json({ message });
+    });
+});
+
 router.get("/:userId", (req, res) => {
   const userId = req.params.userId;
   userController
