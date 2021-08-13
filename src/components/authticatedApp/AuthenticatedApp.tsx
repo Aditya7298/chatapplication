@@ -5,6 +5,8 @@ import { UserContextProvider } from "../contexts/UserContext";
 
 import { UserInfo } from "../../types/User.interface";
 
+import loadingIcon from "../../assets/images/loading-animation.svg";
+
 type AuthenticatedAppProps = {
   userId: string;
 };
@@ -20,7 +22,17 @@ export const AuthenticatedApp = ({ userId }: AuthenticatedAppProps) => {
         <UserContextProvider userData={userData}>
           <Main />
         </UserContextProvider>
-      ) : null}
+      ) : (
+        <div className="main-loading">
+          <object
+            className="main-loading-indicator"
+            type="image/svg+xml"
+            data={loadingIcon}
+          >
+            svg-animation
+          </object>
+        </div>
+      )}
     </>
   );
 };

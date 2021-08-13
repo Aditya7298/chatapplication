@@ -33,8 +33,28 @@
 
 .chatroom-preview-loading {
   height: 24px;
-  width: 70%;
+  width: 80%;
   background-color: #606264;
   border-radius: 5px;
   margin: 4px auto;
+}
+
+.chatroom-personal-preview-loading-name {
+  height: 24px;
+  width: 80%;
+  background-color: #606264;
+  border-radius: 5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 4px;
+}
+
+.chatroom-personal-preview-loading-avatar {
+  height: 24px;
+  width: 24px;
+  background-color: #606264;
+  border-radius: 5px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-top: 4px;
 }
