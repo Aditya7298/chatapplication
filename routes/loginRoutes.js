@@ -7,9 +7,9 @@ const { LoginController } = require("../controllers/LoginController"),
   loginController = new LoginController();
 
 router.post("/", (req, res) => {
-  const { username, password } = req.body;
+  const { userName, password } = req.body;
   loginController
-    .authenticateUser(username, password)
+    .authenticateUser(userName, password)
     .then((data) => {
       res.status(200).json(data);
     })

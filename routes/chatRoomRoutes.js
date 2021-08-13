@@ -26,6 +26,45 @@ router.get("/:chatRoomId", async (req, res) => {
     });
 });
 
+router.get("/:chatRoomId/newMessages/:lastMessageId", async (req, res) => {
+  const chatRoomId = req.params.chatRoomId;
+  const lastMessageId = req.params.lastMessageId;
+  chatRoomController
+    .getOneChatRoom(chatRoomId)
+    .then((data) => {
+      const { messageIds } = data;
+      messageController
+        .getNewMessages(messageIds, lastMessageId)
+        .then((data) => {
+          res.status(200).json(data);
+        });
+    })
+    .catch((err) => {
+      const { code, message } = err;
+      res.status(code).json({ message });
+    });
+});
+
+router.get("/:chatRoomId/messages/:lastMessageId", async (req, res) => {
+  const chatRoomId = req.params.chatRoomId;
+  const lastMessageId = req.params.lastMessageId;
+
+  chatRoomController
+    .getOneChatRoom(chatRoomId)
+    .then((data) => {
+      const { messageIds } = data;
+      messageController
+        .getMultipleMessages(messageIds, lastMessageId)
+        .then((data) => {
+          res.status(200).json(data);
+        });
+    })
+    .catch((err) => {
+      const { code, message } = err;
+      res.status(code).json({ message });
+    });
+});
+
 router.get("/:chatRoomId/messages", async (req, res) => {
   const chatRoomId = req.params.chatRoomId;
 
@@ -33,7 +72,7 @@ router.get("/:chatRoomId/messages", async (req, res) => {
     .getOneChatRoom(chatRoomId)
     .then((data) => {
       const { messageIds } = data;
-      messageController.getMultiplemessages(messageIds).then((data) => {
+      messageController.getMultipleMessages(messageIds).then((data) => {
         res.status(200).json(data);
       });
     })
@@ -59,11 +98,11 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.patch("/:chatRoomId", async (req, res) => {
+router.patch("/:chatRoomId/messages", async (req, res) => {
   const { chatRoomId } = req.params;
   const payload = req.body;
   chatRoomController
-    .updateChatRoom(chatRoomId, payload)
+    .addMessageToChatRoom(chatRoomId, payload)
     .then((data) => {
       res.status(200).json(data);
     })

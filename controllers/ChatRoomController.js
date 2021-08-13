@@ -93,6 +93,37 @@ class ChatRoomController extends DBLayer {
     }
   }
 
+  async addMessageToChatRoom(chatRoomId, payload) {
+    try {
+      const { messageId } = payload;
+      const existingChatRoomsJSON = await this.readFromDB();
+      const existingChatRooms = JSON.parse(existingChatRoomsJSON);
+
+      const newChatRooms = {
+        ...existingChatRooms,
+        [chatRoomId]: {
+          ...existingChatRooms[chatRoomId],
+          messageIds: [...existingChatRooms[chatRoomId].messageIds, messageId],
+        },
+      };
+
+      const newChatRoomsJSON = JSON.stringify(newChatRooms);
+
+      await this.writeToDB(newChatRoomsJSON);
+
+      return newChatRooms[chatRoomId].messageIds;
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
+  }
+
   async updateChatRoom(chatRoomId, payload) {
     let { key, value } = payload;
     const chatRoomProps = [
@@ -110,9 +141,6 @@ class ChatRoomController extends DBLayer {
           message: ERROR_MESSAGES[400],
         };
       }
-
-      const existingChatRoomsJSON = await this.readFromDB();
-      const existingChatRooms = JSON.parse(existingChatRoomsJSON);
 
       if (key === "userNames") {
         value = await this.userController.getUserIdsFromUsername(value);
