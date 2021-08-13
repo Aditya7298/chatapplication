@@ -61,13 +61,13 @@ export const AuthenticationForm = ({
             }
           />
           <Input
+            label="password"
             name="password"
             type="password"
             value={formDetails.password}
             required={true}
             placeholder="Enter Password"
             onChange={handleChange}
-            label="Password"
             error={
               errorMessage !== undefined &&
               errorMessage?.match(/password/i) !== null

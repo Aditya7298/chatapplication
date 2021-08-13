@@ -47,38 +47,45 @@ export const ChatRoomPreview = ({
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className={`chatroom-preview ${
-        selectedChatRoomId === chatRoomId ? "chatroom-preview-selected" : ""
-      }`}
-    >
+    <>
       {chatRoomData ? (
-        <div>
+        <div
+          onClick={handleClick}
+          className={`chatroom-preview ${
+            selectedChatRoomId === chatRoomId ? "chatroom-preview-selected" : ""
+          }`}
+        >
           <span>
             {chatRoomData.avatar && (
               <img src={chatRoomData.avatar} alt="user avatar" />
             )}
           </span>
-          <span className="chatroom-preview-name">
-            {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
-              teamMateInfo ? (
-                <>
-                  <img
-                    src={teamMateInfo?.avatar}
-                    height="20px"
-                    width="20px"
-                    alt="teammate photograph"
-                  />{" "}
-                  <span>{teamMateInfo?.userName}</span>
-                </>
-              ) : null
+          {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
+            teamMateInfo ? (
+              <span className="chatroom-preview-name">
+                <img
+                  src={teamMateInfo.avatar}
+                  height="20px"
+                  width="20px"
+                  alt="teammate photograph"
+                />{" "}
+                <span>{teamMateInfo.userName}</span>
+              </span>
             ) : (
-              `# ${chatRoomData.chatRoomName}`
-            )}
-          </span>
+              <>
+                <span className=".chatroom-personal-preview-loading-avatar"></span>
+                <span className="chatroom-personal-preview-loading-name"></span>
+              </>
+            )
+          ) : (
+            <span className="chatroom-preview-name">
+              {`# ${chatRoomData.chatRoomName}`}
+            </span>
+          )}
         </div>
-      ) : null}
-    </div>
+      ) : (
+        <div className="chatroom-preview-loading"></div>
+      )}
+    </>
   );
 };

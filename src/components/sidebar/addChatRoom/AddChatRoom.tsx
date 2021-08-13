@@ -7,6 +7,8 @@ import { Button } from "../../form/Button";
 
 import { useMutation } from "../../hooks/useMutation";
 
+import { useUserContext } from "../../contexts/UserContext";
+
 import { ajaxClient } from "../../utils/ajaxClient";
 
 import { CHAT_ROOM_TYPE } from "../../../constants";
@@ -14,39 +16,29 @@ import { CHAT_ROOM_TYPE } from "../../../constants";
 type ChatRoomFormDetails = {
   name: string;
   type: typeof CHAT_ROOM_TYPE.GROUP | typeof CHAT_ROOM_TYPE.PERSONAL;
-  participantName: string;
 };
 
 type AddChatRoomProps = {
   onNewChatRoomCreation: (chatRoomId: string) => void;
-  userName: string;
 };
 
-export const AddChatRoom = ({
-  userName,
-  onNewChatRoomCreation,
-}: AddChatRoomProps) => {
+export const AddChatRoom = ({ onNewChatRoomCreation }: AddChatRoomProps) => {
+  const { userName } = useUserContext();
+
   const [chatRoomFormDetails, setChatRoomFormDetails] =
     useState<ChatRoomFormDetails>({
       name: "",
       type: CHAT_ROOM_TYPE.GROUP,
-      participantName: "",
     });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const participantNames = [userName];
-
-    if (chatRoomFormDetails.participantName !== "") {
-      participantNames.push(chatRoomFormDetails.participantName);
-    }
-
     const newChatRoomData = {
       chatRoomId: nanoid(),
       chatRoomName: chatRoomFormDetails.name,
       type: chatRoomFormDetails.type,
-      participantNames,
+      participantNames: [userName],
       messageIds: [],
     };
 
@@ -79,6 +71,7 @@ export const AddChatRoom = ({
           name="name"
           value={chatRoomFormDetails.name}
           placeholder="Enter group name"
+          required={true}
           onChange={handleChange}
         />
         <Button>Create Chatroom</Button>

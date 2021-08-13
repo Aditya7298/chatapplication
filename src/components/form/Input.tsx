@@ -8,6 +8,7 @@ type InputProps = {
   placeholder: string;
   required?: boolean | undefined;
   error?: boolean;
+  list?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => any;
 };
 
@@ -20,6 +21,7 @@ export const Input = ({
   required,
   error,
   placeholder,
+  list,
 }: InputProps) => {
   return (
     <label>
@@ -32,6 +34,7 @@ export const Input = ({
         placeholder={placeholder}
         onChange={onChange}
         required={required}
+        list={list}
       />
     </label>
   );

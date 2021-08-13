@@ -24,7 +24,9 @@ export const MessageLoader = ({ numberOfMessages }: MessageLoaderProps) => {
   return (
     <>
       {numberOfMessages ? (
-        Array(numberOfMessages).map((_, ind) => <Row key={ind} />)
+        Array.from(Array(numberOfMessages).keys()).map((_, ind) => (
+          <Row key={ind} />
+        ))
       ) : (
         <Row />
       )}

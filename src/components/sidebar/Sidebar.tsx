@@ -5,7 +5,11 @@ import { AddChatRoom } from "./addChatRoom/AddChatRoom";
 import { AddTeammate } from "./addTeammate/AddTeammate";
 import { Modal } from "../modal/Modal";
 
+import { useQuery } from "../hooks/useQuery";
+
 import { useUserContext } from "../contexts/UserContext";
+
+import { UserInfo } from "../../types/User.interface";
 
 import showicon from "../../assets/images/right-arrow.svg";
 import hideicon from "../../assets/images/down-arrow.svg";
@@ -28,7 +32,17 @@ export const Sidebar = ({
   const [showPersonalChats, setShowPersonalChats] = useState(true);
   const [modalForm, setModalForm] = useState<"addChatRoom" | "addTeammate">();
 
-  const { userName, groupChats, personalChats } = useUserContext();
+  const { userId, userName } = useUserContext();
+
+  const { data: updatedUserData } = useQuery<UserInfo>({
+    path: `/users/${userId}`,
+    queryInterval: 1000,
+  });
+
+  const { groupChats, personalChats } = updatedUserData || {
+    groupChats: [],
+    personalChats: [],
+  };
 
   const handleChatRoomPreviewClick = (chatRoomId: string) => {
     onChatRoomPreviewClick(chatRoomId);
@@ -61,10 +75,7 @@ export const Sidebar = ({
         open={modalForm !== undefined}
       >
         {modalForm === "addChatRoom" ? (
-          <AddChatRoom
-            userName={userName}
-            onNewChatRoomCreation={handleCreateChatRoomFormClose}
-          />
+          <AddChatRoom onNewChatRoomCreation={handleCreateChatRoomFormClose} />
         ) : (
           <AddTeammate
             currUserName={userName}

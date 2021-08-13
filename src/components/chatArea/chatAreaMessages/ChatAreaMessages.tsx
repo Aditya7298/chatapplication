@@ -5,7 +5,7 @@ import { MessageLoader } from "../../loaders/messageLoader/MessageLoader";
 
 import { useQuery } from "../../hooks/useQuery";
 
-import { getUniqueMessages } from "../../utils/getUniqueMessages";
+import { getUniqueMessages } from "./utils/getUniqueMessages";
 
 import { MessageInfo } from "../../../types/Message.interface";
 
@@ -26,13 +26,13 @@ export const ChatAreaMessages = ({
     useQuery<MessageInfo[]>({
       path: lastMessageId
         ? `/chatrooms/${chatRoomId}/messages/${lastMessageId}`
-        : `/chatrooms/${chatRoomId}/messages/${lastMessageId}`,
+        : `/chatrooms/${chatRoomId}/messages/`,
     });
 
   const { data: newMessagesData } = useQuery<MessageInfo[]>({
     path: `/chatrooms/${chatRoomId}/newMessages/${chatRoomMessages[0]?.messageId}`,
     queryInterval: 1000,
-    skip: chatRoomMessages.length === 0,
+    // skip: chatRoomMessages.length === 0,
   });
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export const ChatAreaMessages = ({
       return;
     }
 
-    if (scrollHeight + scrollTop > clientHeight + 100) {
+    if (scrollHeight + scrollTop <= clientHeight + 1) {
       setLastMessageId(chatRoomMessages[chatRoomMessages.length - 1].messageId);
     }
   };
@@ -90,7 +90,9 @@ export const ChatAreaMessages = ({
             />
           ))
         : null}
-      {paginatedMessagesDataStatus === "loading" ? <MessageLoader /> : null}
+      {paginatedMessagesDataStatus === "loading" ? (
+        <MessageLoader numberOfMessages={10} />
+      ) : null}
     </div>
   );
 };
