@@ -5,7 +5,7 @@ const {
   CHAT_ROOM_TYPE,
   SAMPLE_AVATARS,
 } = require("../constants");
-const { checkPayloadForKeys } = require("./utils");
+const { checkPayloadForKeys } = require("./utlils/checkPayloadForKeys");
 
 class UserController extends DBLayer {
   constructor() {
@@ -42,6 +42,31 @@ class UserController extends DBLayer {
       const userDataJSON = await this.readFromDB();
       const userData = JSON.parse(userDataJSON);
       return userData;
+    } catch (err) {
+      if (!err.code) {
+        throw {
+          code: 500,
+          message: ERROR_MESSAGES[500],
+        };
+      }
+
+      throw err;
+    }
+  }
+
+  async getFilteredUsers(query) {
+    try {
+      const userDataJSON = await this.readFromDB();
+      const userData = JSON.parse(userDataJSON);
+      return Object.keys(userData).reduce((list, userId) => {
+        const { userName, avatar } = userData[userId];
+
+        if (userName.toLowerCase().startsWith(query.toLowerCase())) {
+          list = [...list, { userName, avatar }];
+        }
+
+        return list;
+      }, []);
     } catch (err) {
       if (!err.code) {
         throw {

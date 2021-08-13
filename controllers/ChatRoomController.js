@@ -1,14 +1,11 @@
 const { DBLayer } = require("../database/DBLayer");
-const { LoginController } = require("../controllers/LoginController");
-const { checkPayloadForKeys } = require("./utils");
+const { checkPayloadForKeys } = require("./utlils/checkPayloadForKeys");
+const { getUserIdsFromUserNames } = require("./utlils/getUserIdsFromUserNames");
 const { CONTROLLER_NAMES, ERROR_MESSAGES } = require("../constants");
-const { UserController } = require("./UserController");
 
 class ChatRoomController extends DBLayer {
   constructor() {
     super(CONTROLLER_NAMES.CHATROOM);
-    this.loginController = new LoginController();
-    this.userController = new UserController();
   }
 
   async getOneChatRoom(chatRoomId) {
@@ -53,18 +50,14 @@ class ChatRoomController extends DBLayer {
         };
       }
 
-      const loginInfo = await this.loginController.getLoginInfo();
+      const userIds = await getUserIdsFromUserNames(payload.participantNames);
 
-      const userIds = payload.participantNames.map((id) => {
-        if (!loginInfo[id]) {
-          throw {
-            code: 400,
-            message: ERROR_MESSAGES[400],
-          };
-        }
-
-        return loginInfo[id].userId;
-      });
+      if (userIds.length === 0) {
+        throw {
+          code: 400,
+          message: ERROR_MESSAGES[400],
+        };
+      }
 
       const existingChatRoomsJSON = await this.readFromDB();
       const existingChatRooms = JSON.parse(existingChatRoomsJSON);
@@ -124,59 +117,35 @@ class ChatRoomController extends DBLayer {
     }
   }
 
-  async updateChatRoom(chatRoomId, payload) {
-    let { key, value } = payload;
-    const chatRoomProps = [
-      "chatRoomId",
-      "chatRoomName",
-      "userNames",
-      "messageIds",
-      "type",
-    ];
-
+  async addUsersToChatRoom(chatRoomId, userNames) {
     try {
-      if (!chatRoomProps.includes(key)) {
+      const existingChatRoomsJSON = await this.readFromDB();
+      const existingChatRooms = JSON.parse(existingChatRoomsJSON);
+
+      const userIds = await getUserIdsFromUserNames(userNames);
+
+      if (userIds.length === 0) {
         throw {
           code: 400,
-          message: ERROR_MESSAGES[400],
+          message: "Entered users do not exist...",
         };
-      }
-
-      if (key === "userNames") {
-        value = await this.userController.getUserIdsFromUsername(value);
-
-        key = "userIds";
-
-        if (value.length === 0) {
-          throw {
-            code: 400,
-            message: "Entered users do not exist...",
-          };
-        }
-
-        value = [
-          ...new Set([...value, ...existingChatRooms[chatRoomId].userIds]),
-        ];
       }
 
       const newChatRooms = {
         ...existingChatRooms,
-        [chatRoomId]: { ...existingChatRooms[chatRoomId], [key]: value },
+        [chatRoomId]: {
+          ...existingChatRooms[chatRoomId],
+          userIds: [
+            ...new Set([...existingChatRooms[chatRoomId].userIds, ...userIds]),
+          ],
+        },
       };
-
-      if (key === "userIds") {
-        await this.userController.addUsersToChatRooms({
-          userIds: value,
-          type: existingChatRooms[chatRoomId].type,
-          chatRoomId,
-        });
-      }
 
       const newChatRoomsJSON = JSON.stringify(newChatRooms);
 
       await this.writeToDB(newChatRoomsJSON);
 
-      return { ...existingChatRooms[chatRoomId], [key]: value };
+      return newChatRooms[chatRoomId];
     } catch (err) {
       if (!err.code) {
         throw {

@@ -112,6 +112,22 @@ router.patch("/:chatRoomId/messages", async (req, res) => {
     });
 });
 
+router.patch("/:chatRoomId/users", async (req, res) => {
+  const { chatRoomId } = req.params;
+  const userNames = req.body.userNames;
+  chatRoomController
+    .addUsersToChatRoom(chatRoomId, userNames)
+    .then((data) => {
+      userController
+        .addUsersToChatRooms(data)
+        .then((data) => res.status(200).json(data));
+    })
+    .catch((err) => {
+      const { code, message } = err;
+      res.status(code).json({ message });
+    });
+});
+
 const chatRoomRoutes = router;
 
 module.exports = { chatRoomRoutes };
