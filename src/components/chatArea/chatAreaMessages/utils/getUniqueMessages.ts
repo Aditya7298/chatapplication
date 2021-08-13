@@ -1,4 +1,4 @@
-import { MessageInfo } from "../../types/Message.interface";
+import { MessageInfo } from "../../../../types/Message.interface";
 
 export const getUniqueMessages = (messages: MessageInfo[]): MessageInfo[] => {
   const uniqueMessageIds = new Set<string>();

@@ -8,6 +8,17 @@
   color: rgb(209, 210, 211);
 }
 
+.chatarea-loading {
+  flex: 0 0 auto;
+  height: 100%;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(26, 29, 33);
+  color: rgb(209, 210, 211);
+}
+
 .chatarea-header {
   height: 5%;
   display: flex;
@@ -47,13 +58,14 @@
   cursor: pointer;
   filter: invert(95%) sepia(6%) saturate(41%) hue-rotate(169deg) brightness(90%)
     contrast(88%);
-  height: 35px;
-  width: 35px;
+  height: 32px;
+  width: 32px;
 }
 
 .chatarea-header-adduser_text {
   visibility: hidden;
   width: 80px;
+  font-size: 11px;
 }
 
 .chatarea-header-adduser-button:hover + .chatarea-header-adduser_text {
@@ -84,5 +96,4 @@
 .chatarea-loading-indicator {
   height: 200px;
   width: 200px;
-  align-self: center;
 }

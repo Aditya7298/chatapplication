@@ -13,10 +13,14 @@ import sendicon from "../../../assets/images/paper-plane.svg";
 import "./MessageInput.css";
 
 type MessageInputProps = {
+  chatRoomId: string;
   onNewMessageCreation: (newMessageData: MessageInfo) => void;
 };
 
-export const MessageInput = ({ onNewMessageCreation }: MessageInputProps) => {
+export const MessageInput = ({
+  chatRoomId,
+  onNewMessageCreation,
+}: MessageInputProps) => {
   const { userId } = useContext(UserContext);
 
   const [newMessageText, setNewMessageText] = useState("");
@@ -28,17 +32,19 @@ export const MessageInput = ({ onNewMessageCreation }: MessageInputProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newMessageDate = {
+    const newMessageData = {
       text: newMessageText,
       messageId: nanoid(),
       senderId: userId,
       timestamp: new Date(),
     };
 
-    setNewMessageText("");
-    onNewMessageCreation(newMessageDate);
+    const payload = { ...newMessageData, chatRoomId };
 
-    mutate(newMessageDate, {
+    setNewMessageText("");
+    onNewMessageCreation(newMessageData);
+
+    mutate(payload, {
       onSuccess: () => {},
     });
   };

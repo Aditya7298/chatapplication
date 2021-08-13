@@ -47,14 +47,14 @@ export const ChatRoomPreview = ({
   };
 
   return (
-    <div
-      onClick={handleClick}
-      className={`chatroom-preview ${
-        selectedChatRoomId === chatRoomId ? "chatroom-preview-selected" : ""
-      }`}
-    >
+    <>
       {chatRoomData ? (
-        <div>
+        <div
+          onClick={handleClick}
+          className={`chatroom-preview ${
+            selectedChatRoomId === chatRoomId ? "chatroom-preview-selected" : ""
+          }`}
+        >
           <span>
             {chatRoomData.avatar && (
               <img src={chatRoomData.avatar} alt="user avatar" />
@@ -65,20 +65,24 @@ export const ChatRoomPreview = ({
               teamMateInfo ? (
                 <>
                   <img
-                    src={teamMateInfo?.avatar}
+                    src={teamMateInfo.avatar}
                     height="20px"
                     width="20px"
                     alt="teammate photograph"
                   />{" "}
-                  <span>{teamMateInfo?.userName}</span>
+                  <span>{teamMateInfo.userName}</span>
                 </>
-              ) : null
+              ) : (
+                <div className="chatroom-preview-loading"></div>
+              )
             ) : (
               `# ${chatRoomData.chatRoomName}`
             )}
           </span>
         </div>
-      ) : null}
-    </div>
+      ) : (
+        <div className="chatroom-preview-loading"></div>
+      )}
+    </>
   );
 };
