@@ -80,6 +80,7 @@ export const UnauthenticatedApp = ({
         }
         errorMessage={error}
         isLoading={status === "loading"}
+        showPasswordFormat={authMode === "SIGNUP"}
       />
     </div>
   );

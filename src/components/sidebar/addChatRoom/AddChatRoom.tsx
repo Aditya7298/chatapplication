@@ -63,18 +63,19 @@ export const AddChatRoom = ({ onNewChatRoomCreation }: AddChatRoomProps) => {
 
   return (
     <>
-      <h2>Create a new group</h2>
+      <h2>Create a new channel</h2>
       <Form onSubmit={handleSubmit}>
         <Input
-          label="Group Name"
+          label="Channel Name"
           type="text"
           name="name"
           value={chatRoomFormDetails.name}
-          placeholder="Enter group name"
+          placeholder="Enter channel name"
           required={true}
           onChange={handleChange}
+          maxLength={10}
         />
-        <Button>Create Chatroom</Button>
+        <Button>Create Channel</Button>
       </Form>
     </>
   );

@@ -17,18 +17,28 @@ export const useMutation = (mutationFunction: MutationFunctionType) => {
     async (data: any, mutationSideEffects = {}) => {
       setState({ status: "loading", error: undefined });
 
-      const res = await mutationFunction(data);
-      const resBody = await res.json();
+      try {
+        const res = await mutationFunction(data);
+        const resBody = await res.json();
 
-      if (!res.ok) {
-        setState({ status: "rejected", error: resBody.message });
+        if (!res.ok) {
+          setState({ status: "rejected", error: resBody.message });
+          if (mutationSideEffects.onError) {
+            mutationSideEffects.onError();
+          }
+        } else {
+          setState({ status: "fullfiled", error: undefined });
+          if (mutationSideEffects.onSuccess) {
+            mutationSideEffects.onSuccess(resBody);
+          }
+        }
+      } catch (err) {
+        setState({
+          status: "rejected",
+          error: "Unable to connect to server, please try again.",
+        });
         if (mutationSideEffects.onError) {
           mutationSideEffects.onError();
-        }
-      } else {
-        setState({ status: "fullfiled", error: undefined });
-        if (mutationSideEffects.onSuccess) {
-          mutationSideEffects.onSuccess(resBody);
         }
       }
     },

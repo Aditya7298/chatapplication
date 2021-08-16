@@ -8,3 +8,10 @@
   background-color: rgb(25, 23, 29);
   color: rgb(163, 163, 166);
 }
+
+.authentication-form-password-message {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 300px;
+  text-align: center;
+}

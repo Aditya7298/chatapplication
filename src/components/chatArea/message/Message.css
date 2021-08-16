@@ -77,3 +77,11 @@
   margin: 0 auto;
   padding: 4px;
 }
+
+.date-stick {
+  background-color: aliceblue;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 8.5%;
+  width: 100%;
+}

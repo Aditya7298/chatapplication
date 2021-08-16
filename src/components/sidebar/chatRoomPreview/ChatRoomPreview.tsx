@@ -1,12 +1,9 @@
-import { useContext, useState, useEffect } from "react";
-
 import { useQuery } from "../../hooks/useQuery";
 
-import { UserContext } from "../../contexts/UserContext";
-
-import { getPersonalChatRoomInfo } from "../../utils/computePersonalChatRoomName";
+import { useUserContext } from "../../contexts/UserContext";
 
 import { ChatRoomInfo } from "../../../types/ChatRoom.interface";
+import { UserInfo } from "../../../types/User.interface";
 
 import { CHAT_ROOM_TYPE } from "../../../constants";
 
@@ -23,24 +20,20 @@ export const ChatRoomPreview = ({
   onChatRoomPreviewClick,
   selectedChatRoomId,
 }: ChatRoomPreviewProps) => {
-  const { userId } = useContext(UserContext);
+  const { userId } = useUserContext();
 
   const { data: chatRoomData } = useQuery<ChatRoomInfo>({
     path: `/chatrooms/${chatRoomId}`,
   });
 
-  const [teamMateInfo, setTeamMateInfo] =
-    useState<{ userName: string; avatar: string | undefined }>();
-
-  useEffect(() => {
-    if (chatRoomData?.type === CHAT_ROOM_TYPE.PERSONAL) {
-      getPersonalChatRoomInfo(chatRoomId, userId).then(
-        ({ userName, avatar }) => {
-          setTeamMateInfo({ userName, avatar });
-        }
-      );
-    }
-  }, [chatRoomId, userId, chatRoomData]);
+  const { data: teamMateInfo } = useQuery<UserInfo>({
+    path: `/users/${
+      chatRoomData?.userIds[0] === userId
+        ? chatRoomData?.userIds[1]
+        : chatRoomData?.userIds[0]
+    }`,
+    skip: !chatRoomData || chatRoomData.type === CHAT_ROOM_TYPE.GROUP,
+  });
 
   const handleClick = () => {
     onChatRoomPreviewClick(chatRoomId);

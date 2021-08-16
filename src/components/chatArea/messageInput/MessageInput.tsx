@@ -1,8 +1,9 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { nanoid } from "nanoid";
 
-import { UserContext } from "../../contexts/UserContext";
 import { useMutation } from "../../hooks/useMutation";
+
+import { useUserContext } from "../../contexts/UserContext";
 
 import { ajaxClient } from "../../utils/ajaxClient";
 
@@ -15,13 +16,15 @@ import "./MessageInput.css";
 type MessageInputProps = {
   chatRoomId: string;
   onNewMessageCreation: (newMessageData: MessageInfo) => void;
+  onNewMessageCreationFaliure: (failedMessageId: string) => void;
 };
 
 export const MessageInput = ({
   chatRoomId,
   onNewMessageCreation,
+  onNewMessageCreationFaliure,
 }: MessageInputProps) => {
-  const { userId } = useContext(UserContext);
+  const { userId } = useUserContext();
 
   const [newMessageText, setNewMessageText] = useState("");
 
@@ -45,7 +48,9 @@ export const MessageInput = ({
     onNewMessageCreation(newMessageData);
 
     mutate(payload, {
-      onSuccess: () => {},
+      onError: () => {
+        onNewMessageCreationFaliure(newMessageData.messageId);
+      },
     });
   };
 

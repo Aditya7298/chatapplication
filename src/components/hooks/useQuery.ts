@@ -5,6 +5,7 @@ import { ajaxClient } from "../utils/ajaxClient";
 type useQueryParams = {
   path: string;
   skip?: boolean;
+  payload?: object;
   queryInterval?: number;
 };
 
@@ -16,7 +17,7 @@ type UseQueryState<Type> = {
 };
 
 export const useQuery = <Type = any>(params: useQueryParams) => {
-  const { path, skip = false, queryInterval } = params;
+  const { path, skip = false, queryInterval, payload } = params;
 
   const [state, setState] = useState<UseQueryState<Type>>({
     data: undefined,
@@ -31,8 +32,11 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
 
     setState((prevState) => ({ ...prevState, status: "loading" }));
 
-    ajaxClient
-      .get({ path })
+    const query = payload
+      ? ajaxClient.post({ path, payload })
+      : ajaxClient.get({ path });
+
+    query
       .then(async (res) => {
         const resBody = await res.json();
 
@@ -59,7 +63,7 @@ export const useQuery = <Type = any>(params: useQueryParams) => {
           status: "rejected",
         }));
       });
-  }, [path, skip]);
+  }, [path, skip, payload]);
 
   useEffect(() => {
     fetchCall();
