@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import "./Snackbar.css";
 
@@ -13,6 +13,18 @@ export const Snackbar = ({
   onSnackbarClose,
   show,
 }: SnackbarProps) => {
+  useEffect(() => {
+    if (!children) {
+      return;
+    }
+
+    const timerId = setTimeout(() => {
+      onSnackbarClose();
+    }, 2000);
+
+    return () => clearTimeout(timerId);
+  }, [children, onSnackbarClose]);
+
   return (
     <>
       {show ? (

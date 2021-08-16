@@ -91,7 +91,7 @@ export const Sidebar = ({
         >
           <img src={newchaticon} alt="start a new group chat" />
         </button>
-        <div className="sidebar-addchatroom_text">Create a new group</div>
+        <div className="sidebar-addchatroom_text">Create a new channel</div>
       </div>
       <div className="sidebar-groupchats">
         <span

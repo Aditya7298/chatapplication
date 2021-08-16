@@ -21,7 +21,7 @@ export const AddUserToGroup = ({
 }: AddUserToGroupProps) => {
   const [userName, setUserName] = useState<string>("");
 
-  const { mutate, error: errorMessage } = useMutation((data) => {
+  const { mutate, error } = useMutation((data) => {
     return ajaxClient.patch({
       path: `/chatrooms/${chatRoomId}/users`,
       payload: {
@@ -50,7 +50,7 @@ export const AddUserToGroup = ({
         <UserDropdown value={userName} onChange={handleUserNameChange} />
         <Button>Add User</Button>
       </Form>
-      <div className="error">{errorMessage}</div>
+      <div className="error">{error}</div>
     </>
   );
 };

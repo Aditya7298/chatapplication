@@ -1,22 +1,20 @@
-import { useState, useContext } from "react";
+import { useState, useCallback } from "react";
 
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatArea } from "../chatArea/ChatArea";
 
-import { UserContext } from "../contexts/UserContext";
-
+import { useUserContext } from "../contexts/UserContext";
+        
 import "./Main.css";
 
 export const Main = () => {
-  const userData = useContext(UserContext);
+  const userData = useUserContext();
 
-  const [selectedChatRoomId, setSelectedChatRoomId] = useState<
-    string | undefined
-  >();
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState<string>();
 
-  const handleChatRoomPreviewClick = (chatRoomId: string) => {
+  const handleChatRoomPreviewClick = useCallback((chatRoomId: string) => {
     setSelectedChatRoomId(chatRoomId);
-  };
+  }, []);
 
   return (
     <div className="main">

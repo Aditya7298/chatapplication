@@ -10,7 +10,6 @@ import { UserInfo } from "../../../types/User.interface";
 import "./Message.css";
 
 type MessageProps = {
-  ind: number;
   messageData: MessageInfo;
   nextMessageDate: Date | undefined;
 };
@@ -20,11 +19,7 @@ const TIME_STAMP_FORMAT = {
   TIME: "TIME",
 } as const;
 
-export const Message = ({
-  messageData,
-  nextMessageDate,
-  ind,
-}: MessageProps) => {
+export const Message = ({ messageData, nextMessageDate }: MessageProps) => {
   const userData = useUserContext();
 
   const { data } = useQuery<UserInfo>({
@@ -95,14 +90,17 @@ export const Message = ({
         <MessageLoader />
       )}
       {messageData && showMessageDate ? (
-        <div style={{ zIndex: 1000 - ind }} className="message-info-date">
-          <div className="message-info-date_text">
-            {getMessageDateAndTime(
-              messageData.timestamp,
-              TIME_STAMP_FORMAT.DATE
-            )}
+        <>
+          <div className="message-info-date-sentinal"></div>
+          <div className="message-info-date">
+            <div className="message-info-date_text">
+              {getMessageDateAndTime(
+                messageData.timestamp,
+                TIME_STAMP_FORMAT.DATE
+              )}
+            </div>
           </div>
-        </div>
+        </>
       ) : null}
     </>
   );

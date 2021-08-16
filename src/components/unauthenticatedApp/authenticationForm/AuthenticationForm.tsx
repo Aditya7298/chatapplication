@@ -18,6 +18,7 @@ type AuthenticationFormProps = {
   authMode:
     | typeof AUTHENTICATION_MODE.LOGIN
     | typeof AUTHENTICATION_MODE.SIGNUP;
+  showPasswordFormat: boolean;
 };
 
 export const AuthenticationForm = ({
@@ -27,6 +28,7 @@ export const AuthenticationForm = ({
   errorMessage,
   isLoading,
   toggleMessage,
+  showPasswordFormat,
 }: AuthenticationFormProps) => {
   const [formDetails, setFormDetails] = useState({
     userName: "",
@@ -56,6 +58,7 @@ export const AuthenticationForm = ({
             onChange={handleChange}
             required={true}
             placeholder="Enter username"
+            maxLength={25}
             error={
               errorMessage !== undefined && errorMessage.match(/user/i) !== null
             }
@@ -68,11 +71,23 @@ export const AuthenticationForm = ({
             required={true}
             placeholder="Enter Password"
             onChange={handleChange}
+            pattern={
+              showPasswordFormat
+                ? "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                : undefined
+            }
             error={
               errorMessage !== undefined &&
               errorMessage?.match(/password/i) !== null
             }
           />
+
+          {showPasswordFormat ? (
+            <div className="authentication-form-password-message">
+              Passwords must contain at least six characters, including
+              uppercase, lowercase letters and numbers.
+            </div>
+          ) : null}
           <Button isDisabled={isLoading}>
             {isLoading ? "Please wait..." : "Submit"}
           </Button>

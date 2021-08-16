@@ -11,12 +11,14 @@ import { MessageInfo } from "../../../types/Message.interface";
 
 type ChatAreaMessagesProps = {
   chatRoomId: string;
-  newMessageData?: MessageInfo;
+  sentMessage?: MessageInfo;
+  failedMessageId?: string;
 };
 
 export const ChatAreaMessages = ({
   chatRoomId,
-  newMessageData,
+  sentMessage,
+  failedMessageId,
 }: ChatAreaMessagesProps) => {
   const [chatRoomMessages, setChatRoomMessages] = useState<MessageInfo[]>([]);
 
@@ -29,31 +31,41 @@ export const ChatAreaMessages = ({
         : `/chatrooms/${chatRoomId}/messages/`,
     });
 
-  const { data: newMessagesData } = useQuery<MessageInfo[]>({
+  const { data: newMessages } = useQuery<MessageInfo[]>({
     path: `/chatrooms/${chatRoomId}/newMessages/${chatRoomMessages[0]?.messageId}`,
     queryInterval: 1000,
     // skip: chatRoomMessages.length === 0,
   });
 
   useEffect(() => {
-    if (!newMessagesData) {
+    if (!newMessages) {
       return;
     }
 
     setChatRoomMessages((prevState) =>
-      getUniqueMessages([...newMessagesData, ...prevState])
+      getUniqueMessages([...newMessages, ...prevState])
     );
-  }, [newMessagesData]);
+  }, [newMessages]);
 
   useEffect(() => {
-    if (!newMessageData) {
+    if (!sentMessage) {
       return;
     }
 
     setChatRoomMessages((prevState) =>
-      getUniqueMessages([newMessageData, ...prevState])
+      getUniqueMessages([sentMessage, ...prevState])
     );
-  }, [newMessageData]);
+  }, [sentMessage]);
+
+  useEffect(() => {
+    if (!failedMessageId) {
+      return;
+    }
+
+    setChatRoomMessages((prevState) =>
+      prevState.filter((message) => message.messageId !== failedMessageId)
+    );
+  }, [failedMessageId]);
 
   useEffect(() => {
     if (!paginatedMessagesData) {
@@ -73,7 +85,7 @@ export const ChatAreaMessages = ({
       return;
     }
 
-    if (scrollHeight + scrollTop <= clientHeight + 1) {
+    if (scrollHeight + scrollTop <= clientHeight + 100) {
       setLastMessageId(chatRoomMessages[chatRoomMessages.length - 1].messageId);
     }
   };
@@ -83,7 +95,6 @@ export const ChatAreaMessages = ({
       {chatRoomMessages
         ? chatRoomMessages.map((message, ind, arr) => (
             <Message
-              ind={ind}
               key={message.messageId}
               nextMessageDate={arr[ind + 1]?.timestamp}
               messageData={message}

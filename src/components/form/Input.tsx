@@ -9,6 +9,9 @@ type InputProps = {
   required?: boolean | undefined;
   error?: boolean;
   list?: string;
+  maxLength?: number;
+  minLength?: number;
+  pattern?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => any;
 };
 
@@ -21,6 +24,9 @@ export const Input = ({
   required,
   error,
   placeholder,
+  maxLength,
+  minLength,
+  pattern,
   list,
 }: InputProps) => {
   return (
@@ -34,6 +40,9 @@ export const Input = ({
         placeholder={placeholder}
         onChange={onChange}
         required={required}
+        maxLength={maxLength}
+        minLength={minLength}
+        pattern={pattern}
         list={list}
       />
     </label>

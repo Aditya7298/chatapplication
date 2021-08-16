@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 
 import { ChatAreaMessages } from "./chatAreaMessages/ChatAreaMessages";
 import { MessageInput } from "./messageInput/MessageInput";
@@ -11,10 +11,9 @@ import { useUserContext } from "../contexts/UserContext";
 
 import { useQuery } from "../hooks/useQuery";
 
-import { getPersonalChatRoomInfo } from "../utils/computePersonalChatRoomName";
-
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
 import { MessageInfo } from "../../types/Message.interface";
+import { UserInfo } from "../../types/User.interface";
 
 import { CHAT_ROOM_TYPE } from "../../constants";
 
@@ -40,6 +39,8 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
 
   const [newMessageData, setNewMessageData] = useState<MessageInfo>();
 
+  const [failedMessageId, setFailedMessageId] = useState<string>();
+
   const handleNewMessageCreation = useCallback(
     (newMessageData: MessageInfo) => {
       setNewMessageData(newMessageData);
@@ -47,18 +48,22 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     []
   );
 
-  const [personalChatRoomTeamMateInfo, setPersonalChatRoomTeamMateInfo] =
-    useState<{ userName: string; avatar?: string }>();
+  const handleNewMessageCreationFaliure = useCallback(
+    (failedMessageId: string) => {
+      setFailedMessageId(failedMessageId);
+      setSnackbarMessage("Failed to send message, please try again");
+    },
+    []
+  );
 
-  useEffect(() => {
-    if (chatRoomData?.type === CHAT_ROOM_TYPE.PERSONAL) {
-      getPersonalChatRoomInfo(chatRoomId, userId).then(
-        ({ userName, avatar }) => {
-          setPersonalChatRoomTeamMateInfo({ userName, avatar });
-        }
-      );
-    }
-  }, [chatRoomData?.type, chatRoomId, userId]);
+  const { data: teamMateInfo } = useQuery<UserInfo>({
+    path: `/users/${
+      chatRoomData?.userIds[0] === userId
+        ? chatRoomData?.userIds[1]
+        : chatRoomData?.userIds[0]
+    }`,
+    skip: !chatRoomData || chatRoomData.type === CHAT_ROOM_TYPE.GROUP,
+  });
 
   const handleAddUserFormClose = useCallback(() => {
     setShowAddUserForm(false);
@@ -104,13 +109,10 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
           <div className="chatarea-header">
             <span className="chatarea-header-title">
               {chatRoomData.type === CHAT_ROOM_TYPE.PERSONAL ? (
-                personalChatRoomTeamMateInfo ? (
+                teamMateInfo ? (
                   <>
-                    <img
-                      src={personalChatRoomTeamMateInfo.avatar}
-                      alt="teammate photograph"
-                    />{" "}
-                    <span>{personalChatRoomTeamMateInfo.userName}</span>
+                    <img src={teamMateInfo.avatar} alt="teammate photograph" />{" "}
+                    <span>{teamMateInfo.userName}</span>
                   </>
                 ) : (
                   <UserLoader />
@@ -137,12 +139,14 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
           </div>
 
           <ChatAreaMessages
-            newMessageData={newMessageData}
+            sentMessage={newMessageData}
             chatRoomId={chatRoomData.chatRoomId}
+            failedMessageId={failedMessageId}
           />
           <MessageInput
             chatRoomId={chatRoomId}
             onNewMessageCreation={handleNewMessageCreation}
+            onNewMessageCreationFaliure={handleNewMessageCreationFaliure}
           />
         </>
       ) : (
