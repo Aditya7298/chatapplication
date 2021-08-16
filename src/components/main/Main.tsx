@@ -4,7 +4,7 @@ import { Sidebar } from "../sidebar/Sidebar";
 import { ChatArea } from "../chatArea/ChatArea";
 
 import { useUserContext } from "../contexts/UserContext";
-
+        
 import "./Main.css";
 
 export const Main = () => {

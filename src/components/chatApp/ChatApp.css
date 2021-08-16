@@ -26,3 +26,19 @@
   height: 200px;
   width: 200px;
 }
+
+.main-loading {
+  flex: 0 0 auto;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(26, 29, 33);
+  color: rgb(209, 210, 211);
+}
+
+.main-loading-indicator {
+  height: 200px;
+  width: 200px;
+}
