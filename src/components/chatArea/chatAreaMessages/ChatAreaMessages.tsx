@@ -1,18 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 import { Message } from "../message/Message";
 import { MessageLoader } from "../../loaders/messageLoader/MessageLoader";
 
 import { useQuery } from "../../hooks/useQuery";
+import { useInfiniteQuery } from "../../hooks/useInfiniteQuery";
 
 import { getUniqueMessages } from "./utils/getUniqueMessages";
+import { ajaxClient } from "../../utils/ajaxClient";
 
 import { MessageInfo } from "../../../types/Message.interface";
+import { SentMessageType } from "../../../types/SentMessage.type";
 
 type ChatAreaMessagesProps = {
   chatRoomId: string;
-  sentMessage?: MessageInfo;
-  failedMessageId?: string;
+  sentMessage: SentMessageType | undefined;
+  failedMessageId: string | undefined;
 };
 
 export const ChatAreaMessages = ({
@@ -20,73 +23,103 @@ export const ChatAreaMessages = ({
   sentMessage,
   failedMessageId,
 }: ChatAreaMessagesProps) => {
-  const [chatRoomMessages, setChatRoomMessages] = useState<MessageInfo[]>([]);
+  const paginatedFetchQuery = useCallback(
+    (pageParam: string) =>
+      ajaxClient.get({
+        path: pageParam
+          ? `/chatrooms/${chatRoomId}/messages/${pageParam}`
+          : `/chatrooms/${chatRoomId}/messages/`,
+      }),
+    [chatRoomId]
+  );
 
-  const [lastMessageId, setLastMessageId] = useState<string>();
+  const getNextPageParam = useCallback(
+    (lastPage: MessageInfo[] | undefined) =>
+      lastPage?.[lastPage.length - 1]?.messageId,
+    []
+  );
 
-  const { data: paginatedMessagesData, status: paginatedMessagesDataStatus } =
-    useQuery<MessageInfo[]>({
-      path: lastMessageId
-        ? `/chatrooms/${chatRoomId}/messages/${lastMessageId}`
-        : `/chatrooms/${chatRoomId}/messages/`,
-    });
+  const {
+    data: chatRoomMessages,
+    status: paginatedQueryStatus,
+    setQueryData,
+    fetchNextPage,
+  } = useInfiniteQuery<MessageInfo>({
+    fetchQuery: paginatedFetchQuery,
+    getNextPageParam,
+  });
 
   const { data: newMessages } = useQuery<MessageInfo[]>({
-    path: `/chatrooms/${chatRoomId}/newMessages/${chatRoomMessages[0]?.messageId}`,
+    path: `/chatrooms/${chatRoomId}/newMessages/${chatRoomMessages?.[0]?.messageId}`,
     queryInterval: 1000,
-    // skip: chatRoomMessages.length === 0,
+    skip: !chatRoomMessages,
   });
 
   useEffect(() => {
-    if (!newMessages) {
+    if (!newMessages || !chatRoomMessages || newMessages.length === 0) {
       return;
     }
 
-    setChatRoomMessages((prevState) =>
-      getUniqueMessages([...newMessages, ...prevState])
-    );
-  }, [newMessages]);
+    setQueryData(getUniqueMessages([...newMessages, ...chatRoomMessages]));
+  }, [newMessages, chatRoomMessages, setQueryData]);
 
   useEffect(() => {
-    if (!sentMessage) {
+    if (
+      !chatRoomMessages ||
+      !sentMessage ||
+      chatRoomMessages.find(
+        (message) => message.messageId === sentMessage.messageId
+      )
+    ) {
       return;
     }
 
-    setChatRoomMessages((prevState) =>
-      getUniqueMessages([sentMessage, ...prevState])
-    );
-  }, [sentMessage]);
+    if (
+      sentMessage.prevId &&
+      chatRoomMessages.find(
+        (message) => message.messageId === sentMessage.prevId
+      )
+    ) {
+      setQueryData(
+        chatRoomMessages.map((message) =>
+          message.messageId === sentMessage.prevId
+            ? { ...message, messageId: sentMessage.messageId }
+            : message
+        )
+      );
+    } else {
+      setQueryData(getUniqueMessages([sentMessage, ...chatRoomMessages]));
+    }
+  }, [sentMessage, chatRoomMessages, setQueryData]);
 
   useEffect(() => {
-    if (!failedMessageId) {
+    if (
+      !failedMessageId ||
+      !chatRoomMessages ||
+      !chatRoomMessages.find((message) => message.messageId === failedMessageId)
+    ) {
       return;
     }
 
-    setChatRoomMessages((prevState) =>
-      prevState.filter((message) => message.messageId !== failedMessageId)
+    setQueryData(
+      chatRoomMessages.filter(
+        (message) => message.messageId !== failedMessageId
+      )
     );
-  }, [failedMessageId]);
-
-  useEffect(() => {
-    if (!paginatedMessagesData) {
-      return;
-    }
-
-    setChatRoomMessages((prevState) => [
-      ...prevState,
-      ...paginatedMessagesData,
-    ]);
-  }, [paginatedMessagesData]);
+  }, [failedMessageId, setQueryData, chatRoomMessages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
 
-    if (chatRoomMessages.length === 0) {
+    if (!chatRoomMessages || chatRoomMessages.length === 0) {
       return;
     }
 
-    if (scrollHeight + scrollTop <= clientHeight + 100) {
-      setLastMessageId(chatRoomMessages[chatRoomMessages.length - 1].messageId);
+    if (
+      scrollHeight + scrollTop <= clientHeight + 100 &&
+      paginatedQueryStatus !== "loading"
+    ) {
+      fetchNextPage();
     }
   };
 
@@ -101,7 +134,7 @@ export const ChatAreaMessages = ({
             />
           ))
         : null}
-      {paginatedMessagesDataStatus === "loading" ? (
+      {paginatedQueryStatus === "loading" ? (
         <MessageLoader numberOfMessages={10} />
       ) : null}
     </div>

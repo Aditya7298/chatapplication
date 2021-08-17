@@ -94,18 +94,20 @@ export const Sidebar = ({
         <div className="sidebar-addchatroom_text">Create a new channel</div>
       </div>
       <div className="sidebar-groupchats">
-        <span
-          className="groupchats-toggle"
-          onClick={() => setShowGroupChats((prevState) => !prevState)}
-        >
-          <img
-            className="sidebar-toogle-icon"
-            src={showGroupChats ? hideicon : showicon}
-            alt={showGroupChats ? "hide groups" : "show groups"}
-            height="10px"
-            width="10px"
-          />
-        </span>
+        <button>
+          <span
+            className="groupchats-toggle"
+            onClick={() => setShowGroupChats((prevState) => !prevState)}
+          >
+            <img
+              className="sidebar-toogle-icon"
+              src={showGroupChats ? hideicon : showicon}
+              alt={showGroupChats ? "hide groups" : "show groups"}
+              height="10px"
+              width="10px"
+            />
+          </span>
+        </button>
         <span className="groupchats-label">Channels</span>
         {showGroupChats ? (
           <>
@@ -122,19 +124,21 @@ export const Sidebar = ({
       </div>
 
       <div className="sidebar-personalchats">
-        <span onClick={() => setShowPersonalChats((prevState) => !prevState)}>
-          <img
-            className="sidebar-toogle-icon"
-            src={showPersonalChats ? hideicon : showicon}
-            alt={
-              showPersonalChats
-                ? "hide personal messages"
-                : "show personal messages"
-            }
-            height="10px"
-            width="10px"
-          />
-        </span>
+        <button>
+          <span onClick={() => setShowPersonalChats((prevState) => !prevState)}>
+            <img
+              className="sidebar-toogle-icon"
+              src={showPersonalChats ? hideicon : showicon}
+              alt={
+                showPersonalChats
+                  ? "hide personal messages"
+                  : "show personal messages"
+              }
+              height="10px"
+              width="10px"
+            />
+          </span>
+        </button>
         <span>Direct messages</span>
         {showPersonalChats ? (
           <>

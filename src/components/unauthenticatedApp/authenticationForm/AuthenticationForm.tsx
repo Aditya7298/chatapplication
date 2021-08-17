@@ -51,20 +51,20 @@ export const AuthenticationForm = ({
         <h2>{formTitle}</h2>
         <Form onSubmit={handleSubmit}>
           <Input
-            label="username"
+            label="Username"
             name="userName"
             type="text"
             value={formDetails.userName}
             onChange={handleChange}
             required={true}
-            placeholder="Enter username"
+            placeholder="Enter Username"
             maxLength={25}
             error={
               errorMessage !== undefined && errorMessage.match(/user/i) !== null
             }
           />
           <Input
-            label="password"
+            label="Password"
             name="password"
             type="password"
             value={formDetails.password}
@@ -81,13 +81,6 @@ export const AuthenticationForm = ({
               errorMessage?.match(/password/i) !== null
             }
           />
-
-          {showPasswordFormat ? (
-            <div className="authentication-form-password-message">
-              Passwords must contain at least six characters, including
-              uppercase, lowercase letters and numbers.
-            </div>
-          ) : null}
           <Button isDisabled={isLoading}>
             {isLoading ? "Please wait..." : "Submit"}
           </Button>
@@ -97,6 +90,12 @@ export const AuthenticationForm = ({
             </Button>
           )}
         </Form>
+        {showPasswordFormat ? (
+          <div className="authentication-form-password-message">
+            Note:- Passwords must contain at least six characters, including
+            uppercase, lowercase letters and numbers.
+          </div>
+        ) : null}
         <div className="error">{errorMessage}</div>
       </div>
     </>

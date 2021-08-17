@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 
 import { Sidebar } from "../sidebar/Sidebar";
 import { ChatArea } from "../chatArea/ChatArea";
+import { LoadingSpinner } from "../loaders/loadingSpinner/LoadingSpinner";
 
 import { useUserContext } from "../contexts/UserContext";
         
@@ -46,7 +47,9 @@ export const Main = () => {
             )}
           </div>
         </>
-      ) : null}
+      ) : (
+        <LoadingSpinner />
+      )}
     </div>
   );
 };

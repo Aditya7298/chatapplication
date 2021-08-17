@@ -8,6 +8,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import { ajaxClient } from "../../utils/ajaxClient";
 
 import { MessageInfo } from "../../../types/Message.interface";
+import { SentMessageType } from "../../../types/SentMessage.type";
 
 import sendicon from "../../../assets/images/paper-plane.svg";
 
@@ -15,7 +16,7 @@ import "./MessageInput.css";
 
 type MessageInputProps = {
   chatRoomId: string;
-  onNewMessageCreation: (newMessageData: MessageInfo) => void;
+  onNewMessageCreation: (newMessageData: SentMessageType) => void;
   onNewMessageCreationFaliure: (failedMessageId: string) => void;
 };
 
@@ -37,7 +38,6 @@ export const MessageInput = ({
 
     const newMessageData = {
       text: newMessageText,
-      messageId: nanoid(),
       senderId: userId,
       timestamp: new Date(),
     };
@@ -45,11 +45,24 @@ export const MessageInput = ({
     const payload = { ...newMessageData, chatRoomId };
 
     setNewMessageText("");
-    onNewMessageCreation(newMessageData);
+
+    const tempMessageId = nanoid();
+    onNewMessageCreation({
+      ...newMessageData,
+      messageId: tempMessageId,
+      prevId: undefined,
+    });
 
     mutate(payload, {
+      onSuccess: (data: MessageInfo) => {
+        onNewMessageCreation({
+          ...data,
+          prevId: tempMessageId,
+        });
+      },
+
       onError: () => {
-        onNewMessageCreationFaliure(newMessageData.messageId);
+        onNewMessageCreationFaliure(tempMessageId);
       },
     });
   };

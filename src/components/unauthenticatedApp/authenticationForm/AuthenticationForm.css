@@ -13,5 +13,9 @@
   margin-top: 20px;
   margin-bottom: 20px;
   width: 300px;
-  text-align: center;
+  border: 2px solid rgb(163, 163, 166);
+  border-radius: 5px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  padding: 5px;
 }
