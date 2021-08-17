@@ -30,6 +30,7 @@
   margin-right: 4px;
   filter: invert(74%) sepia(0%) saturate(412%) hue-rotate(341deg)
     brightness(88%) contrast(93%);
+  border-radius: 5px;
 }
 
 .sidebar-addchatroom {
@@ -47,6 +48,7 @@
   height: 50px;
   width: 50px;
   cursor: pointer;
+  background-color: rgb(163, 163, 166);
 }
 
 .sidebar-addchatroom_text {

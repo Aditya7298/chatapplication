@@ -16,14 +16,28 @@
 }
 
 .chatroom-preview-name {
+  flex: 0 0 auto;
   height: 100%;
+  width: 100%;
+  overflow: hidden;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
 
-.chatroom-preview-name img {
+.chatroom-preview-name_img {
   margin-right: 10px;
+  flex: 0 0 auto;
+  width: 20px;
+}
+
+.chatroom-preview-name_text {
+  flex: 0 0 auto;
+  overflow: hidden;
+  width: calc(100% - 30px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
 }
 
 .chatroom-preview-selected {

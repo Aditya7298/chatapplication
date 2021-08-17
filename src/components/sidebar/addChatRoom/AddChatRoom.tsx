@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { nanoid } from "nanoid";
 
 import { Form } from "../../form/Form";
 import { Input } from "../../form/Input";
@@ -35,7 +34,6 @@ export const AddChatRoom = ({ onNewChatRoomCreation }: AddChatRoomProps) => {
     e.preventDefault();
 
     const newChatRoomData = {
-      chatRoomId: nanoid(),
       chatRoomName: chatRoomFormDetails.name,
       type: chatRoomFormDetails.type,
       participantNames: [userName],

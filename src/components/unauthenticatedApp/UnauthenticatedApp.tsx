@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { nanoid } from "nanoid";
 
 import { AuthenticationForm } from "./authenticationForm/AuthenticationForm";
 
@@ -42,7 +41,6 @@ export const UnauthenticatedApp = ({
           ? {
               userName,
               password,
-              userId: nanoid(),
               avatar: "",
               personalChats: [],
               groupChats: [],

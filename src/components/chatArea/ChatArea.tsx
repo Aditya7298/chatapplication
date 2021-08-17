@@ -6,19 +6,19 @@ import { Modal } from "../modal/Modal";
 import { AddUserToGroup } from "./addUserToGroup/AddUserToGroup";
 import { Snackbar } from "../snackbar/Snackbar";
 import { UserLoader } from "../loaders/userLoader/UserLoader";
+import { LoadingSpinner } from "../loaders/loadingSpinner/LoadingSpinner";
 
 import { useUserContext } from "../contexts/UserContext";
 
 import { useQuery } from "../hooks/useQuery";
 
 import { ChatRoomInfo } from "../../types/ChatRoom.interface";
-import { MessageInfo } from "../../types/Message.interface";
 import { UserInfo } from "../../types/User.interface";
+import { SentMessageType } from "../../types/SentMessage.type";
 
 import { CHAT_ROOM_TYPE } from "../../constants";
 
 import addUserIcon from "../../assets/images/add-user.svg";
-import loadingIcon from "../../assets/images/loading-animation.svg";
 
 import "./ChatArea.css";
 
@@ -37,12 +37,12 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
     path: `/chatrooms/${chatRoomId}`,
   });
 
-  const [newMessageData, setNewMessageData] = useState<MessageInfo>();
+  const [newMessageData, setNewMessageData] = useState<SentMessageType>();
 
   const [failedMessageId, setFailedMessageId] = useState<string>();
 
   const handleNewMessageCreation = useCallback(
-    (newMessageData: MessageInfo) => {
+    (newMessageData: SentMessageType) => {
       setNewMessageData(newMessageData);
     },
     []
@@ -150,13 +150,7 @@ export const ChatArea = ({ chatRoomId }: ChatAreaProps) => {
           />
         </>
       ) : (
-        <object
-          className="chatarea-loading-indicator"
-          type="image/svg+xml"
-          data={loadingIcon}
-        >
-          svg-animation
-        </object>
+        <LoadingSpinner />
       )}
     </div>
   );
